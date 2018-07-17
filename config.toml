@@ -1,0 +1,14 @@
+baseURL = "https://chongg039.cn/"
+languageCode = "en"
+title = "Co1driver 的个人博客"
+theme = "river"
+
+Paginate = 12
+
+enableRobotsTXT = true
+
+googleAnalytics = "UA-117991024-1"
+
+disqusShortname = "coldriver"
+
+copyright = "Copyright 2014-{year}"
