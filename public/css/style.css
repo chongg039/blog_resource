@@ -1,0 +1,66 @@
+body {
+    margin: 0.5in auto;
+    max-width: 1260px;
+    background: white;
+    font-family: "Gill Sans MT","Gill Sans","My Gill Sans","Microsoft YaHei",sans-serif;
+}
+table {
+    display: table;
+    border-collapse: separate;
+    border-spacing: 2px;
+    border-color: grey;
+}
+tbody {
+    display: table-row-group;
+    vertical-align: middle;
+    border-color: inherit;
+}
+.navheader, .navfooter {
+    border: black solid 1px;
+    background: rgb(180,180,200);
+}
+div {
+    display: block;
+}
+.pageNotFound {
+    display: table-cell;
+    vertical-align: middle;
+}
+a:link {
+    color: #333;
+    text-align: left;
+    text-decoration: none;
+}
+a:visited {
+    color: #333;
+    text-align: left;
+    text-decoration: none;
+}
+a:hover {
+    color: #993300;
+    text-decoration: underline;
+}
+a.active {
+    color: #993300;
+    text-decoration: underline;
+}
+ul.dotLeaders {
+    padding: 0;
+    overflow-x: hidden;
+    list-style: none}
+ul.dotLeaders li:before {
+    float: left;
+    width: 0;
+    white-space: nowrap;
+    content:
+ ". . . . . . . . . . . . . . . . . . . . "
+ ". . . . . . . . . . . . . . . . . . . . "
+ ". . . . . . . . . . . . . . . . . . . . "
+ ". . . . . . . . . . . . . . . . . . . . "}
+ul.dotLeaders span:first-child {
+    padding-right: 0.33em;
+    background: white}
+ul.dotLeaders span + span {
+    float: right;
+    padding-left: 0.33em;
+    background: white}

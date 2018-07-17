@@ -1,0 +1,13 @@
+{{ partial "header.html" . }}
+
+    <h1>Co1driver 的个人博客</h1>
+    <h3>文章</h3>
+    {{ $paginator := .Paginate (where .Data.Pages "Type" "post") }}
+    {{ range $paginator.Pages }}
+        <ul class="dotLeaders">
+            <li><span><a href="{{ .Permalink }}">{{ .Title }}</a></span><span>{{ .Date.Format "Mon, Jan 2, 2006" }}</span>
+        </ul>
+    {{ end }}
+    {{ partial "pagination.html" . }}
+
+{{ partial "footer.html" . }}

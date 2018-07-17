@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>工作室 on Co1driver 的个人博客</title>
+    <link>https://chongg039.cn/tags/%E5%B7%A5%E4%BD%9C%E5%AE%A4/</link>
+    <description>Recent content in 工作室 on Co1driver 的个人博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>Copyright 2014-{year}</copyright>
+    <lastBuildDate>Sat, 31 Dec 2016 16:59:03 -0700</lastBuildDate>
+    
+	<atom:link href="https://chongg039.cn/tags/%E5%B7%A5%E4%BD%9C%E5%AE%A4/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>2016年终总结</title>
+      <link>https://chongg039.cn/post/2016-summary/</link>
+      <pubDate>Sat, 31 Dec 2016 16:59:03 -0700</pubDate>
+      
+      <guid>https://chongg039.cn/post/2016-summary/</guid>
+      <description>&lt;p&gt;年底了，总结一下这一年。&lt;/p&gt;
+
+&lt;h4 id=&#34;工作室&#34;&gt;工作室&lt;/h4&gt;
+
+&lt;p&gt;这一年有大半时间都是在创萌工作室度过的，也见证了创萌从当时的三五个人到现在的规模。&lt;/p&gt;
+
+&lt;p&gt;工作室的巨总和迪哥算是我的导师。迪哥带着我从前端转向了nodejs，教会我如何作为一名全栈工程师来思考问题。而巨总眼界比较开阔，给我的更多是学习方法和技术趋势的指导。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

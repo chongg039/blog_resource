@@ -1,0 +1,27 @@
+<div class="navfooter">
+    <table width="100%" summary="Navigation footer">
+        <tbody>
+            <tr>
+                <td width="40%" align="left">&nbsp;</td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right">&nbsp;</td>
+            </tr>
+            <tr>
+                <td width="40%" align="left" valign="top">
+                    <span class="copyright">
+                        {{ replace .Site.Copyright "{year}" now.Year }}
+                    </span>
+                    &nbsp;
+                </td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right" valign="top">&nbsp;<a href="{{ .Site.BaseURL }}">HOME</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+    {{ template "_internal/google_analytics.html" . }}
+    <script type="text/javascript" src="{{.Site.BaseURL}}js/function.js"></script>
+    <script type="text/javascript" src="{{.Site.BaseURL}}js/prettify.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</html>

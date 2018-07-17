@@ -1,0 +1,8 @@
+{{ partial "header.html" . }}
+
+  <h2>所有文章</h2>
+  {{ range .Data.Pages }}
+    <h4><a href={{ .Permalink }}>{{ .Title }}</a></h4>
+  {{ end }}
+
+{{ partial "footer.html" . }}

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Server on Co1driver 的个人博客</title>
+    <link>https://chongg039.cn/tags/server/</link>
+    <description>Recent content in Server on Co1driver 的个人博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>Copyright 2014-{year}</copyright>
+    <lastBuildDate>Sat, 04 Mar 2017 16:27:52 +0800</lastBuildDate>
+    
+	<atom:link href="https://chongg039.cn/tags/server/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Go实现空气质量状况API服务器过程中的思考</title>
+      <link>https://chongg039.cn/post/aqi-server-in-go/</link>
+      <pubDate>Sat, 04 Mar 2017 16:27:52 +0800</pubDate>
+      
+      <guid>https://chongg039.cn/post/aqi-server-in-go/</guid>
+      <description>&lt;p&gt;学习Go之后第一个项目，是编写一个API服务器，提供城市AQI的JSON数据。&lt;/p&gt;
+
+&lt;p&gt;既然要实现这个功能，要解决的问题一个是数据源，一个是Server。&lt;/p&gt;
+
+&lt;p&gt;先说说数据源，如果仅仅和我们初步设想的一样，仅仅为我们的一款应用提供即时数据，那样只是做一个第三方数据的中转便可。不过为了以后可以针对性的做数据分析，还是需要将数据爬下来存在数据库。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Linux 服务器配置静态 IP 并 802.1x 拨号</title>
+      <link>https://chongg039.cn/post/linux-server-staticip-8021x/</link>
+      <pubDate>Sat, 12 Nov 2016 15:15:27 -0700</pubDate>
+      
+      <guid>https://chongg039.cn/post/linux-server-staticip-8021x/</guid>
+      <description>&lt;p&gt;终于布好工作室的服务器了。&lt;/p&gt;
+
+&lt;p&gt;我写了个脚本一键部署静态ip和802.1x拨号：&lt;a href=&#34;https://gist.github.com/chongg039/3310467e329e00de3b6b04aaae646f3c&#34;&gt;ubuntu-server.sh&lt;/a&gt;，不想看我啰嗦的可以直接拿过来改改就能用。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>使用 vultr &#43; SS &#43; 锐速科学上网</title>
+      <link>https://chongg039.cn/post/vultr-ss-serverspeed/</link>
+      <pubDate>Mon, 03 Oct 2016 20:32:20 -0700</pubDate>
+      
+      <guid>https://chongg039.cn/post/vultr-ss-serverspeed/</guid>
+      <description>&lt;p&gt;接手工作室后，tesths 便把原来那个已经配置好的ss账号连同服务器一块给销了。平时ss又十分必要，就向他讨要了具体的方法，自己搭了一个。这里也是把方法贴出来。&lt;/p&gt;
+
+&lt;h3 id=&#34;配置vultr主机&#34;&gt;配置vultr主机&lt;/h3&gt;
+
+&lt;p&gt;V家的主机算得上是性价比较高的一款了，而且有日本和新加坡的线路，相对来说延迟比较稳定。截止我购买的时候是每个新用户有20刀的返利，还是比较划算的。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>使用ngrok实现内网穿透</title>
+      <link>https://chongg039.cn/post/ngrok/</link>
+      <pubDate>Sun, 18 Sep 2016 09:37:45 -0700</pubDate>
+      
+      <guid>https://chongg039.cn/post/ngrok/</guid>
+      <description>&lt;p&gt;今天想用nodejs写一个微信公众号服务，很尴尬的发现自己的腾讯云学生服务器已经三个月没续费被收回了。工作室的这台服务器又不是很想动，于是就想到前一段时间看的一个实现内网穿透的工具ngrok，花了一段时间部署在了自己的ubuntu上。又化了两块钱买了个域名，准备以后作为工作室测试来用。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

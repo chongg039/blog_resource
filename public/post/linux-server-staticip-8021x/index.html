@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Linux 服务器配置静态 IP 并 802.1x 拨号</title>
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/style.css" />
+    
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/sunburst.css" />
+</head>
+<body onload="PR.prettyPrint()">
+    <div class="navheader">
+        <table width="100%" summary="Navigation header">
+            <tbody>
+                <tr>
+                    <th colspan="3" align="center">Co1driver 的个人博客</th>
+                </tr>
+                <tr>
+                    <td width="90%" align="left">&nbsp;</td>
+                    <td width="5%" align="center">&nbsp;<a accesskey="h" href="https://github.com/chongg039">GITHUB</a></td>
+                    <td width="5%" align="right">&nbsp;<a accesskey="a" href="https://chongg039.cn//about">ABOUT</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h1>Linux 服务器配置静态 IP 并 802.1x 拨号</h1>
+    <h4>Sat, Nov 12, 2016</h4>
+    <p>终于布好工作室的服务器了。</p>
+
+<p>我写了个脚本一键部署静态ip和802.1x拨号：<a href="https://gist.github.com/chongg039/3310467e329e00de3b6b04aaae646f3c">ubuntu-server.sh</a>，不想看我啰嗦的可以直接拿过来改改就能用。</p>
+
+<p>先讲个小故事：</p>
+
+<p>工作室项目配了HTTPS，必须要域名访问，可是又没钱，买不起性能好的云服务器怎么办？</p>
+
+<p>看了看角落里有一台遗留下来的服务器，至强12核 + 32G内存 + 120G SSD，性能不错，就是它了。跑到网络中心问了问，以前这台的MAC地址学校就给分配了一个静态IP，而且现在还能用。很好呀，交了证明材料，拿回了一些信息就准备开工。</p>
+
+<p>下面就是正题了，针对ubuntu server版进行说明：</p>
+
+<p>在配置之前，首先得确定几件事情：</p>
+
+<ul>
+<li>确保你有一个分配到的公网ip，查清楚它的网关和子网掩码，还有本地dns</li>
+<li>检查服务器有几个网卡，到底是哪个网卡的MAC地址绑定了分配给你的公网ip（我们服务器是双网卡，绑定的是<code>enp7s0f0</code>，注意下文换成自己的）</li>
+<li>确保网线插到了对应的网卡接口上</li>
+<li>有一个可以802.1x拨号的上网账号</li>
+</ul>
+
+<h4 id="首先尝试一下用dhcp拨号上网">首先尝试一下用dhcp拨号上网</h4>
+
+<p>服务器版使用了<code>wpasupplicant</code>拨号：</p>
+
+<pre><code class="language-bash">sudo apt-get install wpasupplicant
+</code></pre>
+
+<p>编辑<code>/etc/wpa_supplicant.conf</code>文件:</p>
+
+<pre><code class="language-bash"># Where is the control interface located? This is the default path:
+ctrl_interface=/var/run/wpa_supplicant
+
+# Who can use the WPA frontend? Replace &quot;0&quot; with a group name if you
+# want other users besides root to control it.
+# There should be no need to chance this value for a basic configuration:
+ctrl_interface_group=0
+
+# IEEE 802.1X works with EAPOL version 2, but the version is defaults
+# to 1 because of compatibility problems with a number of wireless
+# access points. So we explicitly set it to version 2:
+eapol_version=2
+
+# When configuring WPA-Supplicant for use on a wired network, we don’t need to
+# scan for wireless access points. See the wpa-supplicant documentation if
+# you are authenticating through 802.1x on a wireless network:
+ap_scan=0
+
+network={
+ ​        key_mgmt=IEEE8021X
+         eap=TTLS MD5
+ ​        identity=&quot;yourUsername&quot;
+         anonymous_identity=&quot;yourUsername&quot;
+ ​        password=&quot;yourPassword&quot;
+ ​        phase1=&quot;auth=MD5&quot;
+ ​        phase2=&quot;auth=PAP password=yourPassword&quot;
+ ​        eapol_flags=0
+}
+</code></pre>
+
+<p>替换成你自己的账号和密码</p>
+
+<p>然后修改<code>/etc/network/interfaces</code>:</p>
+
+<pre><code class="language-bash"># The loopback network interface
+auto lo
+iface lo inet loopback
+
+# The primary network interface
+auto enp7s0f0
+iface enp7s0f0 inet dhcp
+
+wpa-driver wired
+
+wpa-conf /etc/wpa_supplicant.conf
+</code></pre>
+
+<p>保存，重启下网卡：</p>
+
+<pre><code class="language-bash">sudo /etc/init.d/networking restart
+</code></pre>
+
+<p>如果不能重启，提示进程占用的话就先kill wpa进程：</p>
+
+<pre><code class="language-bash">sudo killall -q wpa_supplicant
+</code></pre>
+
+<p>再重启，成功后拨号：</p>
+
+<pre><code class="language-bash">sudo wpa_supplicant -c /etc/wpa_supplicant.conf -B -D wired -i enp7s0f0
+</code></pre>
+
+<p>使用<code>-B</code>后台运行，成功后可以ping一下地址，ifconfig看看有没有分配到ip，没有的话reboot一下，一般是没问题的。</p>
+
+<h4 id="配置静态ip">配置静态ip</h4>
+
+<p>这里只需要修改<code>/etc/network/interfaces</code>中<code>enp7s0f0</code>部分：</p>
+
+<pre><code class="language-bash"># The primary network interface
+auto enp7s0f0
+iface enp7s0f0 inet static
+        address 222.197.176.***
+        netmask 255.255.255.***
+​        network 222.197.176.128
+ ​       broadcast 222.197.176.255
+        gateway 222.197.176.***
+​        # dns-* options are implemented by the resolvconf package, if installed
+        dns-nameservers 202.112.14.***
+</code></pre>
+
+<p>理论上只需要填写<code>address、netmask、gateway、dns</code>即可，我在安装ubuntu server时联网填入了这些，自动计算出了<code>network</code>和<code>broadcast</code>。</p>
+
+<p>重启网卡后再拨号一下，应该就绑定好静态ip并且能上网了，不过建议还是reboot一下。</p>
+
+<p>可以装个<code>openssh-server</code>，用别的机子ssh一下这个ip试试。</p>
+
+<h4 id="后记">后记：</h4>
+
+<ul>
+<li>一定要确认给你的静态ip到底绑定的是哪个网卡的MAC地址，并插好了网线，否则就像我们一样绑定好了ip也上不了公网</li>
+<li>我们学校要求活动中心这边的服务器使用的静态ip，必须用电信给的办公区的上网账号才能拨号，学生宿舍的账号是不行的，给的波段不一样。在配置前一定要去网络中心和电信营业厅问清楚</li>
+<li>后来装回了ubuntu desktop版，发现直接在network设置里的图形化界面配置就行了，哪这么多破事。。。这充分说明了一开始我们搞不定就是用错了网卡</li>
+<li>这篇文章主要为了留给工作室以后的学弟学妹们，以及像我们学校一样，仍在使用802.1x拨号的苦逼创业团队用，随意转载</li>
+</ul>
+
+<p>`</p>
+<div class="navfooter">
+    <table width="100%" summary="Navigation footer">
+        <tbody>
+            <tr>
+                <td width="40%" align="left">&nbsp;</td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right">&nbsp;</td>
+            </tr>
+            <tr>
+                <td width="40%" align="left" valign="top">
+                    <span class="copyright">
+                        Copyright 2014-2018
+                    </span>
+                    &nbsp;
+                </td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right" valign="top">&nbsp;<a href="https://chongg039.cn/">HOME</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+    
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-117991024-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+    <script type="text/javascript" src="https://chongg039.cn/js/function.js"></script>
+    <script type="text/javascript" src="https://chongg039.cn/js/prettify.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</html>
+
