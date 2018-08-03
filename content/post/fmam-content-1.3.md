@@ -1,5 +1,5 @@
 ---
-title: "FMAM - 1.3：PH分布的闭包属性"
+title: "FMAM - 1.3：PH 分布的闭包属性"
 date: 2018-07-20T15:59:56+08:00
 Description: ""
 Tags: [fmam]

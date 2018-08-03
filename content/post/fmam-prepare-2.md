@@ -1,5 +1,5 @@
 ---
-title: "FMAM - 预备内容：指数分布和Erlang分布 - Chapter 1 "
+title: "FMAM - 预备内容：指数分布和 Erlang 分布 - Chapter 1 "
 date: 2018-07-17T17:19:48+08:00
 Description: ""
 Tags: [fmam]

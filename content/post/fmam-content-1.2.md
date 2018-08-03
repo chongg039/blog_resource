@@ -1,5 +1,5 @@
 ---
-title: "FMAM - 1.2：PH分布的定义和基本属性"
+title: "FMAM - 1.2：PH 分布的定义和基本属性"
 date: 2018-07-19T20:11:50+08:00
 Description: ""
 Tags: [fmam]
