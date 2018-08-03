@@ -18,18 +18,18 @@ Categories: []
 #### 练习1.3.2：略
 
 #### 命题1.3.1：
-假定 \\(X _ {1}\\) 具有 PH 表示为 \\((\vec{\alpha},T)\\) 的 PH 分布，\\(X _ {2}\\) 具有 PH 表示为 \\((\vec{\beta},T)\\) 的 PH 分布，且 \\(X _ {1}\\) 与 \\(X _ {2}\\) 相互独立，那么 \\(X=min\\{X _ {1}, X _ {2}\\}\\) 具有 PH 表示为 $$(\vec{\alpha} \otimes \vec{\beta}, T \otimes I + I \otimes S) \tag{1.38}$$ 的 PH 分布。证明略。
+假定 \\(X _ {1}\\) 具有 PH 表示为 \\((\pmb{\alpha},T)\\) 的 PH 分布，\\(X _ {2}\\) 具有 PH 表示为 \\((\pmb{\beta},T)\\) 的 PH 分布，且 \\(X _ {1}\\) 与 \\(X _ {2}\\) 相互独立，那么 \\(X=min\\{X _ {1}, X _ {2}\\}\\) 具有 PH 表示为 $$(\pmb{\alpha} \otimes \pmb{\beta}, T \otimes I + I \otimes S) \tag{1.38}$$ 的 PH 分布。证明略。
 
 #### 练习1.3.3：略
 
 #### 练习1.3.4：略
 
 #### 命题1.3.2：
-假定 \\(X _ {1}\\) 具有 PH 表示为 \\((\vec{\alpha},T)\\) 的 PH 分布，\\(X _ {2}\\) 具有 PH 表示为 \\((\vec{\beta},T)\\) 的PH分布，且 \\(X _ {1}\\) 与 \\(X _ {2}\\) 相互独立，那么 \\(X=X _ {1} + X _ {2}\\) 具有 PH 表示为 
+假定 \\(X _ {1}\\) 具有 PH 表示为 \\((\pmb{\alpha},T)\\) 的 PH 分布，\\(X _ {2}\\) 具有 PH 表示为 \\((\pmb{\beta},T)\\) 的PH分布，且 \\(X _ {1}\\) 与 \\(X _ {2}\\) 相互独立，那么 \\(X=X _ {1} + X _ {2}\\) 具有 PH 表示为 
 $$
 \Biggl(
-(\vec{\alpha}, (1-\vec{\alpha}\vec{e})\vec{\beta}), \biggl(
-\begin{smallmatrix} T & T^0\vec{\beta} \\\ 
+(\pmb{\alpha}, (1-\pmb{\alpha}\pmb{e})\pmb{\beta}), \biggl(
+\begin{smallmatrix} T & T^0\pmb{\beta} \\\ 
 0 & S 
 \end{smallmatrix} 
 \biggl) 
@@ -42,10 +42,10 @@ $$
 #### 练习1.3.6：略
 
 #### 命题1.3.3：
-假定 \\(X _ {1}\\) 具有 PH 表示为 \\((\vec{\alpha},T)\\) 的 PH 分布，\\(X _ {2}\\) 具有 PH 表示为 \\((\vec{\beta},T)\\) 的PH分布，且 \\(X _ {1}\\) 与 \\(X _ {2}\\) 相互独立，那么 \\(X=max\\{X _ {1}, X _ {2}\\}\\) 具有 PH 表示为 
+假定 \\(X _ {1}\\) 具有 PH 表示为 \\((\pmb{\alpha},T)\\) 的 PH 分布，\\(X _ {2}\\) 具有 PH 表示为 \\((\pmb{\beta},T)\\) 的PH分布，且 \\(X _ {1}\\) 与 \\(X _ {2}\\) 相互独立，那么 \\(X=max\\{X _ {1}, X _ {2}\\}\\) 具有 PH 表示为 
 $$
 \Biggl(
-(\vec{\alpha} \otimes \vec{\beta}, (1-\vec{\alpha}\vec{e})\vec{\beta}, (1-\vec{\beta}\vec{e})\vec{\alpha}), 
+(\pmb{\alpha} \otimes \pmb{\beta}, (1-\pmb{\alpha}\pmb{e})\pmb{\beta}, (1-\pmb{\beta}\pmb{e})\pmb{\alpha}), 
 \biggl(
 \begin{smallmatrix} T \otimes I + I \otimes S & T^0 \otimes I & I \otimes S^0 \\\ 0 & S & 0 \\\ 0 & 0 & T \end{smallmatrix} 
 \biggl) 
@@ -58,17 +58,29 @@ $$
 #### 练习1.3.8：略
 
 #### 命题1.3.4：
-假设 N 具有带参数 p 的几何分布 (0 < p < 1)，即 \\(P\\{N=n\\}=p^{n-1}(1-p), n=1, 2, ... \\) 假定 \\(\\{X _ {n}, n=1, 2, ... \\}\\)  服从同一个 PH 表示为 \\((\vec{\alpha}, T)\\) 的 PH 分布，其中 \\(\vec{\alpha}\vec{e}=1$\\)。所有随机变量是相互独立的，那么随机变量 \\(Y=\sum _ {n-1}^{N}X _ {n}\\) 服从 PH 表示为 $$(\vec{\alpha}, T + pT^0\vec{\alpha})$$ 的 PH 分布。证明略。
+假设 N 具有带参数 p 的几何分布 (0 < p < 1)，即 \\(P\\{N=n\\}=p^{n-1}(1-p), n=1, 2, ... \\) 假定 \\(\\{X _ {n}, n=1, 2, ... \\}\\)  服从同一个 PH 表示为 \\((\pmb{\alpha}, T)\\) 的 PH 分布，其中 \\(\pmb{\alpha}\pmb{e}=1$\\)。所有随机变量是相互独立的，那么随机变量 \\(Y=\sum _ {n-1}^{N}X _ {n}\\) 服从 PH 表示为 
+$$
+(\pmb{\alpha}, T + pT^0\pmb{\alpha})
+$$
+的 PH 分布。证明略。
 
 #### 练习1.3.9：略
 
 #### 练习1.3.10：略
 
 #### 引理1.3.1：
-假定 X 具有不可还原的（irreducible 翻译不准确？不可约矩阵？）的 PH 表示为 \\((\vec{\alpha}, T)\\) 的 PH 分布，且 \\(\vec{\alpha}\vec{e}=1\\) ，令 \\(\vec{\theta}\\) 满足 \\(\vec{\theta} Q=0\\) 且 \\(\vec{\theta}\vec{e}=1\\) ，那么有 $$\vec{\theta}=-\vec{\alpha}T^{-1}/E[X]$$ 且有 $$E[X]=1/(\vec{\theta}T^0)$$ 证明略。
+假定 X 具有不可还原的（irreducible 翻译不准确？不可约矩阵？）的 PH 表示为 \\((\pmb{\alpha}, T)\\) 的 PH 分布，且 \\(\pmb{\alpha}\pmb{e}=1\\) ，令 \\(\pmb{\theta}\\) 满足 \\(\pmb{\theta} Q=0\\) 且 \\(\pmb{\theta}\pmb{e}=1\\) ，那么有 
+$$
+\pmb{\theta}=-\pmb{\alpha}T^{-1}/E[X]
+$$
+且有 
+$$
+E[X]=1/(\pmb{\theta}T^0)
+$$
+证明略。
 
 #### 命题1.3.5：
-假定 X 具有不可还原的 PH 表示为 \\((\vec{\alpha}, T)\\) ，且 \\(\vec{\alpha}\vec{e}=1\\) 的 PH 分布，令 \\(\vec{\theta}\\) 满足 \\(\vec{\theta} Q=0\\) 且 \\(\vec{\theta}\vec{e}=1\\) ，那么 \\((\vec{\theta}, T)\\) 是均匀分布 X 的 PH 表示。证明略。
+假定 X 具有不可还原的 PH 表示为 \\((\pmb{\alpha}, T)\\) ，且 \\(\pmb{\alpha}\pmb{e}=1\\) 的 PH 分布，令 \\(\pmb{\theta}\\) 满足 \\(\pmb{\theta} Q=0\\) 且 \\(\pmb{\theta}\pmb{e}=1\\) ，那么 \\((\pmb{\theta}, T)\\) 是均匀分布 X 的 PH 表示。证明略。
 
 #### 练习1.3.11：略
 
