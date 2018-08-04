@@ -15,20 +15,18 @@ $$
 P=
 \biggl(
 	\begin{matrix}
-		T & \pmb{T ^ {0}} \\
+		T & \pmb{T ^ {0}} \\\ 
 		0 & 1	
 	\end{matrix}
 \biggl)
 $$
-吸收到状态 \\(m+1\\) 的时间表示为 \\(X\\) ，我们将其定义为离散时间的 PH 随机变量。给出初始概率向量 \\((\pmb{\alpha}, 1-\pmb(\alpha e})\\) ，很容易得到
+吸收到状态 \\(m+1\\) 的时间表示为 \\(X\\) ，我们将其定义为离散时间的 PH 随机变量。给出初始概率向量 \\((\pmb{\alpha}, 1-\pmb{\alpha e})\\) ，很容易得到
 $$
-P\\{X=n\\}= 
-\left\{
-	\begin{array}{**lr**}
-	1 - \pmb{\alpha e}, \qquad if \quad n=0; \\
-	\pmb{\alpha} T ^ {n-1} \pmb{T ^ 0},\qquad if \quad n=1, 2, ...
-	\end{array}
-\right.
+P\\{X=n\\}=
+\begin{cases}
+	1 - \pmb{\alpha e} & if \quad n=0; \\
+	\pmb{\alpha} T ^ {n-1} \pmb{T ^ 0} & if \quad n=1, 2, ...
+\end{cases}
 $$
 
 #### 练习1.7.1：略
