@@ -1,7 +1,8 @@
 body {
     margin: 0.5in auto;
+    padding: 0 20px;
     max-width: 1260px;
-    background: white;
+    background: #e6e6e6;
     font-family: "Gill Sans MT","Gill Sans","My Gill Sans","Microsoft YaHei",sans-serif;
 }
 table {
@@ -45,10 +46,12 @@ a.active {
     text-decoration: underline;
 }
 ul.dotLeaders {
+    /* max-width: 200em; */
     padding: 0;
     overflow-x: hidden;
-    list-style: none}
-ul.dotLeaders li:before {
+    list-style: none;
+}
+ul.dotLeaders li::before {
     float: left;
     width: 0;
     white-space: nowrap;
@@ -56,11 +59,44 @@ ul.dotLeaders li:before {
  ". . . . . . . . . . . . . . . . . . . . "
  ". . . . . . . . . . . . . . . . . . . . "
  ". . . . . . . . . . . . . . . . . . . . "
- ". . . . . . . . . . . . . . . . . . . . "}
+ ". . . . . . . . . . . . . . . . . . . . "
+ ". . . . . . . . . . . . . . . . . . . . "
+ ". . . . . . . . . . . . . . . . . . . . "
+ ". . . . . . . . . . . . . . . . . . . . "
+ ". . . . . . . . . . . . . . . . . . . . ";
+}
 ul.dotLeaders span:first-child {
     padding-right: 0.33em;
-    background: white}
+    background: white;
+}
 ul.dotLeaders span + span {
     float: right;
     padding-left: 0.33em;
-    background: white}
+    background: white;
+}
+/*
+下面是关于图片的摆放位置：
+![your_img](/img/your_img.png#center)
+![your_img](/img/your_img.png#left)
+![your_img](/img/your_img.png#right) 
+*/
+img[src$='#center']
+{
+    display: block;
+    margin: 0.7rem auto; /* you can replace the vertical '0.7rem' by
+                            whatever floats your boat, but keep the
+                            horizontal 'auto' for this to work */
+    /* whatever else styles you fancy here */
+}
+img[src$='#left']
+{
+    float:left;
+    margin: 0.7rem;      /* this margin is totally up to you */
+    /* whatever else styles you fancy here */
+}
+img[src$='#right']
+{
+    float:right;
+    margin: 0.7rem;      /* this margin is totally up to you */
+    /* whatever else styles you fancy here */
+}

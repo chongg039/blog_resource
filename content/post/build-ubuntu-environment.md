@@ -71,7 +71,7 @@ Tags = ["ubuntu","nodejs"]
 #### 还有一些乱七八糟的东西
 - 护眼，没有防蓝光眼镜的话（有的话尽量也搞一个）装一个`f.lux`，不过这里用的是`redshift`，据说这个要好一点。参考[图灵社区](http://www.ituring.com.cn/article/211486)的一篇文章进行安装
 - 截图，键盘上的Print Screen就很方便，会弹出对话框提醒你保存。放一张网易云音乐的照片
-![cloudNet](https://c1.staticflickr.com/3/2916/33457490061_8ba9ac7803_b.jpg)
+![cloudNet](https://c1.staticflickr.com/3/2916/33457490061_8ba9ac7803_b.jpg#center)
 - 邮件系统，还是用Thunderbird，好用原生而且方便。系统自带不用安装，配置自己找教程（偷个懒）
 - dropbox，这个没装好，有时间再来更新
 

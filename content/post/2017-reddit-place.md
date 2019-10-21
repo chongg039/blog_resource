@@ -14,7 +14,7 @@ title = "从 Reddit 愚人节像素大战说起"
 
 这是活动结束后的最终成果：
 
-![Place](https://c1.staticflickr.com/3/2861/33798313132_d385bd8149_b.jpg)
+![Place](https://c1.staticflickr.com/3/2861/33798313132_d385bd8149_b.jpg#center)
 
 > 这是一个什么样的活动？四月一日当天，Reddit 上线了一个名为 "Place" 的节点，就是一张巨大的空白画布，每个用户每隔一段时间（开始是十分钟）可以在上面用一种颜色点一个点。乍一看一个人并不能完成什么有意义的事情，但 Reddit 本身就是一个靠用户参与和贡献来产生内容的社区，因此这个活动的用户参与度非常高。
 
@@ -22,7 +22,7 @@ title = "从 Reddit 愚人节像素大战说起"
 
 > 这不仅是一个出色的愚人节项目，也是一个伟大的尝试，在这种完全自由，不受管控，只有简单规则的活动里面，人们之间会产生什么样的互动？人们会倾向于创造还是倾向于破坏？会协作还是互相攻击？会不会有令人难以接受的冒犯性图案长期存在，比如三K党或者纳粹之类？ 一切都是未知的，我猜Reddit自己在发布之前对这些问题也只有模糊的判断，没有确定的答案。				
 >
-> ​					——《参与这场线上大战之后，我觉得人类未来还是有希望的》
+> 					——《参与这场线上大战之后，我觉得人类未来还是有希望的》
 
 Place 就像一个大型多人在线的游戏，在保持了开放的同时有一个很大的限制因素：即每个人必需每隔十分钟才能在画布上点一个点。这遍凸显了 Reddit 官方在一开始说的那句话：个人在这里能做到的事情是非常有限的，想要完成某一项比较大的工作，人们就需要联合起来。
 
@@ -42,21 +42,21 @@ Place 就像一个大型多人在线的游戏，在保持了开放的同时有�
 
 **德法之争**：
 
-![Battle og German and French](https://c1.staticflickr.com/3/2832/33810955032_becdda8c55_z.jpg)
+![Battle og German and French](https://c1.staticflickr.com/3/2832/33810955032_becdda8c55_z.jpg#center)
 
 作为三色旗的德国，横向扩展本来就不是一件困难的事，造成的结果就是侵蚀了原本右方的法国国旗。法国人民不得已在德国上方重新画了一面，反过来又向下进攻德国国旗。这像极了二战时期的德法大战。双方在此处争执不下，两方的组织也是各派代表经历了多次谈判才达成一致，最后在争端处形成一面欧盟旗帜，也是让人会心一笑的结果。
 
 **啤酒和香肠**：
 
-![Beer and Sausage](https://c1.staticflickr.com/4/3703/33968974605_6deca3c8d0_z.jpg)
+![Beer and Sausage](https://c1.staticflickr.com/4/3703/33968974605_6deca3c8d0_z.jpg#center)
 
 比利时和德国同样是三色旗，只是组成颜色的顺序不同。这两个国家的组织想出了一个非常好的创意：黑色变成了啤酒，黄色和红色则变成了芥末酱和番茄酱滴落在裹着香肠的热狗上。而这两种食物正是这两个国家的标志，真是令人惊叹的创意。
 
 **艺术品**：
 
-![Goph](https://c1.staticflickr.com/3/2821/33968973925_a57bacba97.jpg)
+![Goph](https://c1.staticflickr.com/3/2821/33968973925_a57bacba97.jpg#center)
 
-![The Mona Lisa](https://c1.staticflickr.com/3/2909/33968975395_efca254988_z.jpg)
+![The Mona Lisa](https://c1.staticflickr.com/3/2909/33968975395_efca254988_z.jpg#center)
 
 两幅世界级艺术作品的像素级重现：梵高的《星夜》和达芬奇的《蒙娜丽莎》。
 
@@ -66,39 +66,39 @@ Place 就像一个大型多人在线的游戏，在保持了开放的同时有�
 
 火影忍者、海贼王、口袋妖怪
 
-![](https://c1.staticflickr.com/3/2921/33125116054_b2cc095ba8_z.jpg)
+![](https://c1.staticflickr.com/3/2921/33125116054_b2cc095ba8_z.jpg#center)
 
 风暴英雄、彩虹猫和今年的NFL大逆转
 
-![](https://c1.staticflickr.com/4/3950/33968974005_1e8072d47c_z.jpg)
+![](https://c1.staticflickr.com/4/3950/33968974005_1e8072d47c_z.jpg#center)
 
 以东方同人和 Vocaloid 的初音未来代表的 ACG 文化
 
-![](https://c1.staticflickr.com/4/3829/33968974075_a9f75bc707.jpg)
+![](https://c1.staticflickr.com/4/3829/33968974075_a9f75bc707.jpg#center)
 
-![](https://c1.staticflickr.com/4/3947/33968973525_267dffee7d_m.jpg)
+![](https://c1.staticflickr.com/4/3947/33968973525_267dffee7d_m.jpg#center)
 
 **还有一些信仰**：
 
 Linux / GNU
 
-![](https://c1.staticflickr.com/3/2853/33968973595_875882dccf.jpg)
+![](https://c1.staticflickr.com/3/2853/33968973595_875882dccf.jpg#center)
 
 Windows 底栏
 
-![](https://c1.staticflickr.com/3/2862/33810955622_d64236d1f8_b.jpg)
+![](https://c1.staticflickr.com/3/2862/33810955622_d64236d1f8_b.jpg#center)
 
 左上角无连接状态
 
-![](https://c1.staticflickr.com/3/2842/33583847790_d7695a2ef3_b.jpg)
+![](https://c1.staticflickr.com/3/2842/33583847790_d7695a2ef3_b.jpg#center)
 
 《星球大战前传3：西斯的复仇》中讲述的”智慧的达斯・普雷格斯的悲剧“
 
-![](https://c1.staticflickr.com/3/2869/33968973825_0262a0983a_z.jpg)
+![](https://c1.staticflickr.com/3/2869/33968973825_0262a0983a_z.jpg#center)
 
 以及玩家众多但到最后都没能保护完整的的 OSU 
 
-![](https://c1.staticflickr.com/3/2928/33968975045_f27f4c15c2_z.jpg)
+![](https://c1.staticflickr.com/3/2928/33968975045_f27f4c15c2_z.jpg#center)
 
 持续 72 小时的活动给人的感觉还是非常震撼的。在这个过程中，人们从最开始的个体性，逐渐开始使用各种沟通工具，形成一些有目的的组织来完成更大的目标。组织里的人们选举出了他们的领导和外交官，以此来保持对外话语权。游戏中，有一些人是创造者和建设者，有一些人则专管破坏，还有一些人则组成了”修理工“组织来防止无意义的破坏行为。有的人有技术，写了一些脚本追踪总是在破坏的人的 ID。有的人则搭建了第三方的镜像站，保存下来了整个活动变化过程中的所有图片......
 

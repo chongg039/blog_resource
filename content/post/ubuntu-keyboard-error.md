@@ -42,7 +42,7 @@ XKBOPTIONS=""
 使得保存的配置生效。
 这样一般就成功了，若是还不行，有可能是fcitx输入法的问题。
 打开 Fcitx Configuration，可以在search里找到
-![](https://c1.staticflickr.com/4/3766/33457473611_5ab96b6472_b.jpg)
+![](https://c1.staticflickr.com/4/3766/33457473611_5ab96b6472_b.jpg#center)
 像我上面选择的键盘语言是
 >XKBLAYOUT="us" //修改语言类型：us,uk,cn...
 
@@ -50,7 +50,7 @@ XKBOPTIONS=""
 
 到这里就可以解决大部分问题了，至少我这里键盘输入还没有回弹到那种奇葩的状况。
 那就必须秀一波@@@@@@@########""""""""""啊哈哈！
-![](https://c1.staticflickr.com/4/3666/33457496511_69a2c3bdae_z.jpg)
+![](https://c1.staticflickr.com/4/3666/33457496511_69a2c3bdae_z.jpg#center)
 ---
 #### 参考文档
  - [ubuntu14.04键盘错位小问题](http://www.linuxdiyf.com/linux/16832.html) 

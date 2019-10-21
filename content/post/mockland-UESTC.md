@@ -22,21 +22,21 @@ Tags = ["nodejs","crawler"]
 
 为了完成模拟登陆这一目的，先尝试获取登录主界面`http://portal.uestc.edu.cn/`的内容。分析一波登陆过程中的 HTTP 行为：
 
-![HTTPAnalysis](https://c1.staticflickr.com/1/664/33546049616_08658fcd69_b.jpg)
+![HTTPAnalysis](https://c1.staticflickr.com/1/664/33546049616_08658fcd69_b.jpg#center)
 
 可以发现在正文`portal.uestc.edu.cn/`前有两个页面，分别打开看一看：
 
 `login?service=http%3A%2F%2Fportal.uestc.edu.cn%2F`页面：
 
-![](https://c1.staticflickr.com/4/3816/32743728994_a16798c664_b.jpg)
+![](https://c1.staticflickr.com/4/3816/32743728994_a16798c664_b.jpg#center)
 
 `?ticket=ST-199833-BbDvk6q57cmNFtJkBJNL1481032281383-zATy-cas`页面：
 
-![](https://c1.staticflickr.com/4/3671/32743729674_a3846b6f00_b.jpg)
+![](https://c1.staticflickr.com/4/3671/32743729674_a3846b6f00_b.jpg#center)
 
 最终页面：
 
-![](https://c1.staticflickr.com/4/3752/32743728154_d255046c53_b.jpg)
+![](https://c1.staticflickr.com/4/3752/32743728154_d255046c53_b.jpg#center)
 
 理论上是获取到最终页面的`JSESSIONID`，这是服务器用来唯一标识用户信息的`session`。带着这个 cookie 去访问其他相关页面，就能获取到对应数据。
 
