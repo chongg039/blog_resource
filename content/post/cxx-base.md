@@ -47,3 +47,21 @@ int size3 = GetSize(data); // 4
 ## sizeof使用与陷阱
 
 https://www.cnblogs.com/chio/archive/2007/06/11/778934.html
+
+## 左值和右值
+
+### c++中的变化
+
+https://www.cnblogs.com/catch/p/3500678.html
+
+### 右值引用和std::move
+
+https://blog.csdn.net/luotuo44/article/details/46779063
+
+http://shaoyuan1943.github.io/2016/03/26/explain-move-forward/
+
+### 右值引用减少对象拷贝
+
+https://www.jianshu.com/p/da704a9c3969
+
+https://www.cnblogs.com/qingergege/p/7607089.html

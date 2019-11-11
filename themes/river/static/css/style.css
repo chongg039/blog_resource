@@ -3,7 +3,9 @@ body {
     padding: 0 20px;
     max-width: 1260px;
     background: white;
-    font-family: "Gill Sans MT","Gill Sans","My Gill Sans","Microsoft YaHei",sans-serif;
+    font-size: 1.2rem;
+    line-height: 1.6;
+    font-family: "PT Sans", Helvetica, Arial, STFangSong, Vernada, Tahoma, STXihei, "Microsoft YaHei", "Songti SC", SimSun, Heiti, sans-serif;
 }
 table {
     display: table;
