@@ -31,7 +31,7 @@ Categories: [Competition]
 ```
 以2017年区县id为16的地区为例：
 
-![2017年county16的某些天气特征](https://live.staticflickr.com/65535/48793272876_f8194965a1_z.jpg)
+![2017年county16的某些天气特征](https://live.staticflickr.com/65535/48793272876_f8194965a1_z.jpg#center)
 
 可以得出：
 
