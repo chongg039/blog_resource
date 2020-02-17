@@ -13,7 +13,7 @@ Categories: [cxx]
 
 假设编写一个类的带参数的构造函数（注意，不是默认构造，也不是拷贝构造和移动构造）：
 
-![8uwxWG](https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/8uwxWG.png)
+![8uwxWG](https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/8uwxWG.png#center)
 
 我有这种想法：因为我这个函数既要支持左值实参，也要支持右值实参，所以要对这个构造函数进行重载。但Clang-Tidy会给出这样一条建议：
 
@@ -34,13 +34,13 @@ explicit Obj(std::string s) : s_(std::move(s))
 
 所以这条建议也只是将第一个构造函数替换掉了，第二个还是保留。我现在构造一个临时对象理论上会调用第二个构造函数，但实际上不是这样：
 
-![0uXIVv](https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/0uXIVv.png)
+![0uXIVv](https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/0uXIVv.png#center)
 
 编译器显示调用的构造函数有歧义，这是什么情况！也就是说我给构造函数传入了一个右值引用，第一个使用了移动语义的构造函数也能被调用。行吧，编译器蒙了，我也蒙了。
 
 那大不了我把第二个去掉好吧，去掉之后：
 
-![W4QqsO](https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/W4QqsO.png)
+![W4QqsO](https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/W4QqsO.png#center)
 
 竟然一切正常！那这就证明了两点：
 
@@ -55,7 +55,7 @@ explicit Obj(std::string s) : s_(std::move(s))
 
 而且上一篇文章中有个观点是有一些问题的（现已更正）：将亡值是一个纯右值，这是我理解有误。事实上从吴老师画的一张图可以看出：
 
-![yJsgll](https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/yJsgll.jpg)
+![yJsgll](https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/yJsgll.jpg#center)
 
 首先对吴老师的这张图片表示感谢。从图上来看，一个将亡值（xvalue）即是一个右值（rvalue），也是一个广义左值（glvalue），而非是一个纯右值（prvalue）。那么纯右值和将亡值到底有什么区别呢？
 
@@ -95,8 +95,6 @@ void test(Obj &&a)
 
 ### const的重要性
 
-Clang-Tidy: Std::move of the variable 'sub_sentence_position' of the trivially-copyable type 'SentencePosition' has no effect; remove std::move()
-
 在Effective C++一开始的条款3中，就说明了能用const修饰就尽可能使用，并列句了一些方便之处，包括对返回值的修饰和类成员函数的修饰等。但是在这里，我还是想从左值、右值形参的角度谈一谈，有没有const修饰会有什么区别。
 
 首先看移动构造函数，因为要修改原来对象中的资源管理权，所以形参不能为const，且需要为右值引用：
@@ -129,7 +127,7 @@ class Obj
 
 之前说过，若同时声明了移动构造和拷贝构造，对一个左值进行std::move后当做参数会理所当然调用移动构造。假设不声明移动构造，而保留使用std::move，看看Clang-Tidy会提示什么：
 
-![0poXYM](https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/0poXYM.png)
+![0poXYM](https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/0poXYM.png#center)
 
 用通俗的意思说，将一个左值进行移动语义转换后，作为形参为const引用（左值引用）的实参进行传递，实际上并不会发生移动语义。编译器建议取消移动语义的使用。
 
@@ -137,7 +135,7 @@ class Obj
 
 Clang-Tidy提示这个似乎是const带来的特殊效果。为了严谨，我们把拷贝构造函数的const修饰去掉（尽管我认为此时他已经不是一个拷贝构造了），看看会出现什么：
 
-![VyNuUE](https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/VyNuUE.png)
+![VyNuUE](https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/VyNuUE.png#center)
 
 这里我删除了其他所有的拷贝构造和移动构造，编译器会认为没有找到对应的构造函数，印证了上面我们的想法。这说明一个问题：在现代C++编译器面前，如果只声明一个拷贝构造函数（带const），仍然可以接受一个右值引用（尽管形参是左值引用）。
 
@@ -196,7 +194,7 @@ int main()
 
 我们再把inner的地址和c的地址打印一下看看：
 
-![DB0Pj1](https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/DB0Pj1.png)
+![DB0Pj1](https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/DB0Pj1.png#center)
 
 可以看出，inner和c压根就是栈上的同一个东西，说明编译器根本就没有调用我们自定义的移动构造函数。
 
@@ -208,7 +206,7 @@ set(CMAKE_CXX_FLAGS "-fno-elide-constructors ${CMAKE_CXX_FLAGS}")
 
 关掉后再来看看结果：
 
-![f9l8aY](https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/f9l8aY.png)
+![f9l8aY](https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/f9l8aY.png#center)
 
 可以看到，inner和c的地址变量已经不同了，而且也正确调用了移动构造函数，印证了我们上面的猜想。但为什么会调用两次呢？
 
@@ -221,7 +219,7 @@ Effective C++上提到，永远不要返回一个函数内部的对象的引用�
 
 这就是为什么上面会看到出现两次移动构造调用的情况。结合前文提到的，若不声明移动构造，一个标准的（带const）的拷贝构造也可用于接受一个右值引用的实参，那么`Obj c(out());`理应会出现调用两次拷贝构造的情况，我们来看一下：
 
-![lEGmjA](https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/lEGmjA.png)
+![lEGmjA](https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/lEGmjA.png#center)
 
 成功了！看来前文的大部分猜想都可以得到印证。
 
@@ -278,7 +276,7 @@ int main()
 
 对吗，哈哈，肯定是不对的，b2也会调用一次拷贝构造，看看编译器的提示结果就能知道：
 
-![1PO9Dn](https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/1PO9Dn.png)
+![1PO9Dn](https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/1PO9Dn.png#center)
 
 很显然，上面我说的这句话里面埋了一个坑：**在B的对应的单参构造函数的初始化列表中理应是调用的A的移动构造函数**。如果你觉得这句话没问题就想当然了（敲黑板），再看一看B的这个单参构造函数：
 
@@ -291,11 +289,11 @@ explicit B(const A &rhs) : a_(rhs)
 
 那么按照Clang-Tidy的提示，这种“一般的带参数的”构造函数，建议使用“传值+移动语义”的方式来构造，会有什么效果呢：
 
-![xw3gRQ](https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/xw3gRQ.png)
+![xw3gRQ](https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/xw3gRQ.png#center)
 
 显而易见的是，这时候形参仍可以接受左值或右值的实参，但已经支持了移动，这时候b2输出的应该就是A的移动构造调用了：
 
-![image-20200217155624679](/Users/gc/Library/Application Support/typora-user-images/image-20200217155624679.png)
+![image-20200217155624679](/Users/gc/Library/Application Support/typora-user-images/image-20200217155624679.png#center)
 
 我们来分析下这个结果：
 
