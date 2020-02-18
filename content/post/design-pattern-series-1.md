@@ -2,10 +2,12 @@
 title: "[设计模式系列]单例模式"
 date: 2020-02-17T17:01:20+08:00
 Description: ""
-Tags: []
-Categories: []
+Tags: [DesignPattern]
+Categories: [C++]
 
 ---
+
+![YIN4xUBaqnk](https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/YIN4xUBaqnk.jpg#center)
 
 开一个新坑，记录一下设计模式的学习和使用经过。因为最近在写一个项目，首先接触到的和思考的就是单例模式，就从这里写起吧。
 
@@ -326,6 +328,54 @@ LazySingletonLocalStatic::~LazySingletonLocalStatic()
 
 ### 线程安全问题
 
+首先我要强调，我下面所说的线程安全仅仅在语言层面，并不涉及指令层面。事实上，真正的线程安全不是语言层面上能做到的，而是编译器规定了一套完整的线程安全的指令执行流程。Effective C++的作者Scott Meyers曾写过一篇文章详细的论述单例模式中的线程安全的实现、开发者在在语言层面做的一些尝试为什么不会改变编译器的优化行为、以及旧式的不支持线程安全的编译器在指令执行顺序上会带来的风险，建议朋友们阅读一下，附上[链接](https://www.aristeia.com/Papers/DDJ_Jul_Aug_2004_revised.pdf)。
+
 先看饿汉版的单例，在main函数执行前初始化，所以一定是线程安全的。
 
-再来看懒汉版本，先看那个使用静态局部变量的优雅实现
+再来看懒汉版本，先看普通版本的单例实现。为了防止两个线程同时竞争资源的初始化（虽然产生两个对象没有什么错误，但已经符合单例模式的要求），我们首先想到的就是利用同步的方式加锁。当然，这个锁在超出作用域后会自动调用析构函数：
+
+```c++
+LazySingleton *LazySingleton::GetInstance()
+{
+    Lock lock;
+    if (instance == nullptr) {
+        instance = new LazySingleton();
+    }
+    return instance;
+}
+```
+
+同步锁有个什么问题呢，就是在线程中的代价太高，每次调用GetInstance都会产生一次Lock的构造和析构。但你回想一下就能发现，我们只需要在第一次实例化的时候调用锁，若对象已存在，并不需要这些额外的开销。想象一下若有n次实例调用，其中有n-1次都是不必要的Lock的构造和析构。性能瓶颈就是从这些地方产生的。
+
+有了这些，就理应能想到所谓的双检测锁模式（Double-Checked Locking Pattern, DCLP）来避免这种情况。方法很简单，在加锁前检测一下实例对象是否存在即可：
+
+```c++
+LazySingleton *LazySingleton::GetInstance()
+{
+    if (instance == nullptr) {
+        Lock lock;
+        if (instance == nullptr) {
+            instance = new LazySingleton();
+        }
+    }
+    return instance;
+}
+```
+
+巧妙的实现方式。注意实际上在语言层面上实现了“线程安全”，并不代表是真正的线程安全。好在C++11已经在编译器层面保证了我们同步指令正确的顺序，使用DCLP的方式可以达到真正线程安全。
+
+更让人兴奋的是，C++11规定了局部静态变量在多线程条件下的初始化行为，要求编译器需保证局部静态变量的安全性。也就是说，使用我们上面的优雅版本的饿汉版单例（也可称其为Meyers单例模式），不需要添加同步锁，已经可以达到线程安全：
+
+```c++
+LazySingletonLocalStatic &LazySingletonLocalStatic::GetInstance()
+{
+    static LazySingletonLocalStatic instance;
+    return instance;
+}
+```
+
+注意这是在C++11之后，C++11之前还是需要使用DCLP的方式。这里我就不写例子测试了，有兴趣的朋友可以自己测试一下。
+
+### 结语
+
+单例模式是最常见的设计模式之一，本人才疏学浅，下笔难免有不足甚至错误之处。希望可以共同交流学习，共同进步。
