@@ -1,12 +1,23 @@
-{{ $pag := $.Paginator }}
-  {{ if gt $pag.TotalPages }}
+{{ $pag := .Paginator }}
+  {{ if gt $pag.TotalPages 1}}
   <table width="100%">
       <tbody>
         <tr class="pagination">
-            <td width="30%" align="left" class="previous {{ if not $pag.HasPrev }}disabled{{ end }}"><a href="{{ if $pag.HasPrev }}{{ $pag.Prev.URL }}{{ end }}" aria-label="Previous"><span aria-hidden="true">Newer Posts</span></a></li>
-            <td width="40%" align="center" class="active"><a href="{{ $pag.URL }}">{{ $pag.PageNumber }}</a></li>
-            <td width="30%" align="right "class="next {{ if not $pag.HasNext }}disabled{{ end }}" aria-label="Next"><a href="{{ if $pag.HasNext }}{{ $pag.Next.URL }}{{ end }}"><span aria-hidden="true">Older Posts</span></a></li>
+            <td width="30%" align="left" class="previous {{ if not $pag.HasPrev }}disabled{{ end }}">
+              <a href="{{ if $pag.HasPrev }}{{ $pag.Prev.URL }}{{ end }}" aria-label="Previous">
+                <span aria-hidden="true">Newer Posts</span>
+              </a>
+            </td>
+            <td width="40%" align="center" class="active">
+              <a href="{{ $pag.URL }}">{{ $pag.PageNumber }}</a>
+            </td>
+            <td width="30%" align="right "class="next {{ if not $pag.HasNext }}disabled{{ end }}" aria-label="Next">
+              <a href="{{ if $pag.HasNext }}{{ $pag.Next.URL }}{{ end }}">
+                <span aria-hidden="true">Older Posts</span>
+              </a>
+            </td>
         </tr>
       </tbody>
   </table>
   {{ end }}
+

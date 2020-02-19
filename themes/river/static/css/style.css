@@ -76,6 +76,12 @@ ul.dotLeaders span + span {
     padding-left: 0.33em;
     background: white;
 }
+img{
+	width: auto;
+	height: auto;
+	max-width: 100%;
+	max-height: 100%;	
+}
 /*
 下面是关于图片的摆放位置：
 ![your_img](/img/your_img.png#center)

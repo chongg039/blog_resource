@@ -1,15 +1,14 @@
 {{ partial "header.html" . }}
-
-    <!-- <h1>Co1driver 的个人博客</h1> -->
     <br />
     <h3>文章</h3>
-    {{ $paginator := .Paginate (where .Pages "Type" "post") }}
+    {{ $paginator := .Paginate (where .Site.RegularPages "Type" "post") }}
     {{ range $paginator.Pages }}
-        {{ range (.Paginator 10).Pages }}
-            <ul class="dotLeaders">
-                <li><span><a href="{{ .Permalink }}">{{ .Title }}</a></span><span>{{ .Date.Format "Mon, Jan 2, 2006" }}</span>
-            </ul>
-        {{ end }}
+        <ul class="dotLeaders">
+            <li>
+                <span><a href="{{ .Permalink }}">{{ .Title }}</a></span>
+                <span>{{ .Date.Format "Mon, Jan 2, 2006" }}</span>
+            </li>
+        </ul>
     {{ end }}
     <br />
     {{ partial "pagination.html" . }}

@@ -3,7 +3,7 @@ languageCode = "en"
 title = "Co1driver 的个人博客"
 theme = "river"
 
-Paginate = 12
+paginate = 10
 
 enableRobotsTXT = true
 
