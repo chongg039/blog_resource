@@ -1,9 +1,9 @@
 ---
-title: "[CXX学习笔记]基础知识"
+title: "[基础知识]C++基础知识汇总"
 date: 2019-10-20T15:51:31+08:00
 Description: ""
-Tags: []
-Categories: []
+Tags: [C++, Knowledge]
+Categories: [C++]
 
 ---
 

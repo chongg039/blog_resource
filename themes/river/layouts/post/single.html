@@ -2,5 +2,6 @@
     <h1>{{ .Title }}</h1>
     <h4>{{ .Date.Format "Mon, Jan 2, 2006" }}</h4>
     {{ .Content }}
-    {{ template "_internal/disqus.html" . }}
+    <!-- {{ template "_internal/disqus.html" . }} -->
+    {{ template "partials/gitalk.html" . }}
 {{ partial "footer.html" . }}

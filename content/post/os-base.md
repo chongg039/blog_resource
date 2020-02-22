@@ -1,8 +1,8 @@
 ---
-title: "操作系统常用知识"
+title: "[基础知识]操作系统"
 date: 2020-02-20T20:32:11+08:00
 Description: ""
-Tags: [OS]
+Tags: [OS, Knowledge]
 Categories: [C++]
 
 ---
