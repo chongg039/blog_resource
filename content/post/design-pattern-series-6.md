@@ -218,7 +218,7 @@ int main()
 
 ![oPcmCP](https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/oPcmCP.jpg#center)
 
-实际上代理模式的想法很简单，Proxy中存放了RealSubject的引用或指针来完成对其实例的访问。同时Proxy继承Subject，提供了一个相同的借口，这样就可以完整RealSubject接口提供的任务。
+实际上代理模式的想法很简单，Proxy中存放了RealSubject的引用或指针来完成对其实例的访问。同时Proxy继承Subject，提供了一个相同的接口，这样就可以完整RealSubject接口提供的任务。
 
 ```c++
 class Subject
