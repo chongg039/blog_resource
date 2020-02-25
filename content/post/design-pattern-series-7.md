@@ -2,8 +2,8 @@
 title: "[设计模式系列]职责链模式与策略模式"
 date: 2020-02-24T17:12:56+08:00
 Description: ""
-Tags: []
-Categories: []
+Tags: [DesignPattern]
+Categories: [C++]
 
 ---
 
