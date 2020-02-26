@@ -444,5 +444,28 @@ std::shared_ptr可以使用std::unique_ptr构造，但对一个左值需要使�
 
 这部分内容可以参考这篇[文章](http://senlinzhan.github.io/2015/04/24/%E6%B7%B1%E5%85%A5shared-ptr/)。
 
+### 子类以私有继承的方式继承父类
+
+一个典型的例子就是noncopyable可以以私有继承的方式继承，有以下原因：
+
+```
+若父类没有virtual析构，那么就不应将其派生类视为一个“is-a”的public继承，反而应该视为private的实现继承。
+```
+
+但是可能存在的问题就是对一个private继承：
+
+1. 父类的私有的成员变量和函数子类无法访问;
+2. 父类的公有的以及保护的成员变量都变成了子类的私有成员变量和函数。
+
+那理论上派生类是不能再去调用父类的构造函数了，也就是派生类不能构造。但实际上却是可以的，Effective C++中提到：
+
+```
+在子类对象(derived class)对象的base class构造期间,该子类对象的类型是父类(base calss),而不是子类(derived class).在子类对象析构的时候这一条也成立.
+```
+
+因此绝不在构造和析构过程中调用virtual函数。建议阅读[链接](https://www.zybuluo.com/lishuhuakai/note/556513)。
+
+
+
 
 

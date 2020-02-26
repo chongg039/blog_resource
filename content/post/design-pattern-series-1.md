@@ -376,6 +376,8 @@ LazySingletonLocalStatic &LazySingletonLocalStatic::GetInstance()
 
 注意这是在C++11之后，C++11之前还是需要使用DCLP的方式。这里我就不写例子测试了，有兴趣的朋友可以自己测试一下。
 
+muduo中的模板单例使用了pthread_once保证了多线程环境下只执行一次，并在初始化时调用了atexit注册了一个回收内存的方法，具体的案例可以看这个[链接](https://blog.csdn.net/FreeeLinux/article/details/53428867)和这个[链接](https://github.com/lyjdamzwf/chaos/blob/dev/chaos/utility/singleton.h)。
+
 ### 结语
 
 单例模式是最常见的设计模式之一，本人才疏学浅，下笔难免有不足甚至错误之处。希望可以共同交流学习，共同进步。
