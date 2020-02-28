@@ -15,7 +15,7 @@ Categories: [C++]
 
 STL里面的迭代器就是这个。迭代器模式主要就是为了解决对一个聚合对象的遍历问题，将遍历行为封装到一个类型中，避免了过度暴露聚合类内部表示。
 
-来看下Wikipedia上的UNL图：
+来看下Wikipedia上的UML图：
 
 ![3cML0j](https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/3cML0j.jpg#center)
 

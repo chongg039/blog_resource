@@ -2,8 +2,8 @@
 title: "[设计模式系列]享元模式、外观模式与代理模式"
 date: 2020-02-23T09:30:35+08:00
 Description: ""
-Tags: []
-Categories: []
+Tags: [DesignPattern]
+Categories: [C++]
 
 ---
 
