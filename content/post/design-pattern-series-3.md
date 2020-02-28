@@ -1,5 +1,5 @@
 ---
-title: "[设计模式系列]建造者模式和原型模式"
+title: "[设计模式系列]建造者模式与原型模式"
 date: 2020-02-20T10:32:08+08:00
 Description: ""
 Tags: [DesignPattern]

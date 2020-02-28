@@ -1,5 +1,5 @@
 ---
-title: "[设计模式系列]备忘录模式、中介者模式"
+title: "[设计模式系列]备忘录模式与中介者模式"
 date: 2020-02-26T19:44:52+08:00
 Description: ""
 Tags: [DesignPattern]
