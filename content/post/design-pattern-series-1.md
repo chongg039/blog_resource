@@ -288,7 +288,7 @@ EagerSingleton::~EagerSingleton()
 Effective C++的Item04中提到了一种更优雅的实现方案，相信看完上面的分析你也能想到。既然静态变量这么方便，非局部的静态变量初始化顺序又不固定，那我使用局部静态变量保存这个实例，不是一种更优雅的解决方案了吗：
 
 ```c++
-// 使用静态局部变量的优雅饿汉版单例
+// 使用静态局部变量的优雅懒汉版单例
 class LazySingletonLocalStatic
 {
 public:
