@@ -436,6 +436,8 @@ const Op operator++(int)
 
 ### 智能指针
 
+智能指针一个很大的作用是，被建议用来管理第三方库提供的原始指针，不需要自己再去封装一次。
+
 普通指针可以构造成智能指针，但不能直接赋值。
 
 std::shared_ptr可以使用std::unique_ptr构造，但对一个左值需要使用移动语义，std::unique_ptr本身禁止拷贝。
@@ -445,6 +447,72 @@ std::shared_ptr可以使用std::unique_ptr构造，但对一个左值需要使�
 针对循环引用的问题，C++11引入的weak_ptr指针可以使计数区域的生命周期受weak_ptr控制，从而能使weak_ptr获取被管理资源的shared计数，从而判断被管理对象是否已被释放。（可以实时动态地知道指向的对象是否被释放,从而有效解决空悬指针问题）。weak_ptr一般配合shared_ptr使用，不会占用引用计数。它的成员函数expired()就是判断指向的对象是否存活。std::weak_ptr需要从一个std::shared_ptr构造。
 
 这部分内容可以参考这篇[文章](http://senlinzhan.github.io/2015/04/24/%E6%B7%B1%E5%85%A5shared-ptr/)。
+
+对于动态数组，需要手动构造删除器，也可以用std::default_delete作为删除器：
+
+```c++
+shared_ptr<string> ptr1( new string[10], 
+                         []( string *p ) {
+                             delete[] p;
+                         });
+shared_ptr<string> ptr2( new string[10],
+                         std::default_delete<string[]>() );
+
+```
+
+但是并不会提供[]运算符，所以没什么意义。这种需求建议使用`shared_ptr<vector>`或`shared_ptr<array>`。
+
+对于某些情况下使用计数完毕后不需要删除资源的情况，也可以用这个方式显示指定删除器。
+
+同时，不能用一个原始指针构造多个shared_ptr，否则对象在析构时会被delete两次。注意，`this`也是raw pointer，很容易会写出这种代码：
+
+```c++
+class Student
+{
+public:
+    Student( const string &name ) : name_( name ) { }
+    void addToGroup( vector<shared_ptr<Student>> &group ) {
+        group.push_back( shared_ptr<Student>(this) );          // ERROR
+    }
+private:
+    string name_;
+};
+```
+
+每次调用addToGroup()时都会创建一个控制块，所以这个对象会对应多个引用计数，最终这个对象就会被delete多次，导致运行出错。解决这个问题很简单，只要让`std::enable_shared_from_this<Student>`作为Student的基类：
+
+```c++
+class Student : public std::enable_shared_from_this<Student>
+{
+public:
+    Student( const string &name ) : name_( name ) { }
+    void addToGroup( vector<shared_ptr<Student>> &group ) {
+        group.push_back( shared_from_this() );              // OK
+    }
+private:
+    string name_;
+};
+```
+
+unique_ptr缺少一个类似于make_shared的make_unique方法，不过在c++14中会增加make_unique方法。
+
+std::unique_ptr指定删除器的时候需要确定删除器的类型，所以不能直接像shared_ptr指定删除器，可以这样写：
+
+```c++
+std::unique_ptr<int, void(*)(int*)> ptr(new int(1), [](int*p){delete p;});
+```
+
+上面这种写法在lambda没有捕获变量的情况下是正确的，如果捕获了变量则会编译报错：
+
+```c++
+std::unique_ptr<int, void(*)(int*)> ptr(new int(1), [&](int*p){delete p;}); //错误，因为捕获了变量
+```
+
+为什么lambda捕获了变量作为unique_ptr就会报错呢，因为lambda在没有捕获变量的情况下是可以直接转换为函数指针的，捕获了就不能转换为函数指针。如果希望unique_ptr的删除器支持lambda，可以这样写：
+
+```c++
+std::unique_ptr<int, std::function<void(int*)>> ptr(new int(1), [&](int*p){delete p;});
+```
 
 ### 子类以私有继承的方式继承父类
 
@@ -609,3 +677,95 @@ inline是编译期决定，他意味着在执行前就将调用动作替换为�
 对std::vector任何操作，一旦引起空间重新配置，指向原有vector的迭代器就都失效了。因为动态增加大小并不是在原空间后面接续新空间，而是以原大小两倍另外配置一块，再将原内容拷贝过来，并释放原空间。如果一边遍历一边插入可能就会产生这个问题，但是一边遍历一边删除则不会，只是需要将erase返回的迭代器作为原迭代器的下一步前进。即earase只会造成指向被删除元素的那个迭代器失效。
 
 对于std::list不存在这个问题，因为存储空间不需要是连续空间，所以插入和接合操作都不会造成原有迭代器的失效，每次插入或者删除一个元素，就配置或是放一个元素空间，非常精准。
+
+### 加减指针
+
+两个指针相减，若都指向同一个数组，则可以表示这个区间中元素的个数，代表的是距离。但两个指针相加是没有意义的，也是被禁止的。指针中存放的是偏移量，况且两个地址相加减得到的也不是相对首地址的偏移。更不必说`int *`和`char *`这样大小不同的指针作加减了。
+
+一般来说，我们希望在一个指针上加一个指针，好似是让该指针前进一样，但是这是一种思维误区，前进或后退指针需要的是加减一个整数。看下面的解释。
+
+Pointer addition is forbidden in C++, you can only subtract two pointers.
+
+The reason for this is that subtracting two pointers gives a logically explainable result - the offset in memory between two pointers. Similarly, you can subtract or add an integral number to/from a pointer, which means "move the pointer up or down". Adding a pointer to a pointer is something which is hard to explain. What would the resulting pointner represent?
+
+If by any chance you explicitly need a pointer to a place in memory whose address is the sum of some other two addresses, you can cast the two pointers to int, add ints, and cast back to a pointer. Remember though, that this solution needs huge care about the pointer arithmetic and is something you really should never do.
+
+### 子类调用父类的同名函数：
+
+1. 子类和父类返回值参数相同，函数名相同，有virtual关键字，则由对象的类型决定调用哪个函数。
+2. 子类和父类只要函数名相同，没有virtual关键字，则子类的对象没有办法调用到父类的同名函数,父类的同名函数被隐藏了，也可以强制调用父类的同名函数class::funtion_name或者如果在子类的定义中，使用using即可将子类的同名函数暴露，然后可直接调用。
+3. 子类和父类参数不同，函数名相同，有virtual关键字，则不存在多态性，子类的对象没有办法调用到父类的同名函数,父类的同名函数被隐藏了，也可以强制调用父类的同名函数class::funtion_name。
+4. 子类和父类返回值不同，参数相同，函数名相同，有virtual关键字，则编译出错error C2555编译器不允许函数名参数相同返回值不同的函数重载。
+
+### inline 内联函数
+
+1. 相当于把内联函数里面的内容写在调用内联函数处；
+2. 相当于不用执行进入函数的步骤，直接执行函数体；
+3. 相当于宏，却比宏多了类型检查，真正具有函数特性；
+4. 编译器一般不内联包含循环、递归、switch 等**复杂**操作的内联函数；
+5. 在类声明中定义的函数，除了虚函数的其他函数都会自动隐式地当成内联函数。虚函数不是不能内联，而是表现多态性的时候不能，因为内联是编译期，多态是运行期。
+6. inline指令就象register，它只是对编译器的一种提示，而不是命令。也就是说，只要编译器愿意，它就可以随意地忽略掉你的指令，事实上编译器常常会这么做。
+
+#### 优点
+
+1. 内联函数同宏函数一样将在被调用处进行代码展开，省去了参数压栈、栈帧开辟与回收，结果返回等，从而提高程序运行速度。
+2. 内联函数相比宏函数来说，在代码展开时，会做安全检查或自动类型转换（同普通函数），而宏定义则不会。
+3. 在类中声明同时定义的成员函数，自动转化为内联函数，因此内联函数可以访问类的成员变量，宏定义则不能。
+4. 内联函数在运行时可调试，而宏定义不可以。
+
+#### 缺点
+
+1. 代码膨胀。内联是以代码膨胀（复制）为代价，消除函数调用带来的开销。如果执行函数体内代码的时间，相比于函数调用的开销较大，那么效率的收获会很少。另一方面，每一处内联函数的调用都要复制代码，将使程序的总代码量增大，消耗更多的内存空间。
+2. inline 函数无法随着函数库升级而升级。inline函数的改变需要重新编译，不像 non-inline 可以直接链接。
+3. 是否内联，程序员不可控。内联函数只是对编译器的建议，是否对函数内联，决定权在于编译器。
+
+### 空类默认的6个函数
+
+默认构造、默认析构、拷贝构造、拷贝赋值运算符、取地址运算符、取地址运算符的const版本。
+
+```c++
+class Empty
+{};
+// 等价于
+class Empty
+{
+  public:
+    Empty();                            //缺省构造函数
+    Empty(const Empty &rhs);            //拷贝构造函数
+    ~Empty();                           //析构函数 
+    Empty& operator=(const Empty &rhs); //赋值运算符
+    Empty* operator&();                 //取址运算符
+    const Empty* operator&() const;     //取址运算符(const版本)
+};
+```
+
+### this指针存放
+
+计算对象大小的时候不带有this指针，那他存放在哪里？
+
+**当一个对象调用某成员函数时会隐式传入一个参数， 这个参数就是this指针。this指针中存放的就是这个对象的首地址。**这和C中通过向函数传递结构体变量的地址是不是很像？！只是传参形式不一样罢了！ 在C中我们是手工把结构体变量和函数关联起来的，而C++则是编译器帮我们把类数据和成员函数关联起来的并通过名称粉碎和编译时检查等形式防止外部的任意访问。
+
+那么这个this指针存放在哪里呢？其实编译器在生成程序时加入了获取对象首地址的相关代码。并把获取的首地址存放在了寄存器ECX中(VC++编译器是放在ECX中，其它编译器有可能不同)。
+
+也就是成员函数的其它参数正常都是存放在栈中。而this指针参数则是存放在寄存器中。**类的静态成员函数因为没有this指针这个参数，所以类的静态成员函数也就无法调用类的非静态成员变量。**
+
+### 不要在析构函数中抛出异常
+
+若在delete前，会引起内存泄露，引发更多异常。
+
+### 五个内存存储区
+
+1. 全局/静态存储区域：存全局变量，静态变量。程序编译时内存已分配好，并存在于程序整个运行期间，程序结束后由系统统一释放。全局变量和静态变量被分配到同一块内存中。C 语言中，全局变量又分为初始化的和未初始化的。初始化的全局变量和静态变量在一块区域，未初始化的全局变量与静态变量在相邻的另一块区域。同时未被初始化的对象存储区可以通过 void* 来访问和操纵，程序结束后由系统自行释放。在 C++ 里面没有区分，他们共同占用同一块内存区。
+2. 栈：存放函数的参数值，局部变量，函数执行结束时会被自动释放。栈内存分配运算内置于处理器的指令集中，效率高，但是容量有限。
+3. 堆（动态内存分配）：通过new和malloc由低到高分配，由delete或free手动释放或者程序结束自动释放。动态内存的生存期人为决定，使用灵活。缺点是容易分配/释放不当容易造成内存泄漏，频繁分配/释放会产生大量内存碎片。 若程序员不释放，程序结束时可能由OS（操作系统）回收
+4. 字符/文字常量区： 存放常量字符串，程序结束时由系统释放
+5. 程序代码区： 存放函数体的二进制代码
+
+其中，虚函数表存放在全局存储区域。
+
+### new使用free释放
+
+1. new未必是使用malloc分配的内存，可能是内存池中自由链表维护的那块内存；
+2. delete会调用析构函数，free不会；
+3. 没有free[]
+4. new和delete是运算符，类可以定义自己的delete。
