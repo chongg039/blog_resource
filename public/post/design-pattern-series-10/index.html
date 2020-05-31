@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>[设计模式系列]命令模式与访问者模式</title>
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/style.css" />
+    
+    <link rel="shortcut icon" href="https://chongg039.cn/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/sunburst.css" />
+</head>
+<body onload="PR.prettyPrint()">
+    <div class="navheader">
+        <table width="100%" summary="Navigation header">
+            <tbody>
+                <tr>
+                    <td colspan="3" align="center">Co1driver 的个人博客</td>
+                </tr>
+                <tr>
+                    <td width="90%" align="left">&nbsp;</td>
+                    <td width="5%" align="center">&nbsp;<a accesskey="h" href="https://github.com/chongg039">GITHUB</a></td>
+                    <td width="5%" align="right">&nbsp;<a accesskey="a" href="https://chongg039.cn//about">ABOUT</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h1>[设计模式系列]命令模式与访问者模式</h1>
+    <h4>Thu, Feb 27, 2020</h4>
+    
+
+<p><img src="https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/GjXaHFnIOn0.jpg#center" alt="GjXaHFnIOn0" /></p>
+
+<p>命令模式和访问者模式也是两种常见的行为模式。</p>
+
+<h3 id="命令模式-command-pattern">命令模式(Command Pattern)</h3>
+
+<p>Command模式结构图中，将请求的接收者（处理者）放到Command的具体子类ConcreteCommand中，当请求到来时（Invoker发出Notify消息激活 Command对象），ConcreteCommand将处理请求交给Receiver对象进行处理。</p>
+
+<pre><code class="language-c++">// 具体的接收人
+class Receiver
+{
+public:
+    void Action();
+};
+
+// 抽象类
+class Command
+{
+public:
+    virtual ~Command() = default;
+
+    virtual void set_receiver(Receiver *receiver) = 0;
+
+    virtual void Execute() = 0;
+};
+
+class ConcreteCommand : public Command
+{
+public:
+    void set_receiver(Receiver *receiver) override;
+
+    void Execute() override;
+
+private:
+    Receiver *receiver_;
+};
+
+class Invoker
+{
+public:
+    void set_command(Command *command);
+
+    void Notify();
+
+private:
+    std::list&lt;Command *&gt; commands_;
+};
+
+void Receiver::Action()
+{
+    std::cout &lt;&lt; &quot;receiver do action...&quot; &lt;&lt; std::endl;
+}
+
+void ConcreteCommand::set_receiver(Receiver *receiver)
+{
+    receiver_ = receiver;
+}
+
+void ConcreteCommand::Execute()
+{
+    receiver_-&gt;Action();
+}
+
+void Invoker::set_command(Command *command)
+{
+    commands_.push_back(command);
+}
+
+void Invoker::Notify()
+{
+    for (auto &amp;command : commands_) {
+        command-&gt;Execute();
+    }
+}
+</code></pre>
+
+<pre><code class="language-c++">int main()
+{
+    Command *c = new ConcreteCommand();
+    Receiver *r = new Receiver();
+    c-&gt;set_receiver(r);
+
+    Invoker invoker;
+    invoker.set_command(c);
+    invoker.Notify();
+
+    delete r;
+    delete c;
+
+    return 0;
+}
+</code></pre>
+
+<h3 id="访问者模式-visitor-pattern">访问者模式(Visitor Pattern)</h3>
+
+<p>访问者模式就是保证不改变一个类的前提下，对这个类的元素定义一种新的操作，非常适用于不断变更系统需求的情况&hellip;</p>
+
+<p>看下Wikipedia上的UML图：</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/dNZMTl.jpg#center" alt="dNZMTl" /></p>
+
+<p>该模式的关键就是accept操作是一个&rdquo;Double-Dispatch&rdquo;的，即具体调用哪个accept有两个因素决定，一是动态绑定的具体的Element类型，而是accept的参数Visitor的类型，也是一个动态绑定的型别参数。</p>
+
+<pre><code class="language-c++">class Element;
+
+class ConcreteElementA;
+
+class ConcreteElementB;
+
+class Visitor
+{
+public:
+    virtual ~Visitor() = default;
+
+    virtual void Visit(ConcreteElementA *element) = 0;
+
+    virtual void Visit(ConcreteElementB *element) = 0;
+};
+
+class ConcreteVisitorA : public Visitor
+{
+public:
+    void Visit(ConcreteElementA *element) override;
+
+    void Visit(ConcreteElementB *element) override;
+};
+
+class ConcreteVisitorB : public Visitor
+{
+public:
+    void Visit(ConcreteElementA *element) override;
+
+    void Visit(ConcreteElementB *element) override;
+};
+
+// 元素
+class Element
+{
+public:
+    virtual ~Element() = default;
+
+    virtual void Accept(Visitor *visitor) = 0;
+};
+
+class ConcreteElementA : public Element
+{
+public:
+    void Accept(Visitor *visitor) override;
+};
+
+class ConcreteElementB : public Element
+{
+public:
+    void Accept(Visitor *visitor) override;
+};
+
+void ConcreteVisitorA::Visit(ConcreteElementA *element)
+{
+    std::cout &lt;&lt; &quot;visitor A visit element A&quot; &lt;&lt; std::endl;
+}
+
+void ConcreteVisitorA::Visit(ConcreteElementB *element)
+{
+    std::cout &lt;&lt; &quot;visitor A visit element B&quot; &lt;&lt; std::endl;
+}
+
+void ConcreteVisitorB::Visit(ConcreteElementA *element)
+{
+    std::cout &lt;&lt; &quot;visitor B visit element A&quot; &lt;&lt; std::endl;
+}
+
+void ConcreteVisitorB::Visit(ConcreteElementB *element)
+{
+    std::cout &lt;&lt; &quot;visitor B visit element B&quot; &lt;&lt; std::endl;
+}
+
+void ConcreteElementA::Accept(Visitor *visitor)
+{
+    std::cout &lt;&lt; &quot;can visit element A&quot; &lt;&lt; std::endl;
+    visitor-&gt;Visit(this);
+}
+
+void ConcreteElementB::Accept(Visitor *visitor)
+{
+    std::cout &lt;&lt; &quot;can visit element B&quot; &lt;&lt; std::endl;
+    visitor-&gt;Visit(this);
+}
+</code></pre>
+
+<p>测试一下效果：</p>
+
+<pre><code class="language-c++">int main()
+{
+    Element *ea = new ConcreteElementA();
+    Element *eb = new ConcreteElementB();
+
+    Visitor *va = new ConcreteVisitorA();
+    Visitor *vb = new ConcreteVisitorB();
+
+    ea-&gt;Accept(va);
+    ea-&gt;Accept(vb);
+    eb-&gt;Accept(va);
+    eb-&gt;Accept(vb);
+
+    delete va;
+    delete vb;
+
+    delete ea;
+    delete eb;
+
+    return 0;
+}
+</code></pre>
+
+<p><img src="https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/bRaSYf.png#center" alt="bRaSYf" /></p>
+
+<p>理解访问者模式的关键就是使用&rdquo;Double-Dispatch&rdquo;，单继承多态可以认为是&rdquo;One-Dispatch&rdquo;的，做到这样需要将另一个动态绑定体现在参数中。</p>
+
+    
+    
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+  const gitalk = new Gitalk({
+    clientID: '36c8fa6e09d08297a270',
+    clientSecret: 'af0175944284956d288d14b389fbc89be8df7f1e',
+    repo: 'chongg039.github.io',
+    owner: 'chongg039',
+    admin: ['chongg039'],
+    id: location.pathname, 
+    distractionFreeMode: false 
+  });
+  (function() {
+    if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+      document.getElementById('gitalk-container').innerHTML = 'Gitalk comments not available by default when the website is previewed locally.';
+      return;
+    }
+    gitalk.render('gitalk-container');
+  })();
+</script>
+
+<div class="navfooter">
+    <table width="100%" summary="Navigation footer">
+        <tbody>
+            <tr>
+                <td width="40%" align="left">&nbsp;</td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right">&nbsp;</td>
+            </tr>
+            <tr>
+                <td width="40%" align="left" valign="top">
+                    <span class="copyright">
+                        Copyright 2014-2020
+                    </span>
+                    &nbsp;
+                </td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right" valign="top">&nbsp;<a href="https://chongg039.cn/">HOME</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: { 
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+            processEscapes: true
+        }
+    });
+    </script>
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-117991024-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+    <script type="text/javascript" src="https://chongg039.cn/js/function.js"></script>
+    <script type="text/javascript" src="https://chongg039.cn/js/prettify.js"></script>
+    
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+</html>
+

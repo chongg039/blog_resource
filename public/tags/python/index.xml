@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Python on Co1driver 的个人博客</title>
+    <link>https://chongg039.cn/tags/python/</link>
+    <description>Recent content in Python on Co1driver 的个人博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>Copyright 2014-{year}</copyright>
+    <lastBuildDate>Tue, 22 Oct 2019 19:46:49 +0800</lastBuildDate>
+    
+	<atom:link href="https://chongg039.cn/tags/python/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>天池全球数据智能大赛（赛场二）第7名解决方案</title>
+      <link>https://chongg039.cn/post/yield-prediction-competition/</link>
+      <pubDate>Tue, 22 Oct 2019 19:46:49 +0800</pubDate>
+      
+      <guid>https://chongg039.cn/post/yield-prediction-competition/</guid>
+      <description>第一次正儿八经组队参加的比赛，虽然没能拿到奖金但也取得了一个比较满意的成绩（初赛23复赛7），这里记录一下当时的解决思路。
+首先这是一个农作物产量预测的比赛，属于比较传统的回归分析，这种类型的比赛只要做好 EDA ，一般都能取得不错的成绩，而不是说设计了一个多么精妙的网络结构。事实上官方提供的数据集最大的问题就是少，而且样本分布严重不均，这也成为了赛后受大家诟病的一个主要方面。
+探索性数据分析（EDA） EDA of train data 取以下数值型天气特征并分析之间的相关性：
+{ &amp;quot;日照时数（单位：h)&amp;quot;: &amp;quot;day_sun_hour&amp;quot;, &amp;quot;日平均风速(单位：m/s)&amp;quot;: &amp;quot;day_mean_wind&amp;quot;, &amp;quot;日降水量（mm）&amp;quot;: &amp;quot;day_rain&amp;quot;, &amp;quot;日平均温度（单位：℃）&amp;quot;: &amp;quot;day_mean_temperature&amp;quot;, &amp;quot;日相对湿度（单位：%）&amp;quot;: &amp;quot;day_relative_humidity&amp;quot;, &amp;quot;日平均气压（单位：hPa）&amp;quot;: &amp;quot;day_mean_pressure&amp;quot;, &amp;quot;日最高温度（单位：℃）&amp;quot;: &amp;quot;day_high_temp&amp;quot;, &amp;quot;日最低温度（单位：℃）&amp;quot;: &amp;quot;day_low_temp&amp;quot; }  以2017年区县id为16的地区为例：
+可以得出：
+ 一个地区一年的日平均温度、日最高温度和日最低温度呈正相关； 以平均温度为例，日平均气压与日平均温度呈负相关。  取以下类别型天气特征并处理：
+{ &amp;quot;02时风向&amp;quot;: &amp;quot;day_02_wind&amp;quot;, &amp;quot;08时风向&amp;quot;: &amp;quot;day_08_wind&amp;quot;, &amp;quot;14时风向&amp;quot;: &amp;quot;day_14_wind&amp;quot;, &amp;quot;20时风向&amp;quot;: &amp;quot;day_20_wind&amp;quot; }  做连续特征的话，依据下面的映射表映射到数值特征上：
+{ &amp;quot;N&amp;quot;: 0, &amp;quot;NNE&amp;quot;: 22.5, &amp;quot;NE&amp;quot;: 45, &amp;quot;ENE&amp;quot;: 67.5, &amp;quot;E&amp;quot;: 90, &amp;quot;ESE&amp;quot;: 112.5, &amp;quot;SE&amp;quot;: 135, &amp;quot;SSE&amp;quot;: 157.5, &amp;quot;S&amp;quot;: 180, &amp;quot;SSW&amp;quot;: 202.5, &amp;quot;SW&amp;quot;: 225, &amp;quot;WSW&amp;quot;: 247.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>[设计模式系列]备忘录模式与中介者模式</title>
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/style.css" />
+    
+    <link rel="shortcut icon" href="https://chongg039.cn/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/sunburst.css" />
+</head>
+<body onload="PR.prettyPrint()">
+    <div class="navheader">
+        <table width="100%" summary="Navigation header">
+            <tbody>
+                <tr>
+                    <td colspan="3" align="center">Co1driver 的个人博客</td>
+                </tr>
+                <tr>
+                    <td width="90%" align="left">&nbsp;</td>
+                    <td width="5%" align="center">&nbsp;<a accesskey="h" href="https://github.com/chongg039">GITHUB</a></td>
+                    <td width="5%" align="right">&nbsp;<a accesskey="a" href="https://chongg039.cn//about">ABOUT</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h1>[设计模式系列]备忘录模式与中介者模式</h1>
+    <h4>Wed, Feb 26, 2020</h4>
+    
+
+<p><img src="https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/5XjNhm3hz7U.jpg#center" alt="5XjNhm3hz7U" /></p>
+
+<p>闲话少说直接进入正题。</p>
+
+<h3 id="备忘录模式-memento-pattern">备忘录模式(Memento Pattern)</h3>
+
+<p>备忘录模式就是可以维护一个对象的内部状态，并在对象的外部保存这个状态。这样就可以随时将对象恢复成保存的那个状态，就像吃后悔药一样，属于一个&rdquo;undo&rdquo;操作。</p>
+
+<p>看下UML图，<a href="https://stackoverflow.com/questions/45867006/how-to-implement-memento-pattern-in-kotlin">来源</a>：</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/BHSqCR.jpg#center" alt="BHSqCR" /></p>
+
+<pre><code class="language-c++">class Memento
+{
+public:
+    explicit Memento(std::string state);
+
+    const std::string &amp;get_state() const;
+
+    void set_state(const std::string &amp;state);
+private:
+    std::string state_;
+};
+
+// 管理者
+class Caretaker
+{
+public:
+    ~Caretaker();
+
+public:
+    Memento *get_memento() const;
+
+    void set_memento(Memento *memento);
+
+private:
+    Memento *memento_;
+};
+
+// 发起人
+class Originator
+{
+public:
+    const std::string &amp;get_state() const;
+
+    void set_state(const std::string &amp;state);
+
+    Memento *CreateMemento();
+
+    void SetMemento(Memento *memento);
+
+    void Show();
+
+private:
+    std::string state_;
+};
+
+Memento::Memento(std::string state)
+        : state_(std::move(state))
+{}
+
+const std::string &amp;Memento::get_state() const
+{
+    return state_;
+}
+
+void Memento::set_state(const std::string &amp;state)
+{
+    state_ = state;
+}
+
+Caretaker::~Caretaker()
+{
+    if (memento_) {
+        delete memento_;
+        memento_ = nullptr;
+    }
+}
+
+Memento *Caretaker::get_memento() const
+{
+    return memento_;
+}
+
+void Caretaker::set_memento(Memento *memento)
+{
+    memento_ = memento;
+}
+
+const std::string &amp;Originator::get_state() const
+{
+    return state_;
+}
+
+void Originator::set_state(const std::string &amp;state)
+{
+    state_ = state;
+}
+
+Memento *Originator::CreateMemento()
+{
+    return new Memento(state_);
+}
+
+void Originator::SetMemento(Memento *memento)
+{
+    state_ = memento-&gt;get_state();
+}
+
+void Originator::Show()
+{
+    std::cout &lt;&lt; &quot;state is: &quot; &lt;&lt; state_ &lt;&lt; std::endl;
+}
+</code></pre>
+
+<p>看下效果：</p>
+
+<pre><code class="language-c++">int main()
+{
+    Originator *ori = new Originator();
+    ori-&gt;set_state(&quot;On&quot;);
+    ori-&gt;Show();
+
+    // 保存状态
+    Caretaker *care = new Caretaker();
+    care-&gt;set_memento(ori-&gt;CreateMemento());
+
+    ori-&gt;set_state(&quot;Off&quot;);
+    ori-&gt;Show();
+
+    // 恢复状态
+    ori-&gt;SetMemento(care-&gt;get_memento());
+    ori-&gt;Show();
+
+    delete care;
+    delete ori;
+    return 0;
+}
+</code></pre>
+
+<p><img src="https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/xsBo2e.png#center" alt="xsBo2e" /></p>
+
+<p>理论上，将Originator声明为Memento的友元类，是一种更明智的方式，即备忘录只能Originator访问，其他类不能访问。</p>
+
+<h3 id="中介者模式-mediator-pattern">中介者模式(Mediator Pattern)</h3>
+
+<p>对象间如何通信始终是系统设计中令人头痛的问题，互相通信的类需要调用另外一个对象的具体方法。当系统规模小是可行的，一旦这种相互通信变多，就容易像一团麻线那样剪不断理还乱。为了处理这种情况，我们自然希望有一个类充当中间人的角色，每个具体的对象只需要和这个中介者通信，具体的方法交由中介者处理，系统也由此解耦。</p>
+
+<p>直接看UML：</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/9yzHNZ.jpg#center" alt="9yzHNZ" /></p>
+
+<pre><code class="language-c++">class Colleague;
+
+class ConcreteColleagueA;
+
+class ConcreteColleagueB;
+
+// 抽象中介者
+class Mediator
+{
+public:
+    virtual ~Mediator() = default;
+
+    virtual void SendMsg(const std::string &amp;msg, Colleague *colleague) = 0;
+};
+
+class ConcreteMediator : public Mediator
+{
+public:
+    void set_colleague(ConcreteColleagueA *colleague_a);
+
+    void set_colleague(ConcreteColleagueB *colleague_b);
+
+    void SendMsg(const std::string &amp;msg, Colleague *colleague) override;
+
+private:
+    ConcreteColleagueA *colleague_a_;
+    ConcreteColleagueB *colleague_b_;
+};
+
+// 抽象同事
+class Colleague
+{
+public:
+    explicit Colleague(Mediator *mediator) : mediator_(mediator)
+    {};
+
+    virtual ~Colleague() = default;
+
+protected:
+    Mediator *mediator_;
+};
+
+class ConcreteColleagueA : public Colleague
+{
+public:
+    explicit ConcreteColleagueA(Mediator *mediator);
+
+    void Send(const std::string &amp;msg);
+
+    void Notify(const std::string&amp; msg);
+};
+
+class ConcreteColleagueB : public Colleague
+{
+public:
+    explicit ConcreteColleagueB(Mediator *mediator);
+
+    void Send(const std::string &amp;msg);
+
+    void Notify(const std::string&amp; msg);
+};
+
+void ConcreteMediator::set_colleague(ConcreteColleagueA *colleague_a)
+{
+    colleague_a_ = colleague_a;
+}
+
+void ConcreteMediator::set_colleague(ConcreteColleagueB *colleague_b)
+{
+    colleague_b_ = colleague_b;
+}
+
+void ConcreteMediator::SendMsg(const std::string &amp;msg, Colleague *colleague)
+{
+    if (colleague == colleague_a_) {
+        colleague_b_-&gt;Notify(msg);
+    } else {
+        colleague_a_-&gt;Notify(msg);
+    }
+}
+
+ConcreteColleagueA::ConcreteColleagueA(Mediator *mediator)
+        : Colleague(mediator)
+{}
+
+void ConcreteColleagueA::Send(const std::string &amp;msg)
+{
+    mediator_-&gt;SendMsg(msg, this);
+}
+
+void ConcreteColleagueA::Notify(const std::string &amp;msg)
+{
+    std::cout &lt;&lt; &quot;colleague A received: &quot; &lt;&lt; msg &lt;&lt; std::endl;
+}
+
+ConcreteColleagueB::ConcreteColleagueB(Mediator *mediator)
+        : Colleague(mediator)
+{}
+
+void ConcreteColleagueB::Send(const std::string &amp;msg)
+{
+    mediator_-&gt;SendMsg(msg, this);
+}
+
+void ConcreteColleagueB::Notify(const std::string &amp;msg)
+{
+    std::cout &lt;&lt; &quot;colleague B received: &quot; &lt;&lt; msg &lt;&lt; std::endl;
+}
+</code></pre>
+
+<p>这里我们构造两种类型的Colleague让他们互相通信看看：</p>
+
+<pre><code class="language-c++">int main()
+{
+    ConcreteMediator *mediator = new ConcreteMediator();
+    ConcreteColleagueA *a = new ConcreteColleagueA(mediator);
+    ConcreteColleagueB *b = new ConcreteColleagueB(mediator);
+
+    mediator-&gt;set_colleague(a);
+    mediator-&gt;set_colleague(b);
+
+    a-&gt;Send(&quot;im a&quot;);
+    b-&gt;Send(&quot;im b&quot;);
+
+    delete a;
+    delete b;
+    delete mediator;
+
+    return 0;
+}
+</code></pre>
+
+<p><img src="https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/jQQKg8.png#center" alt="jQQKg8" /></p>
+
+<p>Mediator模式将多对多通信转化为了多对一通信，各对象之间不必维护自己的通信协议，降低了系统的复杂性。同时将控制集中起来管理，符合单一职责与集中控制原则。</p>
+
+    
+    
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+  const gitalk = new Gitalk({
+    clientID: '36c8fa6e09d08297a270',
+    clientSecret: 'af0175944284956d288d14b389fbc89be8df7f1e',
+    repo: 'chongg039.github.io',
+    owner: 'chongg039',
+    admin: ['chongg039'],
+    id: location.pathname, 
+    distractionFreeMode: false 
+  });
+  (function() {
+    if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+      document.getElementById('gitalk-container').innerHTML = 'Gitalk comments not available by default when the website is previewed locally.';
+      return;
+    }
+    gitalk.render('gitalk-container');
+  })();
+</script>
+
+<div class="navfooter">
+    <table width="100%" summary="Navigation footer">
+        <tbody>
+            <tr>
+                <td width="40%" align="left">&nbsp;</td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right">&nbsp;</td>
+            </tr>
+            <tr>
+                <td width="40%" align="left" valign="top">
+                    <span class="copyright">
+                        Copyright 2014-2020
+                    </span>
+                    &nbsp;
+                </td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right" valign="top">&nbsp;<a href="https://chongg039.cn/">HOME</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: { 
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+            processEscapes: true
+        }
+    });
+    </script>
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-117991024-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+    <script type="text/javascript" src="https://chongg039.cn/js/function.js"></script>
+    <script type="text/javascript" src="https://chongg039.cn/js/prettify.js"></script>
+    
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+</html>
+

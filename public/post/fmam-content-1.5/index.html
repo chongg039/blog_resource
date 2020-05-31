@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>FMAM - 1.5：多元 PH 分布</title>
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/style.css" />
+    
+    <link rel="shortcut icon" href="https://chongg039.cn/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/sunburst.css" />
+</head>
+<body onload="PR.prettyPrint()">
+    <div class="navheader">
+        <table width="100%" summary="Navigation header">
+            <tbody>
+                <tr>
+                    <td colspan="3" align="center">Co1driver 的个人博客</td>
+                </tr>
+                <tr>
+                    <td width="90%" align="left">&nbsp;</td>
+                    <td width="5%" align="center">&nbsp;<a accesskey="h" href="https://github.com/chongg039">GITHUB</a></td>
+                    <td width="5%" align="right">&nbsp;<a accesskey="a" href="https://chongg039.cn//about">ABOUT</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h1>FMAM - 1.5：多元 PH 分布</h1>
+    <h4>Thu, Aug 2, 2018</h4>
+    
+
+<p>考虑连续时间上的马尔可夫链 $ \{ Y(t), t \geq 0 \} $，且具有有限状态空间 $ \{1, 2, &hellip;, m \} $，无穷小的生成矩阵 $Q$ 和初始分布 $\alpha$ 。令 $A _ {k} $ 是 $ \{ 1, 2, &hellip;, m \} $ 的子集，其中 $k=1, &hellip;, K$，假设交集$ \{ A _ {k}, k=1, &hellip;, K \} $ 是非空的且马尔可夫链将以 1 的概率被吸收到交叉点。</p>
+
+<h4 id="定义1-5-1">定义1.5.1</h4>
+
+<p>定义
+$$
+X _ {k} = min{t:Y(t) \in A _ {k}, t \geq 0}, k = 1, &hellip;, K
+$$
+随机向量 $ X = (X _ {1}, X _ {2}, &hellip;, X _ {K})$ 则被认为具有多元的 PH 分布（MPH）和多元的 PH 表示 $(\alpha, Q, A _ {k}, k = 1, &hellip;, K)$ 。</p>
+
+<p>很显然 PH 分布是当 $K=1$ 时的多元 PH 分布，即一个多元 PH 分布的子集。</p>
+
+<h4 id="例子1-5-1-略">例子1.5.1：略</h4>
+
+<h4 id="练习1-5-1-略">练习1.5.1：略</h4>
+
+<h4 id="命题1-5-1-assaf-and-levikson-1982-and-assaf-et-al-1984">命题1.5.1(Assaf and Levikson (1982) and Assaf et al. (1984))：</h4>
+
+<ol>
+<li>若 X 和 Y 是相互独立的 MPH， 则 $(X, Y)$ 也是一个 MPH；</li>
+<li>若 $X _ {1}, X _ {2}, &hellip; X _ {K}$ 是相互独立的 PH 分布，则 $(X _ {1}, X _ {2}, &hellip; X _ {K})$ 是一个 MPH 分布；</li>
+<li>若 $X=(X _ {1}, X _ {2}, &hellip; X _ {K})$ 是一个 MPH 分布，那么 $X _ {k}, k=1, &hellip;, K$ 是 PH 分布；</li>
+<li>若 $X=(X _ {1}, X _ {2}, &hellip; X _ {K})$ 是一个 MPH 分布，那么 $X _ {min}=min\{X _ {1}, X _ {2}, &hellip; X _ {K}\}$ 是 PH 分布；</li>
+<li>若 $X=(X _ {1}, X _ {2}, &hellip; X _ {K})$ 是一个 MPH 分布，那么 $X _ {sum}=X _ {1} +X _ {2} + &hellip;  + X _ {K}$ 是 PH 分布；</li>
+</ol>
+
+<p>证明略。</p>
+
+<h4 id="定理1-5-1-assaf-et-al-1984">定理1.5.1(Assaf et al. (1984))：</h4>
+
+<p>在 K 上的所有多元分布的集合中，一组多元 PH 分布是密集的。</p>
+
+<h4 id="例子1-5-2-略">例子1.5.2：略</h4>
+
+<h4 id="例子1-5-3-略">例子1.5.3：略</h4>
+
+<h4 id="练习1-5-2-略">练习1.5.2：略</h4>
+
+<h4 id="练习1-5-3-略">练习1.5.3：略</h4>
+
+<h4 id="定理1-5-2-assaf-et-al-1984">定理1.5.2 (Assaf et al. (1984))：</h4>
+
+<p>对于 MPH 分布 X，当 $t _ {1} \leq t _ {2} &hellip; \leq t _ {K}$时：
+$$
+P\{X _ {1} &gt; t _ {1}, &hellip;, X _ {K} &gt; X _ {k}\} = \alpha exp(Tt _ {1})P _ {1} exp(T(t _ {2} - t _ {1}))P _ {2} &hellip; exp(T(t _ {k} - t _ {k-1}))P _ {K}e
+$$
+其中 $P _ {k}$ 是当 $i \notin A _ {k}$ 时第 i 个对角元素为 1 ，或者当 $i \in A _ {k}$ 时为 0 的对角矩阵。所有其他情况的概率可以通过排列获得。该联合分布的绝对连续部分由下式给出，当 $t _ {1} \leq t _ {2} \leq &hellip; \leq t _ {K}$ 时：
+$$
+f(t _ {1}, &hellip;, t _ {K})=(-1)^K \alpha exp(Tt _ {1})(TP _ {1} - P _ {1}T)exp(T(t _ {2} - t _ {1}))(TP _ {2} - P _ {2}T) &hellip; exp(T(t _ {K} - t _ {K-1}))TP _ {K}e
+$$</p>
+
+<h4 id="例子1-5-4-略">例子1.5.4：略</h4>
+
+<h4 id="练习1-5-4-略">练习1.5.4：略</h4>
+
+<h4 id="commentary-略">Commentary：略</h4>
+
+<h4 id="additional-exercises-and-extensions-略">Additional Exercises and Extensions：略</h4>
+
+    
+    
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+  const gitalk = new Gitalk({
+    clientID: '36c8fa6e09d08297a270',
+    clientSecret: 'af0175944284956d288d14b389fbc89be8df7f1e',
+    repo: 'chongg039.github.io',
+    owner: 'chongg039',
+    admin: ['chongg039'],
+    id: location.pathname, 
+    distractionFreeMode: false 
+  });
+  (function() {
+    if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+      document.getElementById('gitalk-container').innerHTML = 'Gitalk comments not available by default when the website is previewed locally.';
+      return;
+    }
+    gitalk.render('gitalk-container');
+  })();
+</script>
+
+<div class="navfooter">
+    <table width="100%" summary="Navigation footer">
+        <tbody>
+            <tr>
+                <td width="40%" align="left">&nbsp;</td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right">&nbsp;</td>
+            </tr>
+            <tr>
+                <td width="40%" align="left" valign="top">
+                    <span class="copyright">
+                        Copyright 2014-2020
+                    </span>
+                    &nbsp;
+                </td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right" valign="top">&nbsp;<a href="https://chongg039.cn/">HOME</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: { 
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+            processEscapes: true
+        }
+    });
+    </script>
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-117991024-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+    <script type="text/javascript" src="https://chongg039.cn/js/function.js"></script>
+    <script type="text/javascript" src="https://chongg039.cn/js/prettify.js"></script>
+    
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+</html>
+

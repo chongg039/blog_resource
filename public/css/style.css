@@ -1,0 +1,110 @@
+body {
+    margin: 0.5in auto;
+    padding: 0 20px;
+    max-width: 1260px;
+    background: white;
+    font-size: 1.2rem;
+    line-height: 1.6;
+    font-family: "PT Sans", Helvetica, Arial, STFangSong, Vernada, Tahoma, STXihei, "Microsoft YaHei", "Songti SC", SimSun, Heiti, sans-serif;
+}
+table {
+    display: table;
+    border-collapse: separate;
+    border-spacing: 2px;
+    border-color: grey;
+}
+tbody {
+    display: table-row-group;
+    vertical-align: middle;
+    border-color: inherit;
+}
+.navheader, .navfooter {
+    border: black solid 1px;
+    background: rgb(180,180,200);
+}
+div {
+    display: block;
+}
+.pageNotFound {
+    display: table-cell;
+    vertical-align: middle;
+}
+a:link {
+    color: #333;
+    text-align: left;
+    text-decoration: none;
+}
+a:visited {
+    color: #333;
+    text-align: left;
+    text-decoration: none;
+}
+a:hover {
+    color: #993300;
+    text-decoration: underline;
+}
+a.active {
+    color: #993300;
+    text-decoration: underline;
+}
+ul.dotLeaders {
+    /* max-width: 200em; */
+    padding: 0;
+    overflow-x: hidden;
+    list-style: none;
+}
+ul.dotLeaders li::before {
+    float: left;
+    width: 0;
+    white-space: nowrap;
+    content:
+ ". . . . . . . . . . . . . . . . . . . . "
+ ". . . . . . . . . . . . . . . . . . . . "
+ ". . . . . . . . . . . . . . . . . . . . "
+ ". . . . . . . . . . . . . . . . . . . . "
+ ". . . . . . . . . . . . . . . . . . . . "
+ ". . . . . . . . . . . . . . . . . . . . "
+ ". . . . . . . . . . . . . . . . . . . . "
+ ". . . . . . . . . . . . . . . . . . . . ";
+}
+ul.dotLeaders span:first-child {
+    padding-right: 0.33em;
+    background: white;
+}
+ul.dotLeaders span + span {
+    float: right;
+    padding-left: 0.33em;
+    background: white;
+}
+img{
+	width: auto;
+	height: auto;
+	max-width: 100%;
+	max-height: 100%;	
+}
+/*
+下面是关于图片的摆放位置：
+![your_img](/img/your_img.png#center)
+![your_img](/img/your_img.png#left)
+![your_img](/img/your_img.png#right) 
+*/
+img[src$='#center']
+{
+    display: block;
+    margin: 0.7rem auto; /* you can replace the vertical '0.7rem' by
+                            whatever floats your boat, but keep the
+                            horizontal 'auto' for this to work */
+    /* whatever else styles you fancy here */
+}
+img[src$='#left']
+{
+    float:left;
+    margin: 0.7rem;      /* this margin is totally up to you */
+    /* whatever else styles you fancy here */
+}
+img[src$='#right']
+{
+    float:right;
+    margin: 0.7rem;      /* this margin is totally up to you */
+    /* whatever else styles you fancy here */
+}

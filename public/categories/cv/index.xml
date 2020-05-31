@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Cv on Co1driver 的个人博客</title>
+    <link>https://chongg039.cn/categories/cv/</link>
+    <description>Recent content in Cv on Co1driver 的个人博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>Copyright 2014-{year}</copyright>
+    <lastBuildDate>Sun, 12 May 2019 19:09:40 +0800</lastBuildDate>
+    
+	<atom:link href="https://chongg039.cn/categories/cv/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>高级计算机视觉知识点总结</title>
+      <link>https://chongg039.cn/post/advanced-computer-vision/</link>
+      <pubDate>Sun, 12 May 2019 19:09:40 +0800</pubDate>
+      
+      <guid>https://chongg039.cn/post/advanced-computer-vision/</guid>
+      <description>我自己在做的方向是 NLP 相关，但这学期也选修了高级计算机视觉这门课程，其中很大一部分内容都是传统的视觉算法，和现在被人熟知的机器学习相关的 CV 领域还是有很大区别。由于这门课程也是学院第一次开课，所以也没有办法去做针对性的复习，故在此作以下学习记录，写下自己的理解，希望将来能温故而知新。
+特征提取算法 涉及到的特征提取算法主要有 Harris 角点检测算法、Canny 边缘检测算法和 SIFT 尺度不变特征变换算法。
+Harris Corner Detection 首先要理解角点和其具有的特征：
+ 角点是轮廓之间的交点 针对同一场景，即使视角发生变化，角点通常仍具备稳定的特征 角点附近的区域的像素点的梯度无论是方向还是幅值都会有较大的变化  针对以上角点的特征，Harris 算法的基本思想是：使用一个固定大小的窗口在图向上进行任意方向上的滑动，比较滑动前后的窗口中像素灰度变化的程度。若沿任意方向的滑动都有较大的灰度变化，则认为该窗口中存在角点。
+现在要做的就是设计一个函数，来衡量滑动前后的灰度值变化，并设置一个阈值，当灰度变化超过这个阈值认为存在角点。
+这个函数可以作如下表示：
+$$ E(u, v) = \sum_{x, y} w(x, y) [I(x+u, y+v) - I(x, y)]^2 $$
+其中 $w(x, y)$ 是窗口函数（矩阵），常用的有 (0, 1) 函数和高斯函数，$I(x, y)$ 表示灰度强度值。下面要用到泰勒展开式处理这个函数。
+二维泰勒展开式为：
+$$ f(x+u, y+v) = f(x, y) + uf_x(x, y) + vf_y(x, y) + &amp;hellip; $$
+抛开 $w(x, y)$ ，先处理 $\sum[&amp;hellip;]^2$ 这部分：</description>
+    </item>
+    
+  </channel>
+</rss>

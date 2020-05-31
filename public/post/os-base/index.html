@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>[基础知识]操作系统</title>
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/style.css" />
+    
+    <link rel="shortcut icon" href="https://chongg039.cn/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/sunburst.css" />
+</head>
+<body onload="PR.prettyPrint()">
+    <div class="navheader">
+        <table width="100%" summary="Navigation header">
+            <tbody>
+                <tr>
+                    <td colspan="3" align="center">Co1driver 的个人博客</td>
+                </tr>
+                <tr>
+                    <td width="90%" align="left">&nbsp;</td>
+                    <td width="5%" align="center">&nbsp;<a accesskey="h" href="https://github.com/chongg039">GITHUB</a></td>
+                    <td width="5%" align="right">&nbsp;<a accesskey="a" href="https://chongg039.cn//about">ABOUT</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h1>[基础知识]操作系统</h1>
+    <h4>Thu, Feb 20, 2020</h4>
+    
+
+<p><img src="https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/SFq8dwG4w6c.jpg#center" alt="SFq8dwG4w6c" /></p>
+
+<p>回顾和整理操作系统相关的知识点以及C++实现。</p>
+
+<h3 id="用户态与内核态">用户态与内核态</h3>
+
+<p>用户态与内核态是Linux的体系结构，也叫用户空间和内核空间，用户态是提供应用程序运行的空间，内核态就是控制计算机硬件运行的那部分特殊的软件运行的空间。用户态的程序想要访问这些硬件资源，内核态必须为之提供一组访问接口，这些接口就被称为系统调用(System Call)。</p>
+
+<p>一般来讲，软件运行在用户态。但当程序需要调用操作系统提供的某一服务，如打开文件、连接设备、fork进程等，就需要切换至内核态，此时进程也就不进行相应的工作了，取而代之的是内核在进行某些处理。</p>
+
+<p>中断是计算机在执行程序时，出现某些特殊的情况导致CPU暂停对指令的执行，转而去处理这项特殊的事务，处理完之后再回去处理先前的任务。中断一般有三类：</p>
+
+<ol>
+<li>由硬件异常或故障引起的内部异常中断；</li>
+<li>由程序中的中断指令引起的软中断；</li>
+<li>由外部设备请求引起的外部中断。</li>
+</ol>
+
+<p>我们最为关心的是软中断。当一个进程发出一个系统调用的请求之后，会产生一个软中断，此时系统会对这个软中断进行处理，这样便从用户态切换到了内核态。理论上，这三种中断均可以从用户态切换到内核态。</p>
+
+<h3 id="进程-线程和协程">进程、线程和协程</h3>
+
+<p>进程(process)是资源分配的基本单位，一般由代码块、数据区、堆、栈段组成。线程(thread)是CPU调度的基本单位，是进程的一个实体，可独立运行。一个进程一般由多个线程构成，且多个线程可以并发执行。</p>
+
+<p>在同一个进程中，多个线程共享该进程的代码段（代码、常量）、数据段（全局变量、静态变量）和扩展段（堆存储），但拥有各自的栈段，用来存放所有的局部变量和临时变量、程序计数器、线程id和寄存器组中的值。</p>
+
+<p>协程(coroutine)是一种轻量级的用户态的线程，与线程的特点基本一样，但避免了无意义的调度和内核切换的开销，但同时带来的是编写者需要自己承担调度协程的责任，且只能模拟多任务并发，无法使用多核CPU进行并行操作。</p>
+
+<h3 id="pcb与进程的创建">PCB与进程的创建</h3>
+
+<p>进程控制块(Process Control Block, PCB)是进程实体的一部分，是操作系统中最重要的记录型数据结构。PCB中记录了操作系统所需要的、用于描述进程情况及控制进程运行所需要的全部信息。主要包含以下四个部分：</p>
+
+<ol>
+<li>唯一标识一个进程的进程标识符，有外部标识符和内部标识符；</li>
+<li>处理机状态信息；</li>
+<li>进程调度信息；</li>
+<li>进程控制信息。</li>
+</ol>
+
+<p>系统按照以下流程创建进程：</p>
+
+<ol>
+<li>分配、初始化PCB；</li>
+<li>初始化机器寄存器；</li>
+<li>拷贝、初始化内存页表；</li>
+<li>从硬盘加载程序代码到内存；</li>
+<li>将进程添加至就绪队列；</li>
+<li>进程调度时，选择该进程，切换至用户态开始执行该进程。</li>
+</ol>
+
+<h3 id="进程调度算法">进程调度算法</h3>
+
+<p>操作系统通过进程调度算法快速切换进程，使得每个进程都有一定的时间片来响应用户提交的请求，基本的调度算法有：</p>
+
+<h4 id="fcfs先来先服务">FCFS先来先服务</h4>
+
+<p>简单，效率低，对长作业有利，对短作业不利；在CPU繁忙型作业上表现可以，不适用于IO繁忙型。</p>
+
+<h4 id="时间片轮转">时间片轮转</h4>
+
+<p>还是先来先服务，但是每个进程只能运行一个预设的时间片，一个时间片内未完，该进程就必须被剥夺，释放处理器给下一个就绪的进程，并返回就绪队列的末尾等待下一次被调度。因此时间片的选取至关重要，过大退化为FCFS，过小则会频繁切换进程，增大处理器的时间开销导致真正服务于进程的时间变少。</p>
+
+<h4 id="sjf短作业优先">SJF短作业优先</h4>
+
+<p>优先调度短作业，长作业可能会产生”饥饿“现象，同时也没有考虑到作业的紧迫程度。</p>
+
+<h4 id="优先级调度">优先级调度</h4>
+
+<p>分为剥夺式与非剥夺式：</p>
+
+<ol>
+<li>非剥夺式优先级调度指当某个进程正在CPU上运行时，有某个更为重要的进程进入了就绪队列，仍让当前进程继续运行，直到其由于自身原因让出处理器，再将处理器分配给更重要的那个进程；</li>
+<li>剥夺式优先级调度是指当某个更为重要的进程进入就绪队列时，立即暂停正在运行的进程，将处理器分配给更重要的这个。</li>
+</ol>
+
+<h4 id="多级反馈队列-带优先级的时间片轮转">多级反馈队列(带优先级的时间片轮转)</h4>
+
+<p>算法思想：</p>
+
+<ol>
+<li>设置多个就绪队列，每个具有不同的优先级，第1级优先级最高，依次降低；</li>
+<li>优先级越高的队列中时间片越短，不同就绪队列中时间片依次递增；</li>
+<li>每个就绪队列中按照FCFS进行调度；</li>
+<li>每次进来一个新的进程，放入第一级就绪队列，并等待调度；</li>
+<li>若被调度的进程能够在时间片内执行完，就可从系统中撤离；若没有执行完，将其转入下一级就绪队列的末尾，排队等待调度；</li>
+<li>当进程被转入最后一级优先级队列，按照时间片轮转进行调度；</li>
+<li>调度程序从高优先级的就绪队列中开始调度，当且仅当该队列为空才从下一级队列开始调度；</li>
+<li>若处理器正在执行某进程，又有新的进程添加到了优先级更高的就绪队列中，则立即抢占处理器，将正在执行的进程放入当前就绪队列的末尾，并将处理器分配给更高优先级的进程。</li>
+</ol>
+
+<h3 id="同步与通信">同步与通信</h3>
+
+<p>线程之间共享资源，但拥有各自不同的运行栈，进程之间互相隔离。线程并发需要解决的是同步问题，进程则需要解决通信问题。</p>
+
+<h4 id="线程同步">线程同步</h4>
+
+<p>原子操作可以是一个步骤，也可以是按照某个顺序的多个步骤，但是不能被切割，具有整体性。一旦开始就必须执行到结束，中间不能被线程调度机制打断。原子操作是不需要同步的，需要线程同步的根本原因在于对普通变量的操作不是原子的。</p>
+
+<p>涉及原子操作的关键字：synchronize、volatile、atomic。</p>
+
+<p>每个进程中访问临界资源的那部分代码被称为临界区，是每次仅允许一个进程访问的共享资源。互斥访问临界资源一般可以通过信号量(semaphore)或互斥锁(mutex)进行。临界资源数量为1时信号量将退化为锁。</p>
+
+<h4 id="进程通信ipc">进程通信IPC</h4>
+
+<p>管道一般有无名管道和命名管道FIFO。无名管道是unix中IPC最古老的形式，一般由一个读文件描述符fd[0]和写文件描述符fd[1]组成，半双工，只能用于父子进程、兄弟进程之间的通信，是一种存在与内存中的特殊的文件系统。FIFO可以在无关进程之间交换数据，管道中先进先出，是一种文件类型，有路径名。</p>
+
+<p>共享内存(shared memory)指多个进程共享一个给定的存储区域，是速度最快的IPC，但需要进行进程之间的同步，一般结合信号量来实现同步对共享内存的访问。</p>
+
+<p>信号量是一个计数器，用于实现进程之间的互斥与同步，而不是用来存储进程之间的通信数据，因此若要在进程间传递数据需要接合共享内存。对信号量的P、V操作都是原子的，且不仅可以加一减一，可以加减任意正整数。</p>
+
+<p>消息队列是存放于内核中的的进程收发消息的数据结构。</p>
+
+<p>socket是更加一般的进程间通信机制，可用于不同机器间的进程通信。</p>
+
+<p>远程进程调用RPC，框架Thrift。协议层TProtocol定义了数据使用网络传输的格式(JSON、二进制等)，传输层TTranspost定义了数据传输方式(TCP/IP、内存共享、文件共享等)。</p>
+
+<p>管道、信号量、共享内存、消息队列只能用于单机，考虑到多机业务可以使用socket或者RPC。</p>
+
+<h3 id="死锁">死锁</h3>
+
+<p>死锁是两个及以上进程在执行过程中，因争夺资源而造成的一种互相等待的现象。若无外力他们将不会继续向前推进。</p>
+
+<h4 id="产生原因">产生原因</h4>
+
+<ol>
+<li>竞争资源，现有共享资源的数目不足以满足全部进程的需要；</li>
+<li>进程推进顺序不当。</li>
+</ol>
+
+<h4 id="产生的四个必要条件-需要同时满足才会产生死锁">产生的四个必要条件(需要同时满足才会产生死锁)</h4>
+
+<ol>
+<li>互斥：一个资源一次仅能被一个进程使用；</li>
+<li>请求与保持：一个进程进行资源请求时，对已经获得的资源保持不放；</li>
+<li>非剥夺：进程获得的资源在未使用完毕前不能强行剥夺；</li>
+<li>循环等待：多个进程形成一种头尾相接的循环等待关系。</li>
+</ol>
+
+<h4 id="处理死锁的方法">处理死锁的方法</h4>
+
+<h5 id="预防死锁-破坏四个必要条件">预防死锁（破坏四个必要条件）</h5>
+
+<ol>
+<li>第一个条件没法破坏；</li>
+<li>资源一次性分配可破坏第二个；</li>
+<li>新资源未满足释放已有资源，可破坏第三个；</li>
+<li>资源按照编号顺序有序分配，返回来释放，可破坏第四个。</li>
+</ol>
+
+<h5 id="避免死锁">避免死锁</h5>
+
+<p>系统在进行资源分配前先计算此次资源分配的安全性，若此次分配将导致系统进入不安全的状态，则等待，否则分配资源。比较有名的是银行家算法(Banker&rsquo;s Algorithm)。</p>
+
+<h5 id="检测死锁-简化资源分配图">检测死锁（简化资源分配图）</h5>
+
+<p>通过将资源分配图简化的方式检测状态是否死锁。</p>
+
+<h5 id="解除死锁">解除死锁</h5>
+
+<p>发现进程存在死锁，可以采用的解除方法有：</p>
+
+<ol>
+<li>剥夺资源，从其他进程剥夺足够数量的资源分配给死锁进程；</li>
+<li>撤销进程，可撤销死锁进程，也可以撤销较小的代价的进程，直至有足够的资源可用，能够解除死锁。</li>
+</ol>
+
+<h3 id="内存管理">内存管理</h3>
+
+<p>基本的存储管理方式可分为连续式存储和离散式存储。连续式存储可分为单一连续分配、固定分区、动态分区和可重定位分区；离散式存储主要有分页存储、分段存储和段页式存储方式。</p>
+
+<p>因为连续分配方式会出现许多内存碎片，主要介绍离散存储分配方式。</p>
+
+<h4 id="离散内存管理的方式">离散内存管理的方式</h4>
+
+<ol>
+<li>块式管理：将主存按照物理块分割，当程序片段不在主存中就分配一块主存并将程序片段载入，易于管理但造成浪费；</li>
+<li>页式管理：主存按照页分割，页要比块的空间小很多；</li>
+<li>段式管理：主存按照段分割，页一般被划分为相同的大小，段的只需要在逻辑上保持完整；</li>
+<li>段页式管理：先将主存按照段分割，每个段中再划分成多个页。段页式管理每取一次数据要访问三次内存。</li>
+</ol>
+
+<h4 id="内存分页与分段的区别">内存分页与分段的区别</h4>
+
+<p>页是信息的物理单位，段是信息的逻辑单位。页的大小固定且由系统确定，把逻辑地址划分为页号和页内地址两部分，是由机器硬件实现的，因而一个系统只能有一种大小的页面。段的长度却不固定，决定于用户所编写的程序，通常由编译程序在对源程序进程编辑时，根据信息的性质来划分。</p>
+
+<h4 id="虚拟内存">虚拟内存</h4>
+
+<p>虚拟内存是相对于物理内存而言的一种内存管理的技术，使得应用程序认为自己处于一块大的连续的内存空间上，即使物理内存并没有这么大。它通常被分割成多个物理内存碎片，还有部分暂时存储在外部磁盘存储器上，在需要时进行数据交换。会受到磁盘IO的限制。</p>
+
+<h3 id="三个经典的同步案例">三个经典的同步案例</h3>
+
+<p>首先说说什么是PV操作。一个P操作原语(wait)指申请一个单位的资源，使得进程进入临界区；V操作原语(signal)指释放一个单位的资源，进程离开临界区。一般使用信号量和PV原语来达到进程间的同步和互斥。</p>
+
+<h4 id="生产者消费者模型">生产者消费者模型</h4>
+
+<h4 id="读者写者模型">读者写者模型</h4>
+
+<h4 id="哲学家就餐问题">哲学家就餐问题</h4>
+
+    
+    
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+  const gitalk = new Gitalk({
+    clientID: '36c8fa6e09d08297a270',
+    clientSecret: 'af0175944284956d288d14b389fbc89be8df7f1e',
+    repo: 'chongg039.github.io',
+    owner: 'chongg039',
+    admin: ['chongg039'],
+    id: location.pathname, 
+    distractionFreeMode: false 
+  });
+  (function() {
+    if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+      document.getElementById('gitalk-container').innerHTML = 'Gitalk comments not available by default when the website is previewed locally.';
+      return;
+    }
+    gitalk.render('gitalk-container');
+  })();
+</script>
+
+<div class="navfooter">
+    <table width="100%" summary="Navigation footer">
+        <tbody>
+            <tr>
+                <td width="40%" align="left">&nbsp;</td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right">&nbsp;</td>
+            </tr>
+            <tr>
+                <td width="40%" align="left" valign="top">
+                    <span class="copyright">
+                        Copyright 2014-2020
+                    </span>
+                    &nbsp;
+                </td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right" valign="top">&nbsp;<a href="https://chongg039.cn/">HOME</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: { 
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+            processEscapes: true
+        }
+    });
+    </script>
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-117991024-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+    <script type="text/javascript" src="https://chongg039.cn/js/function.js"></script>
+    <script type="text/javascript" src="https://chongg039.cn/js/prettify.js"></script>
+    
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+</html>
+

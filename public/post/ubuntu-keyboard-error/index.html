@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>解决 ubuntu 下键盘错位问题</title>
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/style.css" />
+    
+    <link rel="shortcut icon" href="https://chongg039.cn/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/sunburst.css" />
+</head>
+<body onload="PR.prettyPrint()">
+    <div class="navheader">
+        <table width="100%" summary="Navigation header">
+            <tbody>
+                <tr>
+                    <td colspan="3" align="center">Co1driver 的个人博客</td>
+                </tr>
+                <tr>
+                    <td width="90%" align="left">&nbsp;</td>
+                    <td width="5%" align="center">&nbsp;<a accesskey="h" href="https://github.com/chongg039">GITHUB</a></td>
+                    <td width="5%" align="right">&nbsp;<a accesskey="a" href="https://chongg039.cn//about">ABOUT</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h1>解决 ubuntu 下键盘错位问题</h1>
+    <h4>Sun, Oct 2, 2016</h4>
+    <p>很悲催的键盘错位了，就这个系统有问题，以前也没遇到过。简而言之就是@和“互换，#打不出来等。问题不大，但是影响输入体验。
+工作室的小伙伴都说我这电脑只有我会用。。。</p>
+
+<p>之前在网上搜到的解决办法是在终端输入：
+&gt;sudo dpkg-reconfigure keyboard-configuration
+//需要安装keyboard-configuration</p>
+
+<p>然后调整键盘布局，改为English(US)或者English(UK)，这样就相当于把键盘布局重置，然后就好了。</p>
+
+<p>这种办法也可以通过<code>sudo vim /etc/default/keyboard</code>手动修改配置：
+&gt; KEYBOARD CONFIGURATION FILE</p>
+
+<blockquote>
+<p>Consult the keyboard(5) manual page.</p>
+
+<p>XKBMODEL=&ldquo;cherrycyboard&rdquo; //修改键盘类型
+XKBLAYOUT=&ldquo;us&rdquo; //修改语言类型：us,uk,cn&hellip;
+XKBVARIANT=&ldquo;&rdquo;
+XKBOPTIONS=&ldquo;&rdquo;</p>
+
+<p>BACKSPACE=&ldquo;guess&rdquo;</p>
+</blockquote>
+
+<p><strong>但是！！！</strong>这样修改一会键盘就变回去了啊啊！！！一开始是一天，后来越来越快，今天连一分钟也没撑住啊啊！！！
+弄得人心里很是崩溃。。。</p>
+
+<p>继续看吧，有人说需要在配置完<code>sudo vim /etc/default/keyboard</code>后，终端中运行一次
+&gt;setupcon</p>
+
+<p>但是输出了</p>
+
+<blockquote>
+<p>We are not on the console, the console is left unconfigured.</p>
+</blockquote>
+
+<p>原来要进入文字终端，虚拟终端还不行。。。
+执行完毕后，重启或者执行一次
+&gt;sudo udevadm trigger &ndash;subsystem-match=input &ndash;action=change</p>
+
+<p>使得保存的配置生效。
+这样一般就成功了，若是还不行，有可能是fcitx输入法的问题。
+打开 Fcitx Configuration，可以在search里找到
+<img src="https://c1.staticflickr.com/4/3766/33457473611_5ab96b6472_b.jpg#center" alt="" />
+像我上面选择的键盘语言是
+&gt;XKBLAYOUT=&ldquo;us&rdquo; //修改语言类型：us,uk,cn&hellip;</p>
+
+<p>需要把当前语言移动到最上面，没有的话就添加一个。</p>
+
+<p>到这里就可以解决大部分问题了，至少我这里键盘输入还没有回弹到那种奇葩的状况。
+那就必须秀一波@@@@@@@########&ldquo;&rdquo;&ldquo;&rdquo;&ldquo;&rdquo;&ldquo;&rdquo;&ldquo;&ldquo;啊哈哈！</p>
+
+<h2 id="https-c1-staticflickr-com-4-3666-33457496511-69a2c3bdae-z-jpg-center"><img src="https://c1.staticflickr.com/4/3666/33457496511_69a2c3bdae_z.jpg#center" alt="" /></h2>
+
+<h4 id="参考文档">参考文档</h4>
+
+<ul>
+<li><a href="http://www.linuxdiyf.com/linux/16832.html">ubuntu14.04键盘错位小问题</a></li>
+<li><a href="http://www.linuxdiyf.com/linux/17450.html">ubuntu/mint键盘错乱问题</a></li>
+<li><a href="http://blog.csdn.net/cc7756789w/article/details/50661992">Ubuntu下键盘输入错乱问题</a><br /></li>
+</ul>
+    
+    
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+  const gitalk = new Gitalk({
+    clientID: '36c8fa6e09d08297a270',
+    clientSecret: 'af0175944284956d288d14b389fbc89be8df7f1e',
+    repo: 'chongg039.github.io',
+    owner: 'chongg039',
+    admin: ['chongg039'],
+    id: location.pathname, 
+    distractionFreeMode: false 
+  });
+  (function() {
+    if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+      document.getElementById('gitalk-container').innerHTML = 'Gitalk comments not available by default when the website is previewed locally.';
+      return;
+    }
+    gitalk.render('gitalk-container');
+  })();
+</script>
+
+<div class="navfooter">
+    <table width="100%" summary="Navigation footer">
+        <tbody>
+            <tr>
+                <td width="40%" align="left">&nbsp;</td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right">&nbsp;</td>
+            </tr>
+            <tr>
+                <td width="40%" align="left" valign="top">
+                    <span class="copyright">
+                        Copyright 2014-2020
+                    </span>
+                    &nbsp;
+                </td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right" valign="top">&nbsp;<a href="https://chongg039.cn/">HOME</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: { 
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+            processEscapes: true
+        }
+    });
+    </script>
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-117991024-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+    <script type="text/javascript" src="https://chongg039.cn/js/function.js"></script>
+    <script type="text/javascript" src="https://chongg039.cn/js/prettify.js"></script>
+    
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+</html>
+

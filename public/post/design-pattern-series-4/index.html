@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>[设计模式系列]桥接模式与适配器模式</title>
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/style.css" />
+    
+    <link rel="shortcut icon" href="https://chongg039.cn/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/sunburst.css" />
+</head>
+<body onload="PR.prettyPrint()">
+    <div class="navheader">
+        <table width="100%" summary="Navigation header">
+            <tbody>
+                <tr>
+                    <td colspan="3" align="center">Co1driver 的个人博客</td>
+                </tr>
+                <tr>
+                    <td width="90%" align="left">&nbsp;</td>
+                    <td width="5%" align="center">&nbsp;<a accesskey="h" href="https://github.com/chongg039">GITHUB</a></td>
+                    <td width="5%" align="right">&nbsp;<a accesskey="a" href="https://chongg039.cn//about">ABOUT</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h1>[设计模式系列]桥接模式与适配器模式</h1>
+    <h4>Fri, Feb 21, 2020</h4>
+    
+
+<p><img src="https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/1_CMoFsPfso.jpg#center" alt="1_CMoFsPfso" /></p>
+
+<p>这篇文章进入GOF中的结构型模式篇幅。</p>
+
+<h3 id="bridge模式">Bridge模式</h3>
+
+<p>桥接模式号称设计模式中最难理解的模式，同时用好了能够很大程度上降低模块之间的耦合程度。因为本质上桥接模式实现了抽象化(Abstraction)与实现化(Implementation)的解耦，将继承关系转变为了组合关系，减少了代码编写量。</p>
+
+<p>说得通俗一点，就是一个实现中若涉及多个不同层次的继承关系，如果不将其合理解耦，则会产生很多设计上冗余的代码。<a href="https://blog.csdn.net/cabinriver/article/details/8924789">cabinriver</a>写的这篇文章中举了一个非常棒的例子，我也暂时没有想到更合适的，就在这里重复一下，方便学习记录。感谢他的工作。</p>
+
+<p>一台电脑可能有不同的制造商，每台电脑又可以安装多种不同的操作系统。电脑上在生产一台电脑时，需要生产出安装了不同操作系统的电脑。那么我们就应该将操作系统这个继承体系分离出去：</p>
+
+<pre><code class="language-c++">// 操作系统
+class OS
+{
+public:
+    virtual ~OS() = default;
+
+    virtual void Run() = 0;
+};
+
+class Linux : public OS
+{
+public:
+    void Run() override;
+};
+
+class Windows : public OS
+{
+public:
+    void Run() override;
+};
+
+// 不同品牌的电脑
+class Computer
+{
+public:
+    virtual ~Computer() = default;
+
+    virtual void Install(OS *os) = 0;
+};
+
+class Dell : public Computer
+{
+public:
+    void Install(OS *os) override;
+};
+
+class Apple : public Computer
+{
+public:
+    void Install(OS *os) override;
+};
+
+void Linux::Run()
+{
+    std::cout &lt;&lt; &quot;Linux running...&quot; &lt;&lt; std::endl;
+}
+
+void Windows::Run()
+{
+    std::cout &lt;&lt; &quot;Windows running...&quot; &lt;&lt; std::endl;
+}
+
+void Dell::Install(OS *os)
+{
+    std::cout &lt;&lt; &quot;Dell install os...&quot; &lt;&lt; std::endl;
+    os-&gt;Run();
+}
+
+void Apple::Install(OS *os)
+{
+    std::cout &lt;&lt; &quot;Apple install os...&quot; &lt;&lt; std::endl;
+    os-&gt;Run();
+}
+</code></pre>
+
+<p>这不是简单的继承层次，也不像Builder模式一样侧重构建的过程，而是采用了合理的方式将多种继承层次组合，降低了耦合度。用好Bridge模式是一件很不容易的事情。</p>
+
+<h3 id="adapter模式">Adapter模式</h3>
+
+<p>比较官方的说法是将一个类的接口转换为另外一个类中用户需要的接口，原本这两个是不兼容的。有句老话”如果一个东西走起路来像鸭子，叫起来也像鸭子，那么他就是一只鸭子“。对鸭子调用相应的接口是可以的，现在来了一只鹦鹉，它模仿鸭子走路的姿势，它模仿鸭子的叫声，但是我们不能对它调用鸭子的接口，为什么？因为它不是一只鸭子。</p>
+
+<p>那么我们如何让一只鹦鹉调用鸭子的接口呢，很简单，把调用鸭子的接口适配鹦鹉对象就行了。不过一般来说，鸭子接口是用户使用的，不希望去对他进行更改。那么反过来我们编写一个鹦鹉适配器的类，继承鸭子类这个接口，适配器类中保存一个鹦鹉类的对象指针就可以了，这种适配器方法称为对象适配器。</p>
+
+<pre><code class="language-c++">// 鸭子接口类
+class Duck
+{
+public:
+    virtual ~Duck() = default;
+
+    virtual void DuckWalk();
+
+    virtual void DuckQuack();
+};
+
+// 鹦鹉类
+class Parrot
+{
+public:
+    void ParrotFly();
+
+    void ParrotSay();
+};
+
+// 鹦鹉适配器
+class ParrotAdapter : public Duck
+{
+public:
+    explicit ParrotAdapter(Parrot *parrot);
+
+    ~ParrotAdapter() override;
+
+    void DuckWalk() override;
+
+    void DuckQuack() override;
+
+private:
+    Parrot *parrot_;
+};
+
+void Duck::DuckWalk()
+{
+    std::cout &lt;&lt; &quot;duck walking&quot; &lt;&lt; std::endl;
+}
+
+void Duck::DuckQuack()
+{
+    std::cout &lt;&lt; &quot;duck saying: gaga&quot; &lt;&lt; std::endl;
+}
+
+void Parrot::ParrotFly()
+{
+    std::cout &lt;&lt; &quot;parrot flying&quot; &lt;&lt; std::endl;
+}
+
+void Parrot::ParrotSay()
+{
+    std::cout &lt;&lt; &quot;actually im a parrot&quot; &lt;&lt; std::endl;
+}
+
+ParrotAdapter::ParrotAdapter(Parrot *parrot)
+        : parrot_(parrot)
+{}
+
+ParrotAdapter::~ParrotAdapter()
+{
+    if (parrot_) {
+        delete parrot_;
+        parrot_ = nullptr;
+    }
+}
+
+void ParrotAdapter::DuckWalk()
+{
+    parrot_-&gt;ParrotFly();
+}
+
+void ParrotAdapter::DuckQuack()
+{
+    parrot_-&gt;ParrotSay();
+}
+</code></pre>
+
+<p>然后生成一个适配器实例，可以调用鸭子接口的方法了：</p>
+
+<pre><code class="language-c++">int main()
+{
+    ParrotAdapter parrot_adapter(new Parrot);
+    parrot_adapter.DuckWalk();
+    parrot_adapter.DuckQuack();
+    return 0;
+}
+</code></pre>
+
+<p>适配器中的方法会转调鹦鹉成员的对应的方法：</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/wysDQv.png#center" alt="wysDQv" /></p>
+
+<p>除了对象适配器，还有类适配器。类适配器同时继承了接口类(Duck)和实现类(Parrot)，在适配器中重写相应的方法。类适配器耦合度较高，且使用了多继承，不是很推荐使用。</p>
+
+<h3 id="总结">总结</h3>
+
+<p>桥接模式和适配器模式都涉及数据结构的高度解耦，非常考验开发者的设计能力和工程素养。</p>
+
+    
+    
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+  const gitalk = new Gitalk({
+    clientID: '36c8fa6e09d08297a270',
+    clientSecret: 'af0175944284956d288d14b389fbc89be8df7f1e',
+    repo: 'chongg039.github.io',
+    owner: 'chongg039',
+    admin: ['chongg039'],
+    id: location.pathname, 
+    distractionFreeMode: false 
+  });
+  (function() {
+    if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+      document.getElementById('gitalk-container').innerHTML = 'Gitalk comments not available by default when the website is previewed locally.';
+      return;
+    }
+    gitalk.render('gitalk-container');
+  })();
+</script>
+
+<div class="navfooter">
+    <table width="100%" summary="Navigation footer">
+        <tbody>
+            <tr>
+                <td width="40%" align="left">&nbsp;</td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right">&nbsp;</td>
+            </tr>
+            <tr>
+                <td width="40%" align="left" valign="top">
+                    <span class="copyright">
+                        Copyright 2014-2020
+                    </span>
+                    &nbsp;
+                </td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right" valign="top">&nbsp;<a href="https://chongg039.cn/">HOME</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: { 
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+            processEscapes: true
+        }
+    });
+    </script>
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-117991024-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+    <script type="text/javascript" src="https://chongg039.cn/js/function.js"></script>
+    <script type="text/javascript" src="https://chongg039.cn/js/prettify.js"></script>
+    
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+</html>
+

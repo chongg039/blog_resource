@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Fmam on Co1driver 的个人博客</title>
+    <link>https://chongg039.cn/tags/fmam/</link>
+    <description>Recent content in Fmam on Co1driver 的个人博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>Copyright 2014-{year}</copyright>
+    <lastBuildDate>Thu, 02 Aug 2018 22:02:09 +0800</lastBuildDate>
+    
+	<atom:link href="https://chongg039.cn/tags/fmam/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>FMAM - 1.6：PH 分布的参数估计</title>
+      <link>https://chongg039.cn/post/fmam-content-1.6/</link>
+      <pubDate>Thu, 02 Aug 2018 22:02:09 +0800</pubDate>
+      
+      <guid>https://chongg039.cn/post/fmam-content-1.6/</guid>
+      <description>在概率论、随机建模和统计学中，概率分布的参数估计是一个基本问题。有关参数估计的参考资料的数量是巨大的。在本节中，我们主要讨论 PH 分布的参数估计。
+PH分布的参数估计是指为一个来自样本 ${y _ {1}, y _ {2}, &amp;hellip;, y _ {n}}$ 的 PH 随机变量 Y 找到一个 m 阶的 PH 表示 $(\alpha, T)$。样本中，$y _ {k}$ 被称为样本点，n 被称作样本大小。我们假定样本点是独立收集的，那么我们定义 ${Y _ {1}, Y _ {2}, &amp;hellip;, Y _ {n}}$ 是独立同分布的随机变量 (i.i.d.r.v.s) ，它们具有和 Y 一样的分布。样本点 $y _ {k}$ 是 $Y _ {k}$ 的一个实现（可能翻译不准确？）。同样的，我们定义 $\{I(t), t \geq 0 \}$ 作为与 Y 相关的底层马尔可夫链 (the underlying Markov chain) 。
+例子1.6.1：略 命题1.6.1 (Asmussen et al.</description>
+    </item>
+    
+    <item>
+      <title>FMAM - 1.5：多元 PH 分布</title>
+      <link>https://chongg039.cn/post/fmam-content-1.5/</link>
+      <pubDate>Thu, 02 Aug 2018 16:01:51 +0800</pubDate>
+      
+      <guid>https://chongg039.cn/post/fmam-content-1.5/</guid>
+      <description>考虑连续时间上的马尔可夫链 $ \{ Y(t), t \geq 0 \} $，且具有有限状态空间 $ \{1, 2, &amp;hellip;, m \} $，无穷小的生成矩阵 $Q$ 和初始分布 $\alpha$ 。令 $A _ {k} $ 是 $ \{ 1, 2, &amp;hellip;, m \} $ 的子集，其中 $k=1, &amp;hellip;, K$，假设交集$ \{ A _ {k}, k=1, &amp;hellip;, K \} $ 是非空的且马尔可夫链将以 1 的概率被吸收到交叉点。
+定义1.5.1 定义 $$ X _ {k} = min{t:Y(t) \in A _ {k}, t \geq 0}, k = 1, &amp;hellip;, K $$ 随机向量 $ X = (X _ {1}, X _ {2}, &amp;hellip;, X _ {K})$ 则被认为具有多元的 PH 分布（MPH）和多元的 PH 表示 $(\alpha, Q, A _ {k}, k = 1, &amp;hellip;, K)$ 。</description>
+    </item>
+    
+    <item>
+      <title>FMAM - 1.4：PH 分布和 PH 表示</title>
+      <link>https://chongg039.cn/post/fmam-content-1.4/</link>
+      <pubDate>Thu, 26 Jul 2018 10:30:01 +0800</pubDate>
+      
+      <guid>https://chongg039.cn/post/fmam-content-1.4/</guid>
+      <description>注：本书中 &amp;quot;order&amp;quot; 译作 “阶“，原因如下： 在 &amp;quot;Stat Trek&amp;quot; 上 &amp;quot;Matrix Order&amp;quot; 的释义为： The number of rows and columns that a matrix has is called its order or its dimension. By convention, rows are listed first; and columns, second. Thus, we would say that the order (or dimension) of the matrix below is 3 x 4, meaning that it has 3 rows and 4 columns. 矩阵具有的行数和列数 称为其 顺序 或 维度 。按照惯例，首先列出行，再给出列。因此，我们可以说下面矩阵的顺序（或维度）是3 x 4，这意味着它有 3 行 4 列。 本文中主要研究方阵，因此将 &amp;quot;the order of the matrix is n&amp;quot; 译作 ”n 阶方阵”  1.</description>
+    </item>
+    
+    <item>
+      <title>FMAM - 1.3：PH 分布的闭包属性</title>
+      <link>https://chongg039.cn/post/fmam-content-1.3/</link>
+      <pubDate>Fri, 20 Jul 2018 15:59:56 +0800</pubDate>
+      
+      <guid>https://chongg039.cn/post/fmam-content-1.3/</guid>
+      <description>在本节中，我们展示了一组 PH 分布在一些操作下是封闭的情况（例如，“min”，“max”，“+”）。闭包属性证明了随机建模中 PH 分布在数学上的动态可操作性，这体现了他们在应用中的关键作用。首先，我们考虑采用马尔可夫链方法练习 1.1.5 , 1.1.6 和 1.1.9 。
+例子1.3.1： 假定 $X _ {1} $ 和 $X _ {2}$ 是分别具有参数 $\lambda _ {1} $ 和 $\lambda _ {2} $ 的相互独立的指数随机变量，显示 $min\{X _ {1}, X _ {2}\} $ ，$max\{X _ {1}, x _ {2}\}$ 和 $X _ {1} + X _ {2}$ 服从 PH 分布，并找出对应的 PH 表示。
+回想一个和 $X _ {1}$ 相关的两阶段连续时间马尔可夫链，令 $I _ {1}(t)$ 为 $t$ 时刻的底层马尔可夫链的阶段。那么两阶段底层马尔可夫链 $\{I _ {1}(t), t \geq 0\}$ 的无穷小生成矩阵由下面给出 $$ Q _ {1} = \begin{matrix}1 \\ 2 \end{matrix}\begin{pmatrix}-\lambda _ {1} &amp;amp; \lambda _ {1} \\ 0 &amp;amp; 0\end{pmatrix} $$ 其中阶段 2 是吸收阶段。同样地，$I _ {2}(t)$ 由和 $X _ {2}$ 相关联的两阶段底层马尔可夫链定义。两条马尔可夫链 $\{I _ {1}(t), t \geq 0\}$ 和 $\{I _ {2}(t), t \geq 0\}$ 是相互独立的。</description>
+    </item>
+    
+    <item>
+      <title>FMAM - 1.2：PH 分布的定义和基本属性</title>
+      <link>https://chongg039.cn/post/fmam-content-1.2/</link>
+      <pubDate>Thu, 19 Jul 2018 20:11:50 +0800</pubDate>
+      
+      <guid>https://chongg039.cn/post/fmam-content-1.2/</guid>
+      <description>PH 分布在 Neuts（1975）中被引入来概括指数分布。在本节中，我们给出了相位分布的一个代数定义和一个概率定义，并介绍一些基本的属性。
+定义1.2.1： 如果非负随机变量 X 的分布函数由下式给出，则它具有相位类型分布（PH分布）：
+$$ F(t)=P\{X \leq t\}=1-\pmb{\alpha} exp(Tt) \pmb{e} \equiv 1- \pmb{\alpha}(\sum _ {n=0}^\infty \frac{t^n}{n!}T^n) \pmb{e},t \geq 0 \tag{1.9} $$
+其中：
+ $\pmb{e}$ 是全为 1 的列向量； $\pmb{\alpha}$ 是 m 阶的随机行向量（substochastic pmbtor 翻译不准确？），即 $\pmb{\alpha}$ 是行向量，$\pmb{\alpha}$ 中的所有元素都是非负的，$\pmb{\alpha} \pmb{e} \leq 1$ ，其中 m 是正整数； T 是 m 阶的子生成矩阵（subgenerator 翻译不准确？），即 T 是 $m \times m$ 矩阵，使得 (1) 对角线所有元素都是负的；(2) 所有非对角线元素都是非负的；(3) 一行所有元素之和均为非正数，且对所有行有效；(4) T 是可逆的。  我们称 T 为 PH 发生器，2 元组 $(\pmb{\alpha}, T)$ 称为 m 阶相位分布的相位表示（PH表示）。</description>
+    </item>
+    
+    <item>
+      <title>FMAM - 1.1：指数分布</title>
+      <link>https://chongg039.cn/post/fmam-content-1.1/</link>
+      <pubDate>Wed, 18 Jul 2018 17:01:14 +0800</pubDate>
+      
+      <guid>https://chongg039.cn/post/fmam-content-1.1/</guid>
+      <description>本章节定义了指数分布和与指数分布相关联的一些基本属性。
+定义1.1.1： 如果一个非负随机变量Ｘ的概率分布函数（即累积分布函数 CDF）满足如下形式：
+$$ F(t)=P\{X \leq t\}=1-exp(-\lambda t) \equiv 1-\sum _ {n=0}^{\infty}\frac{(-\lambda)^n t^n}{n!}, t \geq 0 $$
+则称非负随机变量Ｘ服从指数分布。其中 $\lambda$ 是正实数，将Ｘ称为参数为 $\lambda $ 的指数随机变量。
+取分布函数 F(t) 的导数，即得到指数分布的概率密度函数：
+$$ f(t)=\frac{dF(t)}{dt}=\lambda exp(- \lambda t), t \geq 0 $$
+练习1.1.1： 式子 $$ \int _ {0} ^ {\infty} \lambda e ^ {- \lambda t} dt=1 $$ 使用了分部积分法，试着从概率上解释（不使用任何计算）为什么积分的结果是 1 。
+图 1.1 绘制了 $\lambda = 1$ 和 $\lambda = 5$ 时的指数分布的概率密度函数，这两者表现出了类似“指数”的形状。
+练习1.1.2： 分别绘制 $\lambda = 0.</description>
+    </item>
+    
+    <item>
+      <title>FMAM - 预备内容：指数分布和 Erlang 分布 - Chapter 1 </title>
+      <link>https://chongg039.cn/post/fmam-prepare-2/</link>
+      <pubDate>Tue, 17 Jul 2018 17:19:48 +0800</pubDate>
+      
+      <guid>https://chongg039.cn/post/fmam-prepare-2/</guid>
+      <description>泊松分布是离散变量的随机分布，发生的次数之间是离散的。指数分布则针对连续型随机变量定义，即时间必须是连续的。
+指数分布可以用来表示独立随机事件发生的时间间隔，比如旅客进入机场的时间间隔、打进客服中心电话的时间间隔、中文维基百科新条目出现的时间间隔等等。 – wikipedia
+粗略地可以认为这两个分布之间有一种“倒数”的关系。
+指数分布概率密度函数：$$f(x)=\lambda e^{-\lambda x},x \in [0,+\infty)$$
+其中 $\lambda &amp;gt;0$ 是分布的一个参数，常被称为率参数（rate parameter）。即每单位时间发生该事件的次数。
+累积分布函数：$$P(X\leqslant x)=1- e^{-\lambda x},x \in [0,+\infty)$$
+注意：若令$\theta = \frac{1}{\lambda}$，概率密度：$p=\frac{1}{\theta}e^{-x/\theta}$，分布函数：$P(X\leqslant x)=F(x)=1-e^{-x/\theta},x \in [0,+\infty)$
+这个 $\lambda $ 就是泊松分布中的 $\lambda $，此时指数分布的期望就是 $EX=\theta \quad (\lambda=1/\theta)$ 。
+指数分布的描述对象是“连续型随机变量”。指数分布是泊松过程的事件间隔的分布：泊松分布表示的是事件发生的次数，“次数”这个是离散变量，所以泊松分布是离散随机变量的分布；指数分布是两件事情发生的平均间隔时间，“时间”是连续变量，所以指数分布是一种连续随机变量的分布。
+指数分布的实例：
+ 旅客进机场的时间间隔 网站访问的时间间隔 婴儿出生的时间间隔  泊松分布是单位时间内独立事件发生次数的概率分布，指数分布是独立事件的时间间隔的概率分布。注两者的前提的前提是”独立事件”，事件之间不能有关联。
+爱尔朗分布（Erlang Distribution）是一种连续型概率分布，该分布与指数分布一样多用来表示独立随机事件发生的时间间隔。相比于指数分布，爱尔朗分布能更好地对现实数据进行拟合（更适用于多个串行过程，或无记忆性假设不显著的情况下）。除非退化为指数分布，爱尔朗分布不具有无记忆性（或马尔可夫性质），因此对其进行分析相对困难一些。一般通过将爱尔朗过程分解为多个指数过程的技巧来对爱尔朗分布进行分析。
+遵循爱尔朗分布的随机变量可以被分解多个同参数指数分布随机变量之和，该性质使得爱尔朗分布被广泛用于排队论中。
+爱尔朗分布有两个参数，阶数（stage）$k$ 和均值 $\mu$ （也有用 $\lambda ={\frac {1}{\mu }}$ 来代替的）。具有阶数 $k$ 的爱尔朗过程被称为k阶爱尔朗（k-stage Erlang），对应的随机变量可被视为k个独立同参数指数分布随机变量之和。
+依据上下文环境不同，均值参数 $\mu$ 可以指整个爱尔朗分布的均值 $\mu _ {0}$ 也可以指每个指数分布的均值 $\mu _ {i}$ 。两者的关系是： $$\mu _ {i}={\frac {\mu _ {0}}{k}}$$</description>
+    </item>
+    
+    <item>
+      <title>FMAM - 预备内容：从泊松分布到泊松过程 - Chapter 1</title>
+      <link>https://chongg039.cn/post/fmam-prepare-1/</link>
+      <pubDate>Mon, 16 Jul 2018 09:33:33 +0800</pubDate>
+      
+      <guid>https://chongg039.cn/post/fmam-prepare-1/</guid>
+      <description>泊松分布 泊松分布由二项分布演变而来。二项分布：
+事件 A 在一次实验中发生的概率为 P ，将这个实验独立地重复 n 次，即做 n 次独立重复的伯努利实验，在这 n 次实验中事件A发生的次数记为 x ，概率有：
+$$P(x=k)=C _ {n}^{k}p^{k}(1-p)^{n-k}$$，记为 $X\sim B(n,p)$ ，期望 $E=pn$
+认为在 n 趋于无穷大时，p 为无穷小，期望值不变为一常数，记 $E=pn=\lambda$
+即：$$p=\frac{\lambda}{n}$$，则当 $n \to +\infty$ 时，P 将趋于泊松分布：$$P(x=k)= e^{-\lambda}\frac{\lambda^{k}}{k!}$$
+期望和方差都是 $\lambda$ ，$\lambda$ 表示一段时间内事件发生的次数。
+泊松分布实例：
+ 一本书里，印刷错误的字的个数 一段时间内的次品率 某医院平均每小时出生的婴儿数 某网站每分钟的访问次数  独立增量过程 亦称可加过程（additive process)，是在不相交时段上增量相互独立的随机过程。
+考虑实值过程 $$ X _ {t}, t \in T $$
+如果对于任意参数 $$ t _ {0} &amp;lt; t _ {1} &amp;lt; &amp;hellip; t _ {n} $$</description>
+    </item>
+    
+    <item>
+      <title>Fundamentals of Matrix-Analytic Methods 学习笔记 -- 开坑篇</title>
+      <link>https://chongg039.cn/post/fmam-start/</link>
+      <pubDate>Thu, 12 Jul 2018 11:19:49 +0800</pubDate>
+      
+      <guid>https://chongg039.cn/post/fmam-start/</guid>
+      <description>教研室老板要求学习 Qi-Ming He 老师的这本书 Fundamentals of Matrix-Analytic Methods，于是准备开一个新坑，翻译一下这本书的关键内容，做做笔记，并对一些预备内容（概率分布、矩阵分析等）作解读。
+文章的标题格式为“书名简称” + “中文章节名”，笔记将穿插在其中以代码块或其他形式存在。预备内容标题格式为“书名简称” + “预备内容：标题” + “大致章节名”。
+以此来督促自己研究生期间好好学习。</description>
+    </item>
+    
+  </channel>
+</rss>

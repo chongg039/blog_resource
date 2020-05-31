@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>FMAM - 预备内容：从泊松分布到泊松过程 - Chapter 1</title>
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/style.css" />
+    
+    <link rel="shortcut icon" href="https://chongg039.cn/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/sunburst.css" />
+</head>
+<body onload="PR.prettyPrint()">
+    <div class="navheader">
+        <table width="100%" summary="Navigation header">
+            <tbody>
+                <tr>
+                    <td colspan="3" align="center">Co1driver 的个人博客</td>
+                </tr>
+                <tr>
+                    <td width="90%" align="left">&nbsp;</td>
+                    <td width="5%" align="center">&nbsp;<a accesskey="h" href="https://github.com/chongg039">GITHUB</a></td>
+                    <td width="5%" align="right">&nbsp;<a accesskey="a" href="https://chongg039.cn//about">ABOUT</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h1>FMAM - 预备内容：从泊松分布到泊松过程 - Chapter 1</h1>
+    <h4>Mon, Jul 16, 2018</h4>
+    
+
+<h3 id="泊松分布">泊松分布</h3>
+
+<p>泊松分布由二项分布演变而来。二项分布：</p>
+
+<p>事件 A 在一次实验中发生的概率为 P ，将这个实验独立地重复 n 次，即做 n 次独立重复的伯努利实验，在这 n 次实验中事件A发生的次数记为 x ，概率有：</p>
+
+<p>$$P(x=k)=C _ {n}^{k}p^{k}(1-p)^{n-k}$$，记为 $X\sim B(n,p)$ ，期望 $E=pn$</p>
+
+<p>认为在 n 趋于无穷大时，p 为无穷小，期望值不变为一常数，记 $E=pn=\lambda$</p>
+
+<p>即：$$p=\frac{\lambda}{n}$$，则当 $n \to +\infty$ 时，P 将趋于泊松分布：$$P(x=k)= e^{-\lambda}\frac{\lambda^{k}}{k!}$$</p>
+
+<p>期望和方差都是 $\lambda$ ，$\lambda$ 表示一段时间内事件发生的次数。</p>
+
+<p>泊松分布实例：</p>
+
+<ol>
+<li>一本书里，印刷错误的字的个数</li>
+<li>一段时间内的次品率</li>
+<li>某医院平均每小时出生的婴儿数</li>
+<li>某网站每分钟的访问次数</li>
+</ol>
+
+<h3 id="独立增量过程">独立增量过程</h3>
+
+<p>亦称可加过程（additive process)，是在不相交时段上增量相互独立的随机过程。</p>
+
+<p>考虑实值过程
+$$
+X _ {t}, t \in T
+$$</p>
+
+<p>如果对于任意参数
+$$
+t _ {0} &lt; t _ {1} &lt; &hellip; t _ {n}
+$$</p>
+
+<p>随机变量
+$$
+X _ {t _ {0}},X _ {t _ {1}}-X _ {t _ {0}},&hellip;X _ {t _ {n}}-X _ {t _ {n-1}}
+$$ 相互独立，则称其为<strong>独立增量过程</strong>。</p>
+
+<p>若进一步假设
+$$
+X _ {t _ {k}}-X _ {t _ {k-1}}
+$$ 的分布只与差</p>
+
+<p>$$
+t _ k - t _ {k-1}
+$$</p>
+
+<p>有关，则称其为<strong>平稳独立增量过程</strong>。</p>
+
+<p>状态离散的平稳独立增量过程是一类特殊的马尔可夫过程。泊松过程和布朗运动都是它的特例。从一般的独立增量过程分离出本质上是独立随机变量序列的部分和以后 ，剩下的部分总是随机连续的。因此研究独立增量过程，通常可以假设它是可分且随机连续的。</p>
+
+<p>莱维-辛钦公式表明可分的随机连续的独立增量过程可表为正态过程，泊松型过程及实函数之和。</p>
+
+<h3 id="泊松过程">泊松过程</h3>
+
+<p>实验结果满足泊松分布的实验即为<strong>泊松过程</strong>。泊松过程把离散的伯努利过程变得连续化了：原来是抛 n 次硬币，现在变成了无穷多次抛硬币；原来某次抛硬币得到正面的概率是 p ，而现在 p 无限接近于 0（$p=\frac{\lambda}{n}$），即：非常难抛出正面朝上的硬币；但是 n 次实验中硬币朝上的次数的期望不变，即 $\lambda$ 恒定。在<strong>泊松过程</strong>中，我们把抛出硬币正面这样的事件叫做<strong>到达</strong>（Arrival）。把单位时间内到达的数量，叫做<strong>到达率</strong>（Arrival Rate），即 $\lambda$ 。</p>
+
+<p>泊松过程需要满足以下三个性质：</p>
+
+<ol>
+<li>在任意单位时间长度内，到达率是稳定的。对应于无穷次抛硬币的例子，我们相当于把一个单位时间分割成了无穷次抛硬币的实验，每次实验产生正面的概率都是一样的：$$p=\frac{\lambda}{n}$$ ，而在这无穷个抛硬币实验之后（即一个单位时间之后）我们期望能抛出 $\lambda$ 个正面的硬币。这个性质类比于在有限次抛硬币（二项分布）的例子中保证了每次掷出硬币为正面的概率都为 p 。</li>
+<li>未来的实验结果与过去的实验结果无关。对应于无穷次抛硬币的例子，之前不管抛出了多少个正面和反面的硬币，都不会影响之后硬币出现的结果。</li>
+<li>在极小的一段时间内，有 1 次到达的概率非常小，没有到达的概率非常大。对应于无穷次抛硬币的例子，我们发现硬币朝上的概率 $p=\frac{\lambda}{n}$ 趋向于 0 。</li>
+</ol>
+
+    
+    
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+  const gitalk = new Gitalk({
+    clientID: '36c8fa6e09d08297a270',
+    clientSecret: 'af0175944284956d288d14b389fbc89be8df7f1e',
+    repo: 'chongg039.github.io',
+    owner: 'chongg039',
+    admin: ['chongg039'],
+    id: location.pathname, 
+    distractionFreeMode: false 
+  });
+  (function() {
+    if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+      document.getElementById('gitalk-container').innerHTML = 'Gitalk comments not available by default when the website is previewed locally.';
+      return;
+    }
+    gitalk.render('gitalk-container');
+  })();
+</script>
+
+<div class="navfooter">
+    <table width="100%" summary="Navigation footer">
+        <tbody>
+            <tr>
+                <td width="40%" align="left">&nbsp;</td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right">&nbsp;</td>
+            </tr>
+            <tr>
+                <td width="40%" align="left" valign="top">
+                    <span class="copyright">
+                        Copyright 2014-2020
+                    </span>
+                    &nbsp;
+                </td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right" valign="top">&nbsp;<a href="https://chongg039.cn/">HOME</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: { 
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+            processEscapes: true
+        }
+    });
+    </script>
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-117991024-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+    <script type="text/javascript" src="https://chongg039.cn/js/function.js"></script>
+    <script type="text/javascript" src="https://chongg039.cn/js/prettify.js"></script>
+    
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+</html>
+

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Designpattern on Co1driver 的个人博客</title>
+    <link>https://chongg039.cn/tags/designpattern/</link>
+    <description>Recent content in Designpattern on Co1driver 的个人博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>Copyright 2014-{year}</copyright>
+    <lastBuildDate>Fri, 28 Feb 2020 09:33:01 +0800</lastBuildDate>
+    
+	<atom:link href="https://chongg039.cn/tags/designpattern/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>[设计模式系列]迭代器模式与解释器模式</title>
+      <link>https://chongg039.cn/post/design-pattern-series-11/</link>
+      <pubDate>Fri, 28 Feb 2020 09:33:01 +0800</pubDate>
+      
+      <guid>https://chongg039.cn/post/design-pattern-series-11/</guid>
+      <description>来看下行为模式的最后两个部分。
+迭代器模式(Iterator Pattern) STL里面的迭代器就是这个。迭代器模式主要就是为了解决对一个聚合对象的遍历问题，将遍历行为封装到一个类型中，避免了过度暴露聚合类内部表示。
+来看下Wikipedia上的UML图：
+class Iterator; // 聚合对象 class Aggregate { public: virtual ~Aggregate() = default; virtual Iterator *CreateIterator() = 0; virtual int GetSize() const = 0; virtual int GetItem(int idx) const = 0; }; class ConcreteAggregate : public Aggregate { public: explicit ConcreteAggregate(std::vector&amp;lt;int&amp;gt; nums); Iterator *CreateIterator() override; int GetSize() const override; int GetItem(int idx) const override; private: std::vector&amp;lt;int&amp;gt; nums_; }; // 迭代器抽象类 class Iterator { public: virtual ~Iterator() = default; virtual bool HasNext() = 0; virtual void Next() = 0; virtual int operator*() = 0; }; class ConcreteIterator : public Iterator { public: explicit ConcreteIterator(Aggregate *aggregate, int idx = 0); bool HasNext() override; void Next() override; int operator*() override; private: Aggregate *aggregate_; int idx_; }; ConcreteAggregate::ConcreteAggregate(std::vector&amp;lt;int&amp;gt; nums) : nums_(std::move(nums)) {} Iterator *ConcreteAggregate::CreateIterator() { return new ConcreteIterator(this); } int ConcreteAggregate::GetSize() const { return nums_.</description>
+    </item>
+    
+    <item>
+      <title>[设计模式系列]命令模式与访问者模式</title>
+      <link>https://chongg039.cn/post/design-pattern-series-10/</link>
+      <pubDate>Thu, 27 Feb 2020 09:08:40 +0800</pubDate>
+      
+      <guid>https://chongg039.cn/post/design-pattern-series-10/</guid>
+      <description>命令模式和访问者模式也是两种常见的行为模式。
+命令模式(Command Pattern) Command模式结构图中，将请求的接收者（处理者）放到Command的具体子类ConcreteCommand中，当请求到来时（Invoker发出Notify消息激活 Command对象），ConcreteCommand将处理请求交给Receiver对象进行处理。
+// 具体的接收人 class Receiver { public: void Action(); }; // 抽象类 class Command { public: virtual ~Command() = default; virtual void set_receiver(Receiver *receiver) = 0; virtual void Execute() = 0; }; class ConcreteCommand : public Command { public: void set_receiver(Receiver *receiver) override; void Execute() override; private: Receiver *receiver_; }; class Invoker { public: void set_command(Command *command); void Notify(); private: std::list&amp;lt;Command *&amp;gt; commands_; }; void Receiver::Action() { std::cout &amp;lt;&amp;lt; &amp;quot;receiver do action.</description>
+    </item>
+    
+    <item>
+      <title>[设计模式系列]备忘录模式与中介者模式</title>
+      <link>https://chongg039.cn/post/design-pattern-series-9/</link>
+      <pubDate>Wed, 26 Feb 2020 19:44:52 +0800</pubDate>
+      
+      <guid>https://chongg039.cn/post/design-pattern-series-9/</guid>
+      <description>闲话少说直接进入正题。
+备忘录模式(Memento Pattern) 备忘录模式就是可以维护一个对象的内部状态，并在对象的外部保存这个状态。这样就可以随时将对象恢复成保存的那个状态，就像吃后悔药一样，属于一个&amp;rdquo;undo&amp;rdquo;操作。
+看下UML图，来源：
+class Memento { public: explicit Memento(std::string state); const std::string &amp;amp;get_state() const; void set_state(const std::string &amp;amp;state); private: std::string state_; }; // 管理者 class Caretaker { public: ~Caretaker(); public: Memento *get_memento() const; void set_memento(Memento *memento); private: Memento *memento_; }; // 发起人 class Originator { public: const std::string &amp;amp;get_state() const; void set_state(const std::string &amp;amp;state); Memento *CreateMemento(); void SetMemento(Memento *memento); void Show(); private: std::string state_; }; Memento::Memento(std::string state) : state_(std::move(state)) {} const std::string &amp;amp;Memento::get_state() const { return state_; } void Memento::set_state(const std::string &amp;amp;state) { state_ = state; } Caretaker::~Caretaker() { if (memento_) { delete memento_; memento_ = nullptr; } } Memento *Caretaker::get_memento() const { return memento_; } void Caretaker::set_memento(Memento *memento) { memento_ = memento; } const std::string &amp;amp;Originator::get_state() const { return state_; } void Originator::set_state(const std::string &amp;amp;state) { state_ = state; } Memento *Originator::CreateMemento() { return new Memento(state_); } void Originator::SetMemento(Memento *memento) { state_ = memento-&amp;gt;get_state(); } void Originator::Show() { std::cout &amp;lt;&amp;lt; &amp;quot;state is: &amp;quot; &amp;lt;&amp;lt; state_ &amp;lt;&amp;lt; std::endl; }  看下效果：</description>
+    </item>
+    
+    <item>
+      <title>[设计模式系列]模板模式、状态模式与观察者模式</title>
+      <link>https://chongg039.cn/post/design-pattern-series-8/</link>
+      <pubDate>Tue, 25 Feb 2020 10:22:41 +0800</pubDate>
+      
+      <guid>https://chongg039.cn/post/design-pattern-series-8/</guid>
+      <description>模板模式(Template Pattern) 模板模式类似策略模式，都是将算法接口定义在抽象类中，具体的实现细节交给派生类去做。但是策略模式偏重组合，模板模式侧重继承。模板方法模式将重复的代码交给了父类，各自的子类只负责算法不同的细节部分。
+class Abstract { public: virtual ~Abstract() = default; void TemplateMethod(); protected: virtual void Method1() = 0; virtual void Method2() = 0; }; class ConcreteA : public Abstract { public: void Method1() override; void Method2() override; }; class ConcreteB : public Abstract { public: void Method1() override; void Method2() override; }; void Abstract::TemplateMethod() { Method1(); Method2(); } void ConcreteA::Method1() { std::cout &amp;lt;&amp;lt; &amp;quot;concrete A use method 1&amp;quot; &amp;lt;&amp;lt; std::endl; } void ConcreteA::Method2() { std::cout &amp;lt;&amp;lt; &amp;quot;concrete A use method 2&amp;quot; &amp;lt;&amp;lt; std::endl; } void ConcreteB::Method1() { std::cout &amp;lt;&amp;lt; &amp;quot;concrete B use method 1&amp;quot; &amp;lt;&amp;lt; std::endl; } void ConcreteB::Method2() { std::cout &amp;lt;&amp;lt; &amp;quot;concrete B use method 2&amp;quot; &amp;lt;&amp;lt; std::endl; }  状态模式(State Pattern) 有限状态自动机就是这样一个案例，对不同的状态执行不同的动作。一个很典型的就是switch/case语句，但switch/case没有实现状态逻辑和动作的分离，导致若条件很多时将会维护很冗长且复杂的代码。</description>
+    </item>
+    
+    <item>
+      <title>[设计模式系列]职责链模式与策略模式</title>
+      <link>https://chongg039.cn/post/design-pattern-series-7/</link>
+      <pubDate>Mon, 24 Feb 2020 17:12:56 +0800</pubDate>
+      
+      <guid>https://chongg039.cn/post/design-pattern-series-7/</guid>
+      <description>进入GOF中的最后一部分，行为模式。
+职责链模式(Chain-of-Responsibility Pattern) 职责链模式也不难理解，就是用户提交一个请求，允许这个请求沿着一条多个具体行为对象组成的链流动，直到有某个对象处理后（或是一个最终的处理对象处理完成）返回对应的结果，用户并不知道是哪个具体的行为人处理的，用户也不需要关心这个。考虑到这个层面，所有的行为对象应该继承一个公有的接口类：
+class Handler { public: virtual ~Handler() = default; virtual void HandleRequest(int request) = 0; // 设置继任者 void SetSuccessor(std::shared_ptr&amp;lt;Handler&amp;gt; successor); protected: std::shared_ptr&amp;lt;Handler&amp;gt; successor_; }; class ConcreteA : public Handler { public: void HandleRequest(int request) override; }; class ConcreteB : public Handler { public: void HandleRequest(int request) override; }; class DefaultConcrete : public Handler { public: void HandleRequest(int request) override; }; void Handler::SetSuccessor(std::shared_ptr&amp;lt;Handler&amp;gt; successor) { successor_ = std::move(successor); } void ConcreteA::HandleRequest(int request) { if (1 == request) { std::cout &amp;lt;&amp;lt; &amp;quot;concrete A handle something&amp;quot; &amp;lt;&amp;lt; std::endl; } else if (successor_) { successor_-&amp;gt;HandleRequest(request); } } void ConcreteB::HandleRequest(int request) { if (2 == request) { std::cout &amp;lt;&amp;lt; &amp;quot;concrete B handle something&amp;quot; &amp;lt;&amp;lt; std::endl; } else if (successor_) { successor_-&amp;gt;HandleRequest(request); } } void DefaultConcrete::HandleRequest(int request) { std::cout &amp;lt;&amp;lt; &amp;quot;default concrete final handle something&amp;quot; &amp;lt;&amp;lt; std::endl; }  设置了两个处理实例和一个默认处理实例，将它们连接起来：</description>
+    </item>
+    
+    <item>
+      <title>[设计模式系列]享元模式、外观模式与代理模式</title>
+      <link>https://chongg039.cn/post/design-pattern-series-6/</link>
+      <pubDate>Sun, 23 Feb 2020 09:30:35 +0800</pubDate>
+      
+      <guid>https://chongg039.cn/post/design-pattern-series-6/</guid>
+      <description>不多啰嗦直奔主题，来看下GOF中结构型模式的最后三部分。
+享元模式(Flyweight Pattern) 过多的对象创建会造成很大的存储开销，而这其中有相当一部分可能是重复且不必要的。因此对于一个特定的对象我们可以将其分为”内部状态“和”外部状态“两部分。内部状态指可以被共享的、一般不会变化的状态，存储在类的内部；对于可能产生变化的外部状态，我们选择将其作为参数传递给对象。
+享元模式类似工厂模式，有一个工厂对象，这个工厂用于接收用户的每一次申请对象的请求。工厂内部有一个维护了所有对象的”仓库“。每一次会先检查这个仓库中是否存在了这个对象。若存在便返回，若不存在，就创建一个新的对象返回，并将其添加进这个仓库中。
+class Flyweight; // 工厂对象 class FlyweightFactory { public: FlyweightFactory(); ~FlyweightFactory(); Flyweight *GetFlyweight(const std::string &amp;amp;key); private: std::map&amp;lt;std::string, Flyweight *&amp;gt; store_; }; class Flyweight { public: virtual ~Flyweight() = default; virtual void Operation(int extrinsic_state) = 0; }; class ConcreteFlyweight : public Flyweight { public: void Operation(int extrinsic_state) override; }; class UnShareConcreteFlyweight : public Flyweight { public: void Operation(int extrinsic_state) override; }; FlyweightFactory::FlyweightFactory() = default; FlyweightFactory::~FlyweightFactory() = default; Flyweight *FlyweightFactory::GetFlyweight(const std::string &amp;amp;key) { if (store_.</description>
+    </item>
+    
+    <item>
+      <title>[设计模式系列]装饰模式与组合模式</title>
+      <link>https://chongg039.cn/post/design-pattern-series-5/</link>
+      <pubDate>Sat, 22 Feb 2020 11:01:40 +0800</pubDate>
+      
+      <guid>https://chongg039.cn/post/design-pattern-series-5/</guid>
+      <description>这篇来学习一下装饰模式与组合模式，也是结构型模式中的内容。
+装饰模式(Decorator Pattern) 顾名思义，装饰模式就是往一个现有的产品上添加功能部件，增加一些新的额外职责，将这个被嵌入的对象称为职责。注意这不是对所有的类都进行添加，而是对某些实例化的对象进行添加。并且，所有的装饰应该继承同一个装饰接口。
+与Bridge模式很相似，侧重的也是单一职责与组合代替继承。考虑和之前相同的例子，对于题干Stem和解题过程，可以将抽取实体和关系的行为与其分离，作为行为装饰在具体的对象中。
+// sentence基类，将装饰行为与其分离 class Sentence { public: virtual ~Sentence() = default; virtual void ShowDecorate() = 0; }; // stem子类实例 class Stem : public Sentence { public: void ShowDecorate() override; }; // solution子类实例 class Solution : public Sentence { public: void ShowDecorate() override; }; // 装饰行为基类 class Decorator : public Sentence { public: explicit Decorator(Sentence *sentence); ~Decorator() override; void ShowDecorate() override; private: Sentence *sentence_; }; // 装饰类EntityDecorator class EntityDecorator : public Decorator { public: explicit EntityDecorator(Sentence *sentence); void ShowDecorate() override; private: void ExtractEntity(); }; // 装饰类RelationDecorator class RelationDecorator : public Decorator { public: explicit RelationDecorator(Sentence *sentence); void ShowDecorate() override; private: void ExtractRelation(); }; void Stem::ShowDecorate() { std::cout &amp;lt;&amp;lt; &amp;quot;stem&#39;s decorator&amp;quot; &amp;lt;&amp;lt; std::endl; } void Solution::ShowDecorate() { std::cout &amp;lt;&amp;lt; &amp;quot;solution&#39;s decorator&amp;quot; &amp;lt;&amp;lt; std::endl; } Decorator::Decorator(Sentence *sentence) : sentence_(sentence) {} Decorator::~Decorator() { if (sentence_) { delete sentence_; sentence_ = nullptr; } } void Decorator::ShowDecorate() { sentence_-&amp;gt;ShowDecorate(); } EntityDecorator::EntityDecorator(Sentence *sentence) : Decorator(sentence) {} void EntityDecorator::ShowDecorate() { Decorator::ShowDecorate(); ExtractEntity(); } void EntityDecorator::ExtractEntity() { std::cout &amp;lt;&amp;lt; &amp;quot;extract some entities&amp;quot; &amp;lt;&amp;lt; std::endl; } RelationDecorator::RelationDecorator(Sentence *sentence) : Decorator(sentence) {} void RelationDecorator::ShowDecorate() { Decorator::ShowDecorate(); ExtractRelation(); } void RelationDecorator::ExtractRelation() { std::cout &amp;lt;&amp;lt; &amp;quot;extract some relations&amp;quot; &amp;lt;&amp;lt; std::endl; }  注意装饰器基类要继承Sentence接口的方法，现在我们的程序就可以这么写：</description>
+    </item>
+    
+    <item>
+      <title>[设计模式系列]桥接模式与适配器模式</title>
+      <link>https://chongg039.cn/post/design-pattern-series-4/</link>
+      <pubDate>Fri, 21 Feb 2020 21:04:39 +0800</pubDate>
+      
+      <guid>https://chongg039.cn/post/design-pattern-series-4/</guid>
+      <description>这篇文章进入GOF中的结构型模式篇幅。
+Bridge模式 桥接模式号称设计模式中最难理解的模式，同时用好了能够很大程度上降低模块之间的耦合程度。因为本质上桥接模式实现了抽象化(Abstraction)与实现化(Implementation)的解耦，将继承关系转变为了组合关系，减少了代码编写量。
+说得通俗一点，就是一个实现中若涉及多个不同层次的继承关系，如果不将其合理解耦，则会产生很多设计上冗余的代码。cabinriver写的这篇文章中举了一个非常棒的例子，我也暂时没有想到更合适的，就在这里重复一下，方便学习记录。感谢他的工作。
+一台电脑可能有不同的制造商，每台电脑又可以安装多种不同的操作系统。电脑上在生产一台电脑时，需要生产出安装了不同操作系统的电脑。那么我们就应该将操作系统这个继承体系分离出去：
+// 操作系统 class OS { public: virtual ~OS() = default; virtual void Run() = 0; }; class Linux : public OS { public: void Run() override; }; class Windows : public OS { public: void Run() override; }; // 不同品牌的电脑 class Computer { public: virtual ~Computer() = default; virtual void Install(OS *os) = 0; }; class Dell : public Computer { public: void Install(OS *os) override; }; class Apple : public Computer { public: void Install(OS *os) override; }; void Linux::Run() { std::cout &amp;lt;&amp;lt; &amp;quot;Linux running.</description>
+    </item>
+    
+    <item>
+      <title>[设计模式系列]建造者模式与原型模式</title>
+      <link>https://chongg039.cn/post/design-pattern-series-3/</link>
+      <pubDate>Thu, 20 Feb 2020 10:32:08 +0800</pubDate>
+      
+      <guid>https://chongg039.cn/post/design-pattern-series-3/</guid>
+      <description>本篇再来学习一下GOF中提到的创建型模式的最后两种：建造者模式(Builder Pattern)和原型模式(Prototype Pattern)。
+建造者模式(Builder Pattern) Builder模式的作用是将一个复杂对象的构建与它的表示分离，使得同样的构建过程可以创建不同的表示。和抽象工厂模式有类似之处，建造者模式也是用来创建大而复杂的对象，只不过更强调按照某种顺序一步步构建的这个过程，并且通过相同的创建过程可以获得不同的最终对象。
+一般而言建造者模式由一个Builder基类和一个具体的Director类构成。与抽象工厂模式不同的另一点在于Builder一般不直接返回一个对象，只是规定了所有属性的接口和初始化顺序，具体的对象生成工作交由Director中的一个方法来完成。
+考虑上篇文章那个例子，我们要为Stem、SubStem、Option和Solution生成要保存的信息，假设每个里面都需要按顺序初始化下面两个部分：
+// InfoBuilder class InfoBuilder { public: virtual ~InfoBuilder() = default; // 构建Entity部分 virtual void BuildEntityPart() = 0; // 构建Relation部分 virtual void BuildRelationPart() = 0; }; // 题干信息Builder class StemInfoBuilder : public InfoBuilder { public: void BuildEntityPart() override; void BuildRelationPart() override; }; // 小问信息Builder class SubStemInfoBuilder : public InfoBuilder { public: void BuildEntityPart() override; void BuildRelationPart() override; }; // InfoDirector class InfoDirector { public: explicit InfoDirector(InfoBuilder *info_builder); ~InfoDirector(); void Construct(); private: InfoBuilder *info_builder_; }; void StemInfoBuilder::BuildEntityPart() { std::cout &amp;lt;&amp;lt; &amp;quot;now build entity part for stem&amp;quot; &amp;lt;&amp;lt; std::endl; } void StemInfoBuilder::BuildRelationPart() { std::cout &amp;lt;&amp;lt; &amp;quot;now build relation part for stem&amp;quot; &amp;lt;&amp;lt; std::endl; } void SubStemInfoBuilder::BuildEntityPart() { std::cout &amp;lt;&amp;lt; &amp;quot;now build entity part for sub_stem&amp;quot; &amp;lt;&amp;lt; std::endl; } void SubStemInfoBuilder::BuildRelationPart() { std::cout &amp;lt;&amp;lt; &amp;quot;now build relation part for sub_stem&amp;quot; &amp;lt;&amp;lt; std::endl; } InfoDirector::InfoDirector(InfoBuilder *info_builder) : info_builder_(info_builder) {} InfoDirector::~InfoDirector() { if (info_builder_) { delete info_builder_; info_builder_ = nullptr; } } void InfoDirector::Construct() { info_builder_-&amp;gt;BuildEntityPart(); info_builder_-&amp;gt;BuildRelationPart(); }  注意我这个析构函数使用了delete，也就是代表指针指向的一定是堆上new出来的资源，不能是构造出来的对象再取地址。即：</description>
+    </item>
+    
+    <item>
+      <title>[设计模式系列]工厂模式</title>
+      <link>https://chongg039.cn/post/design-pattern-series-2/</link>
+      <pubDate>Wed, 19 Feb 2020 15:41:09 +0800</pubDate>
+      
+      <guid>https://chongg039.cn/post/design-pattern-series-2/</guid>
+      <description>这一节再来讨论一下工厂模式，主要分为三种：简单工厂模式、工厂方法模式和抽象工厂模式。其实说实话我觉得工厂模式比单例模式还要直观一点，因为这就是多态基类实例化子类的方式，自然而然就能想到。
+考虑以下这个实例，一份完整的数学选择题应该会包含如下几个部分：
+ 题干部分(stem) 小问部分(sub_stem) 选项部分(option) 解答过程(solution)  在进行设计时，需要对这四个部分抽象出相同的特性。那么这四个部分不论怎么变化，首先都是“语句(sentence)”（这里并不是指字符串的意思）。那么我们就可以在Sentence基类的基础上讨论工厂方法的实现方式。
+// 基类, 不能被实例化 class Sentence { public: virtual ~Sentence() = default; virtual void ShowMsg() = 0; }; // 题干 class Stem : public Sentence { public: void ShowMsg() override { std::cout &amp;lt;&amp;lt; &amp;quot;this is a stem&amp;quot; &amp;lt;&amp;lt; std::endl; }; }; // 小问 class SubStem : public Sentence { public: void ShowMsg() override { std::cout &amp;lt;&amp;lt; &amp;quot;this is a sub_stem&amp;quot; &amp;lt;&amp;lt; std::endl; }; }; // 选项 class Option : public Sentence { public: void ShowMsg() override { std::cout &amp;lt;&amp;lt; &amp;quot;this is an option&amp;quot; &amp;lt;&amp;lt; std::endl; }; }; // 解答过程 class Solution : public Sentence { public: void ShowMsg() override { std::cout &amp;lt;&amp;lt; &amp;quot;this is a solution&amp;quot; &amp;lt;&amp;lt; std::endl; }; };  简单工厂模式(Simple Factory) 简单工厂模式就是多态，C++中基类的指针或引用都可以调用子类的虚函数达到多态的效果，看例子：</description>
+    </item>
+    
+    <item>
+      <title>[设计模式系列]单例模式</title>
+      <link>https://chongg039.cn/post/design-pattern-series-1/</link>
+      <pubDate>Mon, 17 Feb 2020 17:01:20 +0800</pubDate>
+      
+      <guid>https://chongg039.cn/post/design-pattern-series-1/</guid>
+      <description>开一个新坑，记录一下设计模式的学习和使用经过。因为最近在写一个项目，首先接触到的和思考的就是单例模式，就从这里写起吧。
+出发点 有时候不论是出于易用性考虑还是效率上的考虑，我们希望某些资源仅被初始化一次，但是其他所有的实例都可以使用它。大部分情况下这类资源是不会被改动的，当然也会有意外，一旦涉及到改动可能有需要考虑线程安全的问题。
+听起来是不是和static全局对象的作用很相似？不过如果你能记起Effective C++中的内容，就会知道静态全局变量的初始化顺序是完全看编译器的心情的。虽然同一个编译单元内的静态全局变量初始化顺序是一定的，但若是不同编译单元内的静态全局变量产生了相互依赖，结果可能就会变得不可预料。
+但我们可以通过一个静态的方法，获取只初始化一次的实例对象。这就是单例模式的实现方式。
+需要定义的方法和成员变量  既然是需要访问这个全局实例，一定是通过一个静态的类方法获取这个实例的指针或者引用； 单例类不能有公有的构造函数，那么一个共有的析构函数也就变得没有意义； 显然单例类不能有任何公有的拷贝和赋值的行为； 单例类应该需要有一个指向全局唯一实例的指针，为了让静态方法能够获取到这个实例指针，该指针也应该是静态的。  暂时就想到这么多，下面再来思考单例类实例化的时机。是的，单例类要有一个全局唯一的实例，且又不能在外部显示实例化，那就只有一个方法，将构造函数声明为私有的或者保护的，并在某些时刻调用它。
+根据调用单例类实例化的时机，可将其分为懒汉版单例模式（Lazy Singleton）和饿汉版单例模式（Eager Singleton）。
+Lazy Singleton 顾名思义，什么是懒汉，就是不到万不得已不进行实例的初始化操作，也就是第一次调用GetInstance获取实例对象时才进行初始化：
+// 单例模式 class Singleton { public: static Singleton *GetInstance(); // 禁止拷贝和赋值, delete需要在public中实现 Singleton(const Singleton &amp;amp;) = delete; Singleton &amp;amp;operator=(const Singleton &amp;amp;) = delete; private: Singleton(); ~Singleton(); static Singleton *instance; }; Singleton *Singleton::instance = nullptr; Singleton *Singleton::GetInstance() { if (instance == nullptr) { instance = new Singleton(); } return instance; } Singleton::Singleton() { std::cout &amp;lt;&amp;lt; &amp;quot;singleton ctor&amp;quot; &amp;lt;&amp;lt; std::endl; } Singleton::~Singleton() { std::cout &amp;lt;&amp;lt; &amp;quot;singleton dtor&amp;quot; &amp;lt;&amp;lt; std::endl; }  然后我们在main函数中观察一下实例化的时机：</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>[设计模式系列]迭代器模式与解释器模式</title>
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/style.css" />
+    
+    <link rel="shortcut icon" href="https://chongg039.cn/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/sunburst.css" />
+</head>
+<body onload="PR.prettyPrint()">
+    <div class="navheader">
+        <table width="100%" summary="Navigation header">
+            <tbody>
+                <tr>
+                    <td colspan="3" align="center">Co1driver 的个人博客</td>
+                </tr>
+                <tr>
+                    <td width="90%" align="left">&nbsp;</td>
+                    <td width="5%" align="center">&nbsp;<a accesskey="h" href="https://github.com/chongg039">GITHUB</a></td>
+                    <td width="5%" align="right">&nbsp;<a accesskey="a" href="https://chongg039.cn//about">ABOUT</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h1>[设计模式系列]迭代器模式与解释器模式</h1>
+    <h4>Fri, Feb 28, 2020</h4>
+    
+
+<p><img src="https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/prULhL339cE.jpg#center" alt="prULhL339cE" /></p>
+
+<p>来看下行为模式的最后两个部分。</p>
+
+<h3 id="迭代器模式-iterator-pattern">迭代器模式(Iterator Pattern)</h3>
+
+<p>STL里面的迭代器就是这个。迭代器模式主要就是为了解决对一个聚合对象的遍历问题，将遍历行为封装到一个类型中，避免了过度暴露聚合类内部表示。</p>
+
+<p>来看下Wikipedia上的UML图：</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/3cML0j.jpg#center" alt="3cML0j" /></p>
+
+<pre><code class="language-c++">class Iterator;
+
+// 聚合对象
+class Aggregate
+{
+public:
+    virtual ~Aggregate() = default;
+
+    virtual Iterator *CreateIterator() = 0;
+
+    virtual int GetSize() const = 0;
+
+    virtual int GetItem(int idx) const = 0;
+};
+
+class ConcreteAggregate : public Aggregate
+{
+public:
+    explicit ConcreteAggregate(std::vector&lt;int&gt; nums);
+
+    Iterator *CreateIterator() override;
+
+    int GetSize() const override;
+
+    int GetItem(int idx) const override;
+
+private:
+    std::vector&lt;int&gt; nums_;
+};
+
+// 迭代器抽象类
+class Iterator
+{
+public:
+    virtual ~Iterator() = default;
+
+    virtual bool HasNext() = 0;
+
+    virtual void Next() = 0;
+
+    virtual int operator*() = 0;
+};
+
+class ConcreteIterator : public Iterator
+{
+public:
+    explicit ConcreteIterator(Aggregate *aggregate, int idx = 0);
+
+    bool HasNext() override;
+
+    void Next() override;
+
+    int operator*() override;
+
+private:
+    Aggregate *aggregate_;
+    int idx_;
+};
+
+ConcreteAggregate::ConcreteAggregate(std::vector&lt;int&gt; nums)
+        : nums_(std::move(nums))
+{}
+
+Iterator *ConcreteAggregate::CreateIterator()
+{
+    return new ConcreteIterator(this);
+}
+
+int ConcreteAggregate::GetSize() const
+{
+    return nums_.size();
+}
+
+int ConcreteAggregate::GetItem(int idx) const
+{
+    return nums_[idx];
+}
+
+ConcreteIterator::ConcreteIterator(Aggregate *aggregate, int idx)
+        : aggregate_(aggregate), idx_(idx)
+{}
+
+bool ConcreteIterator::HasNext()
+{
+    return idx_ &lt; aggregate_-&gt;GetSize() - 1;
+}
+
+void ConcreteIterator::Next()
+{
+    if (HasNext()) {
+        ++idx_;
+    }
+}
+
+int ConcreteIterator::operator*()
+{
+    return aggregate_-&gt;GetItem(idx_);
+}
+</code></pre>
+
+<h3 id="解释器模式-interpreter-patter">解释器模式(Interpreter Patter)</h3>
+
+<p>先看这样一张Wikipedia上的UML图：</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/RKkIYQ.jpg#center" alt="RKkIYQ" /></p>
+
+<p>解释器模式有点象bash等解释性语言的解释器，对于一种特定的文法表示，定义一个专门的解释器去解释它。如上面这张图，首先我们需要有一个Context类保存一些全文的信息，然后声明一个抽象解释类AbstractExpression，再声明一些继承这个基类的、针对不同文法表示的子类操作。比如图片中就声明了一个终结符表达式派生类TerminalExpression和非终结符表达式派生类NonterminalExpression，分别处理与终结符相关的操作和与非终结符相关的操作。</p>
+
+<pre><code class="language-c++">// 全局信息
+class Context
+{
+public:
+    const std::string &amp;get_input() const;
+
+    void set_input(const std::string &amp;input);
+
+    const std::string &amp;get_output() const;
+
+    void set_output(const std::string &amp;output);
+
+private:
+    std::string input_;
+    std::string output_;
+};
+
+// 抽象表达式解释类
+class AbstractExpression
+{
+public:
+    virtual ~AbstractExpression() = default;
+
+    virtual void Interpret(const Context &amp;context) = 0;
+};
+
+// 终结符表达式解释类
+class TerminalExpression : public AbstractExpression
+{
+public:
+    void Interpret(const Context &amp;context) override;
+};
+
+// 非终结符表达式解释类
+class NonTerminalExpression : public AbstractExpression
+{
+public:
+    void Interpret(const Context &amp;context) override;
+};
+
+const std::string &amp;Context::get_input() const
+{
+    return input_;
+}
+
+void Context::set_input(const std::string &amp;input)
+{
+    input_ = input;
+}
+
+const std::string &amp;Context::get_output() const
+{
+    return output_;
+}
+
+void Context::set_output(const std::string &amp;output)
+{
+    output_ = output;
+}
+
+void TerminalExpression::Interpret(const Context &amp;context)
+{
+    std::cout &lt;&lt; &quot;TerminalExpression: input: &quot; &lt;&lt; context.get_input()
+              &lt;&lt; &quot;, output: &quot; &lt;&lt; context.get_output()
+              &lt;&lt; std::endl;
+}
+
+void NonTerminalExpression::Interpret(const Context &amp;context)
+{
+    std::cout &lt;&lt; &quot;NonTerminalExpression: input: &quot; &lt;&lt; context.get_input()
+              &lt;&lt; &quot;, output: &quot; &lt;&lt; context.get_output()
+              &lt;&lt; std::endl;
+}
+</code></pre>
+
+<h3 id="总结">总结</h3>
+
+<p>至此GOF中的23种设计模式就介绍完了，整个学习过程虽然有些匆忙，但还是非常有收获的。尤其是单例模式、工厂模式、观察者模式和责任链模式，恰好要用到最近做的项目当中，给我的启发很大。</p>
+
+<p>下一步应该会去做一个Reactor模式的详细分析和学习，因为项目中也需要封装一个多路复用的TCP服务器，准备好好啃啃陈硕大神的书还有muduo的源码。</p>
+
+    
+    
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+  const gitalk = new Gitalk({
+    clientID: '36c8fa6e09d08297a270',
+    clientSecret: 'af0175944284956d288d14b389fbc89be8df7f1e',
+    repo: 'chongg039.github.io',
+    owner: 'chongg039',
+    admin: ['chongg039'],
+    id: location.pathname, 
+    distractionFreeMode: false 
+  });
+  (function() {
+    if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+      document.getElementById('gitalk-container').innerHTML = 'Gitalk comments not available by default when the website is previewed locally.';
+      return;
+    }
+    gitalk.render('gitalk-container');
+  })();
+</script>
+
+<div class="navfooter">
+    <table width="100%" summary="Navigation footer">
+        <tbody>
+            <tr>
+                <td width="40%" align="left">&nbsp;</td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right">&nbsp;</td>
+            </tr>
+            <tr>
+                <td width="40%" align="left" valign="top">
+                    <span class="copyright">
+                        Copyright 2014-2020
+                    </span>
+                    &nbsp;
+                </td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right" valign="top">&nbsp;<a href="https://chongg039.cn/">HOME</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: { 
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+            processEscapes: true
+        }
+    });
+    </script>
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-117991024-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+    <script type="text/javascript" src="https://chongg039.cn/js/function.js"></script>
+    <script type="text/javascript" src="https://chongg039.cn/js/prettify.js"></script>
+    
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+</html>
+
