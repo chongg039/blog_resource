@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Mechine Learning on Co1driver 的个人博客</title>
+    <link>https://chongg039.cn/categories/mechine-learning/</link>
+    <description>Recent content in Mechine Learning on Co1driver 的个人博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>Copyright 2014-{year}</copyright>
+    <lastBuildDate>Fri, 17 May 2019 16:26:13 +0800</lastBuildDate>
+    
+	<atom:link href="https://chongg039.cn/categories/mechine-learning/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>机器学习课程知识点</title>
+      <link>https://chongg039.cn/post/machine_learning_course/</link>
+      <pubDate>Fri, 17 May 2019 16:26:13 +0800</pubDate>
+      
+      <guid>https://chongg039.cn/post/machine_learning_course/</guid>
+      <description>概率论与贝叶斯 $$ P(A|B) = \frac{P(B|A)P(A)}{P(B)} $$
+其中：
+ $P(A)$ 是先验概率，即事件发生前的预判概率。可以是基于历史数据的统计，可以由背景常识得出，也可以是人的主观观点给出，一般都是单独事件概率； $P(A|B)$ 是后验概率，即事件发生后求的反向条件概率，或者说基于先验概率求得的反向条件概率，形式与条件概率相同，一般是我们要求解的目标； $P(B|A)$ 是条件概率，又叫似然概率，即一个事件发生后另一个事件发生的概率，一般是通过历史数据统计得到。一般不把它叫做先验概率，但从定义上也符合先验定义； $P(B)$ 实际上也是先验概率，需要时往往用全概率公式计算得到，在贝叶斯的很多应用中不重要（因为只要最大后验不求绝对值）。  共轭先验：在贝叶斯统计理论中，如果某个随机变量 $\theta$ 的后验概率 $p(\theta|x)$ 和其先验概 $p(\theta)$ 属于同一个分布簇的，那么称 $p(\theta|x)$ 和 $p(\theta)$ 为共轭分布，同时，也称 $p(\theta)$ 为似然函数 $p(x|\theta)$ 的共轭先验。
+高斯分布、似然函数、极大似然函数、极大似然法
+贝叶斯曲线拟合
+1维高斯分布的贝叶斯推断</description>
+    </item>
+    
+  </channel>
+</rss>
