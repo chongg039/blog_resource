@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>[设计模式系列]桥接模式与适配器模式</title>
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/style.css" />
+    
+    <link rel="shortcut icon" href="https://chongg039.cn/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/sunburst.css" />
+</head>
+<body onload="PR.prettyPrint()">
+    <div class="navheader">
+        <table width="100%" summary="Navigation header">
+            <tbody>
+                <tr>
+                    <td colspan="3" align="center">Co1driver 的个人博客</td>
+                </tr>
+                <tr>
+                    <td width="90%" align="left">&nbsp;</td>
+                    <td width="5%" align="center">&nbsp;<a accesskey="h" href="https://github.com/chongg039">GITHUB</a></td>
+                    <td width="5%" align="right">&nbsp;<a accesskey="a" href="https://chongg039.cn//about">ABOUT</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h1>[设计模式系列]桥接模式与适配器模式</h1>
+    <h4>Fri, Feb 21, 2020</h4>
+    <p><img src="https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/1_CMoFsPfso.jpg#center" alt="1_CMoFsPfso"></p>
+<p>这篇文章进入GOF中的结构型模式篇幅。</p>
+<h3 id="bridge模式">Bridge模式</h3>
+<p>桥接模式号称设计模式中最难理解的模式，同时用好了能够很大程度上降低模块之间的耦合程度。因为本质上桥接模式实现了抽象化(Abstraction)与实现化(Implementation)的解耦，将继承关系转变为了组合关系，减少了代码编写量。</p>
+<p>说得通俗一点，就是一个实现中若涉及多个不同层次的继承关系，如果不将其合理解耦，则会产生很多设计上冗余的代码。<a href="https://blog.csdn.net/cabinriver/article/details/8924789">cabinriver</a>写的这篇文章中举了一个非常棒的例子，我也暂时没有想到更合适的，就在这里重复一下，方便学习记录。感谢他的工作。</p>
+<p>一台电脑可能有不同的制造商，每台电脑又可以安装多种不同的操作系统。电脑上在生产一台电脑时，需要生产出安装了不同操作系统的电脑。那么我们就应该将操作系统这个继承体系分离出去：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#75715e">// 操作系统
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">OS</span>
+{
+<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+    <span style="color:#66d9ef">virtual</span> <span style="color:#f92672">~</span>OS() <span style="color:#f92672">=</span> <span style="color:#66d9ef">default</span>;
+
+    <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">Run</span>() <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+};
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Linux</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">public</span> OS
+{
+<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+    <span style="color:#66d9ef">void</span> Run() <span style="color:#66d9ef">override</span>;
+};
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Windows</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">public</span> OS
+{
+<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+    <span style="color:#66d9ef">void</span> Run() <span style="color:#66d9ef">override</span>;
+};
+
+<span style="color:#75715e">// 不同品牌的电脑
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Computer</span>
+{
+<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+    <span style="color:#66d9ef">virtual</span> <span style="color:#f92672">~</span>Computer() <span style="color:#f92672">=</span> <span style="color:#66d9ef">default</span>;
+
+    <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">Install</span>(OS <span style="color:#f92672">*</span>os) <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+};
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Dell</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">public</span> Computer
+{
+<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+    <span style="color:#66d9ef">void</span> Install(OS <span style="color:#f92672">*</span>os) <span style="color:#66d9ef">override</span>;
+};
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Apple</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">public</span> Computer
+{
+<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+    <span style="color:#66d9ef">void</span> Install(OS <span style="color:#f92672">*</span>os) <span style="color:#66d9ef">override</span>;
+};
+
+<span style="color:#66d9ef">void</span> Linux<span style="color:#f92672">::</span>Run()
+{
+    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Linux running...&#34;</span> <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+}
+
+<span style="color:#66d9ef">void</span> Windows<span style="color:#f92672">::</span>Run()
+{
+    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Windows running...&#34;</span> <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+}
+
+<span style="color:#66d9ef">void</span> Dell<span style="color:#f92672">::</span>Install(OS <span style="color:#f92672">*</span>os)
+{
+    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Dell install os...&#34;</span> <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+    os<span style="color:#f92672">-&gt;</span>Run();
+}
+
+<span style="color:#66d9ef">void</span> Apple<span style="color:#f92672">::</span>Install(OS <span style="color:#f92672">*</span>os)
+{
+    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Apple install os...&#34;</span> <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+    os<span style="color:#f92672">-&gt;</span>Run();
+}
+</code></pre></div><p>这不是简单的继承层次，也不像Builder模式一样侧重构建的过程，而是采用了合理的方式将多种继承层次组合，降低了耦合度。用好Bridge模式是一件很不容易的事情。</p>
+<h3 id="adapter模式">Adapter模式</h3>
+<p>比较官方的说法是将一个类的接口转换为另外一个类中用户需要的接口，原本这两个是不兼容的。有句老话”如果一个东西走起路来像鸭子，叫起来也像鸭子，那么他就是一只鸭子“。对鸭子调用相应的接口是可以的，现在来了一只鹦鹉，它模仿鸭子走路的姿势，它模仿鸭子的叫声，但是我们不能对它调用鸭子的接口，为什么？因为它不是一只鸭子。</p>
+<p>那么我们如何让一只鹦鹉调用鸭子的接口呢，很简单，把调用鸭子的接口适配鹦鹉对象就行了。不过一般来说，鸭子接口是用户使用的，不希望去对他进行更改。那么反过来我们编写一个鹦鹉适配器的类，继承鸭子类这个接口，适配器类中保存一个鹦鹉类的对象指针就可以了，这种适配器方法称为对象适配器。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#75715e">// 鸭子接口类
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Duck</span>
+{
+<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+    <span style="color:#66d9ef">virtual</span> <span style="color:#f92672">~</span>Duck() <span style="color:#f92672">=</span> <span style="color:#66d9ef">default</span>;
+
+    <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">DuckWalk</span>();
+
+    <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">DuckQuack</span>();
+};
+
+<span style="color:#75715e">// 鹦鹉类
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Parrot</span>
+{
+<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+    <span style="color:#66d9ef">void</span> ParrotFly();
+
+    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">ParrotSay</span>();
+};
+
+<span style="color:#75715e">// 鹦鹉适配器
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ParrotAdapter</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">public</span> Duck
+{
+<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+    <span style="color:#66d9ef">explicit</span> ParrotAdapter(Parrot <span style="color:#f92672">*</span>parrot);
+
+    <span style="color:#f92672">~</span>ParrotAdapter() <span style="color:#66d9ef">override</span>;
+
+    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">DuckWalk</span>() <span style="color:#66d9ef">override</span>;
+
+    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">DuckQuack</span>() <span style="color:#66d9ef">override</span>;
+
+<span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
+    Parrot <span style="color:#f92672">*</span>parrot_;
+};
+
+<span style="color:#66d9ef">void</span> Duck<span style="color:#f92672">::</span>DuckWalk()
+{
+    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;duck walking&#34;</span> <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+}
+
+<span style="color:#66d9ef">void</span> Duck<span style="color:#f92672">::</span>DuckQuack()
+{
+    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;duck saying: gaga&#34;</span> <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+}
+
+<span style="color:#66d9ef">void</span> Parrot<span style="color:#f92672">::</span>ParrotFly()
+{
+    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;parrot flying&#34;</span> <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+}
+
+<span style="color:#66d9ef">void</span> Parrot<span style="color:#f92672">::</span>ParrotSay()
+{
+    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;actually im a parrot&#34;</span> <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+}
+
+ParrotAdapter<span style="color:#f92672">::</span>ParrotAdapter(Parrot <span style="color:#f92672">*</span>parrot)
+        <span style="color:#f92672">:</span> parrot_(parrot)
+{}
+
+ParrotAdapter<span style="color:#f92672">::~</span>ParrotAdapter()
+{
+    <span style="color:#66d9ef">if</span> (parrot_) {
+        <span style="color:#66d9ef">delete</span> parrot_;
+        parrot_ <span style="color:#f92672">=</span> <span style="color:#66d9ef">nullptr</span>;
+    }
+}
+
+<span style="color:#66d9ef">void</span> ParrotAdapter<span style="color:#f92672">::</span>DuckWalk()
+{
+    parrot_<span style="color:#f92672">-&gt;</span>ParrotFly();
+}
+
+<span style="color:#66d9ef">void</span> ParrotAdapter<span style="color:#f92672">::</span>DuckQuack()
+{
+    parrot_<span style="color:#f92672">-&gt;</span>ParrotSay();
+}
+</code></pre></div><p>然后生成一个适配器实例，可以调用鸭子接口的方法了：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>()
+{
+    ParrotAdapter parrot_adapter(<span style="color:#66d9ef">new</span> Parrot);
+    parrot_adapter.DuckWalk();
+    parrot_adapter.DuckQuack();
+    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+</code></pre></div><p>适配器中的方法会转调鹦鹉成员的对应的方法：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/wysDQv.png#center" alt="wysDQv"></p>
+<p>除了对象适配器，还有类适配器。类适配器同时继承了接口类(Duck)和实现类(Parrot)，在适配器中重写相应的方法。类适配器耦合度较高，且使用了多继承，不是很推荐使用。</p>
+<h3 id="总结">总结</h3>
+<p>桥接模式和适配器模式都涉及数据结构的高度解耦，非常考验开发者的设计能力和工程素养。</p>
+
+    
+    
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+  const gitalk = new Gitalk({
+    clientID: '36c8fa6e09d08297a270',
+    clientSecret: 'af0175944284956d288d14b389fbc89be8df7f1e',
+    repo: 'chongg039.github.io',
+    owner: 'chongg039',
+    admin: ['chongg039'],
+    id: location.pathname, 
+    distractionFreeMode: false 
+  });
+  (function() {
+    if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+      document.getElementById('gitalk-container').innerHTML = 'Gitalk comments not available by default when the website is previewed locally.';
+      return;
+    }
+    gitalk.render('gitalk-container');
+  })();
+</script>
+
+<div class="navfooter">
+    <table width="100%" summary="Navigation footer">
+        <tbody>
+            <tr>
+                <td width="40%" align="left">&nbsp;</td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right">&nbsp;</td>
+            </tr>
+            <tr>
+                <td width="40%" align="left" valign="top">
+                    <span class="copyright">
+                        Copyright 2014-2020
+                    </span>
+                    &nbsp;
+                </td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right" valign="top">&nbsp;<a href="https://chongg039.cn/">HOME</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: { 
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+            processEscapes: true
+        }
+    });
+    </script>
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-117991024-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+    <script type="text/javascript" src="https://chongg039.cn/js/function.js"></script>
+    <script type="text/javascript" src="https://chongg039.cn/js/prettify.js"></script>
+    
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+</html>
+

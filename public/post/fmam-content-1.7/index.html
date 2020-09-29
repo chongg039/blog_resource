@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>FMAM - 1.7：Additional Topics</title>
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/style.css" />
+    
+    <link rel="shortcut icon" href="https://chongg039.cn/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/sunburst.css" />
+</head>
+<body onload="PR.prettyPrint()">
+    <div class="navheader">
+        <table width="100%" summary="Navigation header">
+            <tbody>
+                <tr>
+                    <td colspan="3" align="center">Co1driver 的个人博客</td>
+                </tr>
+                <tr>
+                    <td width="90%" align="left">&nbsp;</td>
+                    <td width="5%" align="center">&nbsp;<a accesskey="h" href="https://github.com/chongg039">GITHUB</a></td>
+                    <td width="5%" align="right">&nbsp;<a accesskey="a" href="https://chongg039.cn//about">ABOUT</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h1>FMAM - 1.7：Additional Topics</h1>
+    <h4>Fri, Aug 3, 2018</h4>
+    <p>第 1.2, 1.3, 1.4, 1.5 和 1.6 节涵盖了 PH 分布和多元 PH 分布的基本理论。在本节中，我们将讨论概括和一些概括 PH 分布的理论问题。</p>
+<h3 id="171-离散的-ph-分布">1.7.1 离散的 PH 分布</h3>
+<p>考虑具有 m + 1 个状态的离散时间马尔可夫链，其概率矩阵为
+$$
+P=
+\biggl(
+\begin{matrix}
+T &amp; \pmb{T ^ {0}} \\
+0 &amp; 1
+\end{matrix}
+\biggl)
+$$
+吸收到状态 $m+1$ 的时间表示为 $X$ ，我们将其定义为离散时间的 PH 随机变量。给出初始概率向量 $(\pmb{\alpha}, 1-\pmb{\alpha e})$ ，很容易得到
+$$
+P\{X=n\}=
+\begin{cases}
+1 - \pmb{\alpha e} &amp; if \quad n=0; \\\<br>
+\pmb{\alpha} T ^ {n-1} \pmb{T ^ 0} &amp; if \quad n=1, 2, &hellip;
+\end{cases}
+$$</p>
+<h4 id="练习171略">练习1.7.1：略</h4>
+<h4 id="练习172略">练习1.7.2：略</h4>
+<h4 id="练习173略">练习1.7.3：略</h4>
+<h4 id="练习174略">练习1.7.4：略</h4>
+<h3 id="172-matrix-exponential-me矩阵-指数-分布">1.7.2 Matrix-Exponential (ME，矩阵-指数) 分布</h3>
+<p>(Lipsky and Ramaswami (1985), Lipsky (1992), Asmussen and Bladt (1996), and Fackrell (2003)). ME 分布是 PH 分布通过删除所有 $\pmb{\alpha}, T, \pmb{e}$ 的元素的约束来得到的一般化（概括）结果，只需要方程 (1.9) 是概率分布即可。ME 分布集比 PH 分布集要大。例如，PH 分布的密度函数可以是在某些正数点处（翻译不准确？）为零，PH 分布的最小等价 ME 表示通常有更小的阶 (order) ，比其最小的 PH 表示还要显著更小。另一方面，随机建模中不方便使用 ME 表示，因为 PH 分布所享有的概率性解释已经丢失。</p>
+<h4 id="例子171略">例子1.7.1：略</h4>
+<h4 id="例子172略">例子1.7.2：略</h4>
+<h4 id="练习175略">练习1.7.5：略</h4>
+<h4 id="练习176略">练习1.7.6：略</h4>
+<h3 id="173-ph-分布的进一步推广">1.7.3 PH 分布的进一步推广</h3>
+<ol>
+<li><em>双侧 PH 分布和双侧 ME 分布</em> 对于 PH 分布和 ME 分布二者都是在实线的非负半部分定义的，而 PH 分布和 ME 分布的一个概括 (generalizations，翻译不准确？) 要包含实线的负半部分，这种  generalizations 被称为双边分布 (bilateral distributions) 。See Shanthikumar (1985), Ahn and Ramaswami (2005), and Bladt et al. (2013) for more details.</li>
+<li>Semi-Markovian PH 分布 (Shi et al. (1996)).</li>
+<li>多元 ME 分布 (Bladt and Nielsen (2010)).</li>
+</ol>
+<h3 id="174-ph-分布和-me-分布的表征">1.7.4 PH 分布和 ME 分布的表征</h3>
+<p>什么样的概率分布是 PH 分布和 ME 分布？</p>
+<p>O’Cinneide (1990a) 给出了 PH 分布的完整表征（见定理1.2.2）。其他参考文献包括 Aldous and Shepp (1987), Asmussen (1989, 2000), Maier and O’Cinneide (1992), Yao (2002), He and Zhang (2005), Fackrell et al. (2010), Sanguesa (2010) 等。</p>
+<p>ME 分布的表征可以在 Asmussen and Bladt (1996), Fackrell (2003, 2005), He and Zhang (2007), Bean et al. (2008), Bodrog et al. (2008) 等中找到。</p>
+<p>（注：Characterization 翻译成“表征”可能不准确？）</p>
+<h3 id="175-最小-ph-表示和其他-ph-分布相关问题">1.7.5 最小 PH 表示和其他 PH 分布相关问题</h3>
+<p>在所有等价 PH 表示中具有最小阶 (order) 的 PH 表示被称为最小 PH 表示 (minimal PH-representation) 。自 1975 年以来，找到一个 PH 分布的最小 PH 表示一直是一个悬而未决的问题。如 Commault and Mocanu (2003) 中所说的那样，这个问题相当于一个在控制理论中众所周知的最小表示问题。需要注意的是，He and Zhang (2008) 开发了一种算法，用来找到一个最小阶的等价 Coxian 表示。Pulungan and Hermanns (2009) 考虑了一个找到最小化表示的特殊结构。这两者都只解决了 PH 分布子集中的最小化表示问题。一般来说，找到最小的 PH 表示是一个基础的，但却能对理论研究和应用产生重大影响的课题，并且十分具有挑战性。</p>
+<h3 id="176-其他练习">1.7.6 其他练习</h3>
+<p>Neuts (1995) 提供了大量与 PH 分布相关的练习和应用。Neuts (1995) 中的第四章和第五章对理解 PH 分布和他们的应用尤其有帮助。</p>
+
+    
+    
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+  const gitalk = new Gitalk({
+    clientID: '36c8fa6e09d08297a270',
+    clientSecret: 'af0175944284956d288d14b389fbc89be8df7f1e',
+    repo: 'chongg039.github.io',
+    owner: 'chongg039',
+    admin: ['chongg039'],
+    id: location.pathname, 
+    distractionFreeMode: false 
+  });
+  (function() {
+    if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+      document.getElementById('gitalk-container').innerHTML = 'Gitalk comments not available by default when the website is previewed locally.';
+      return;
+    }
+    gitalk.render('gitalk-container');
+  })();
+</script>
+
+<div class="navfooter">
+    <table width="100%" summary="Navigation footer">
+        <tbody>
+            <tr>
+                <td width="40%" align="left">&nbsp;</td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right">&nbsp;</td>
+            </tr>
+            <tr>
+                <td width="40%" align="left" valign="top">
+                    <span class="copyright">
+                        Copyright 2014-2020
+                    </span>
+                    &nbsp;
+                </td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right" valign="top">&nbsp;<a href="https://chongg039.cn/">HOME</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: { 
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+            processEscapes: true
+        }
+    });
+    </script>
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-117991024-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+    <script type="text/javascript" src="https://chongg039.cn/js/function.js"></script>
+    <script type="text/javascript" src="https://chongg039.cn/js/prettify.js"></script>
+    
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+</html>
+

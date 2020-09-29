@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>天池全球数据智能大赛（赛场二）第7名解决方案</title>
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/style.css" />
+    
+    <link rel="shortcut icon" href="https://chongg039.cn/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/sunburst.css" />
+</head>
+<body onload="PR.prettyPrint()">
+    <div class="navheader">
+        <table width="100%" summary="Navigation header">
+            <tbody>
+                <tr>
+                    <td colspan="3" align="center">Co1driver 的个人博客</td>
+                </tr>
+                <tr>
+                    <td width="90%" align="left">&nbsp;</td>
+                    <td width="5%" align="center">&nbsp;<a accesskey="h" href="https://github.com/chongg039">GITHUB</a></td>
+                    <td width="5%" align="right">&nbsp;<a accesskey="a" href="https://chongg039.cn//about">ABOUT</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h1>天池全球数据智能大赛（赛场二）第7名解决方案</h1>
+    <h4>Tue, Oct 22, 2019</h4>
+    <p>第一次正儿八经组队参加的比赛，虽然没能拿到奖金但也取得了一个比较满意的成绩（初赛23复赛7），这里记录一下当时的解决思路。</p>
+<p>首先这是一个农作物产量预测的比赛，属于比较传统的回归分析，这种类型的比赛只要做好 EDA ，一般都能取得不错的成绩，而不是说设计了一个多么精妙的网络结构。事实上官方提供的数据集最大的问题就是少，而且样本分布严重不均，这也成为了赛后受大家诟病的一个主要方面。</p>
+<h3 id="探索性数据分析eda">探索性数据分析（EDA）</h3>
+<h4 id="eda-of-train-data">EDA of train data</h4>
+<p>取以下数值型天气特征并分析之间的相关性：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+    <span style="color:#f92672">&#34;日照时数（单位：h)&#34;</span>: <span style="color:#e6db74">&#34;day_sun_hour&#34;</span>,
+    <span style="color:#f92672">&#34;日平均风速(单位：m/s)&#34;</span>: <span style="color:#e6db74">&#34;day_mean_wind&#34;</span>,
+    <span style="color:#f92672">&#34;日降水量（mm）&#34;</span>: <span style="color:#e6db74">&#34;day_rain&#34;</span>,
+    <span style="color:#f92672">&#34;日平均温度（单位：℃）&#34;</span>: <span style="color:#e6db74">&#34;day_mean_temperature&#34;</span>,
+    <span style="color:#f92672">&#34;日相对湿度（单位：%）&#34;</span>: <span style="color:#e6db74">&#34;day_relative_humidity&#34;</span>,
+    <span style="color:#f92672">&#34;日平均气压（单位：hPa）&#34;</span>: <span style="color:#e6db74">&#34;day_mean_pressure&#34;</span>,
+    <span style="color:#f92672">&#34;日最高温度（单位：℃）&#34;</span>: <span style="color:#e6db74">&#34;day_high_temp&#34;</span>,
+    <span style="color:#f92672">&#34;日最低温度（单位：℃）&#34;</span>: <span style="color:#e6db74">&#34;day_low_temp&#34;</span>
+}
+</code></pre></div><p>以2017年区县id为16的地区为例：</p>
+<p><img src="https://live.staticflickr.com/65535/48793272876_f8194965a1_z.jpg#center" alt="2017年county16的某些天气特征"></p>
+<p>可以得出：</p>
+<ol>
+<li>一个地区一年的日平均温度、日最高温度和日最低温度呈正相关；</li>
+<li>以平均温度为例，日平均气压与日平均温度呈负相关。</li>
+</ol>
+<p>取以下类别型天气特征并处理：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+    <span style="color:#f92672">&#34;02时风向&#34;</span>: <span style="color:#e6db74">&#34;day_02_wind&#34;</span>,
+    <span style="color:#f92672">&#34;08时风向&#34;</span>: <span style="color:#e6db74">&#34;day_08_wind&#34;</span>,
+    <span style="color:#f92672">&#34;14时风向&#34;</span>: <span style="color:#e6db74">&#34;day_14_wind&#34;</span>,
+    <span style="color:#f92672">&#34;20时风向&#34;</span>: <span style="color:#e6db74">&#34;day_20_wind&#34;</span>
+}
+</code></pre></div><p>做连续特征的话，依据下面的映射表映射到数值特征上：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+    <span style="color:#f92672">&#34;N&#34;</span>: <span style="color:#ae81ff">0</span>,
+    <span style="color:#f92672">&#34;NNE&#34;</span>: <span style="color:#ae81ff">22.5</span>,
+    <span style="color:#f92672">&#34;NE&#34;</span>: <span style="color:#ae81ff">45</span>,
+    <span style="color:#f92672">&#34;ENE&#34;</span>: <span style="color:#ae81ff">67.5</span>,
+    <span style="color:#f92672">&#34;E&#34;</span>: <span style="color:#ae81ff">90</span>,
+    <span style="color:#f92672">&#34;ESE&#34;</span>: <span style="color:#ae81ff">112.5</span>,
+    <span style="color:#f92672">&#34;SE&#34;</span>: <span style="color:#ae81ff">135</span>,
+    <span style="color:#f92672">&#34;SSE&#34;</span>: <span style="color:#ae81ff">157.5</span>,
+    <span style="color:#f92672">&#34;S&#34;</span>: <span style="color:#ae81ff">180</span>,
+    <span style="color:#f92672">&#34;SSW&#34;</span>: <span style="color:#ae81ff">202.5</span>,
+    <span style="color:#f92672">&#34;SW&#34;</span>: <span style="color:#ae81ff">225</span>,
+    <span style="color:#f92672">&#34;WSW&#34;</span>: <span style="color:#ae81ff">247.5</span>,
+    <span style="color:#f92672">&#34;W&#34;</span>: <span style="color:#ae81ff">270</span>,
+    <span style="color:#f92672">&#34;WNW&#34;</span>: <span style="color:#ae81ff">295.5</span>,
+    <span style="color:#f92672">&#34;NW&#34;</span>: <span style="color:#ae81ff">315</span>,
+    <span style="color:#f92672">&#34;NNW&#34;</span>: <span style="color:#ae81ff">337.5</span>,
+    <span style="color:#f92672">&#34;C&#34;</span>: <span style="color:#ae81ff">0</span>
+}
+</code></pre></div><p>使用虚拟变量的话，则需要使用 17 维特征表示一个风向特征，纬度太大抛弃该方案。</p>
+<p>实际项目中，考虑到总体特征的维度关系，不使用风向特征。</p>
+<h4 id="eda-of-label">EDA of label</h4>
+<p>下图为 2015、2016、2017 三年的产量分布图，左侧为早稻，右侧为晚稻：</p>
+<p><img src="https://live.staticflickr.com/65535/48793328157_a193b6c824.jpg" alt="三年早稻产量分布"><img src="https://live.staticflickr.com/65535/48792821458_9f5d49791e.jpg" alt="三年晚稻产量分布"></p>
+<p>可以看出：</p>
+<ol>
+<li>每年早稻、晚稻绝对产量的分布变化不大；</li>
+<li>早晚稻的分布都近似一个右偏的高斯分布，不适合模型学习；</li>
+</ol>
+<p>针对以上问题，需要让模型学习到两年产量的一个差值，并且让分布趋近标准正态分布。分别对早稻和晚稻做两年的差值：</p>
+<p><img src="https://live.staticflickr.com/65535/48793186206_9d436c4b6c.jpg" alt="2016-2015和2017-2016早稻产量"><img src="https://live.staticflickr.com/65535/48793327762_a83e076304.jpg" alt="2016-2015和2017-2016晚稻产量"></p>
+<p>让模型去学习两年之间早稻（或晚稻）的差异，这个差异的分布也要更接近于对称的正态分布。因此预测 2018 年数据得到的结果需要加上 2017 年的产量才是真实预测出的 2018 年的产量。</p>
+<h3 id="数据预处理与特征选取">数据预处理与特征选取</h3>
+<p>首先去掉了原始数据中的脏数据。</p>
+<p>根据训练数据的 EDA ，选取以下 5 个数值型特征作为训练特征：</p>
+<ol>
+<li>日照时数</li>
+<li>日平均风速</li>
+<li>日降水量</li>
+<li>日平均温度</li>
+<li>日相对湿度</li>
+</ol>
+<p>在尽可能保留信息的同时降低多重线性的影响。</p>
+<p>对于月份，选取 3、4、5、6、7 月的训练数据作为早稻的特征，选取 7、8、9、10、11 月的训练数据作为晚稻的特征。</p>
+<p>得到一年的特征则主要有两个方案，一种是将早稻（或晚稻）对应几个月份的各个特征取平均作为该县该年的天气特征（5维），另一种是分别对每个月份的各个特征取平均，再将所有月份的特征拼接起来（25维）作为该县该年的天气特征。经过初赛的多次试验后发现差别不大，为了减少特征纬度过高带来的过拟合的影响，最终采用的是 5 维的特征。</p>
+<p>对于任意两年晚稻的差异，由下图可以看出，2015 年和 2016 年各个区县自己的晚稻产量差异不大，而 2016 年和 2017 年晚稻的差异中可以发现，区县 id 为 16 的地区发生了明显的波动。继续将 2015 年和 2017 年晚稻产量对比，仍然出现了异常波动的情况。</p>
+<p>通过检查该地区的具体晚稻产量的值，发现 2017 年该地区晚稻的产量有大幅的下滑。在查询广西这三年的天气报告后，我们将其视为一个其他原因导致的异常值，并在训练时对其做了处理，将其转换为该地区前两年晚稻的均值。</p>
+<p><img src="https://live.staticflickr.com/65535/48792821613_5f067dc7ae.jpg" alt="2015和2016各个县的晚稻产量"><img src="https://live.staticflickr.com/65535/48793327947_d08346fdf3.jpg" alt="2015和2017各个县的晚稻产量"><img src="https://live.staticflickr.com/65535/48793327877_0b9376a3e2.jpg" alt="2016和2017各个县的晚稻产量"></p>
+<h3 id="模型选择">模型选择</h3>
+<p>在 ./code/model.py 文件中有 Models 类，支持以下几种回归模型：</p>
+<ol>
+<li>线性回归模型</li>
+<li>SVM 回归模型，使用线性核函数</li>
+<li>SVM 回归模型，使用径向基核函数</li>
+<li>GBDT 回归模型</li>
+</ol>
+<p>所有模型的超参数已通过网格搜索得到最优组合，不要轻易改动</p>
+<p>最终提交的版本中，线上得到的早稻的最优结果使用的是线性核函数的 SVM 回归模型，晚稻的最优结果使用的是径向基核函数的 SVM 回归模型。</p>
+<h3 id="后记">后记</h3>
+<p>尽管比赛本身有着诸多不足，但总体来说还是一次比较成功的体验，和强哥还有彬彬的合作也非常融洽。个人从中主要学到的还是如何分析数据、处理数据，认识到了一次好的先期数据探索性分析能够起到多么重要的作用。自己以后比较希望寻找算法转开发性质的工作，希望能将研究生期间学到的专业知识，以及在项目实际处理中积累的经验结合起来，因此之后还是希望尽量多参加一下这样有比较真实数据，且有实际意义的赛事。</p>
+
+    
+    
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+  const gitalk = new Gitalk({
+    clientID: '36c8fa6e09d08297a270',
+    clientSecret: 'af0175944284956d288d14b389fbc89be8df7f1e',
+    repo: 'chongg039.github.io',
+    owner: 'chongg039',
+    admin: ['chongg039'],
+    id: location.pathname, 
+    distractionFreeMode: false 
+  });
+  (function() {
+    if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+      document.getElementById('gitalk-container').innerHTML = 'Gitalk comments not available by default when the website is previewed locally.';
+      return;
+    }
+    gitalk.render('gitalk-container');
+  })();
+</script>
+
+<div class="navfooter">
+    <table width="100%" summary="Navigation footer">
+        <tbody>
+            <tr>
+                <td width="40%" align="left">&nbsp;</td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right">&nbsp;</td>
+            </tr>
+            <tr>
+                <td width="40%" align="left" valign="top">
+                    <span class="copyright">
+                        Copyright 2014-2020
+                    </span>
+                    &nbsp;
+                </td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right" valign="top">&nbsp;<a href="https://chongg039.cn/">HOME</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: { 
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+            processEscapes: true
+        }
+    });
+    </script>
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-117991024-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+    <script type="text/javascript" src="https://chongg039.cn/js/function.js"></script>
+    <script type="text/javascript" src="https://chongg039.cn/js/prettify.js"></script>
+    
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+</html>
+

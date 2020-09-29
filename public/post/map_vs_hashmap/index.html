@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>STL中的map与hash_map</title>
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/style.css" />
+    
+    <link rel="shortcut icon" href="https://chongg039.cn/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/sunburst.css" />
+</head>
+<body onload="PR.prettyPrint()">
+    <div class="navheader">
+        <table width="100%" summary="Navigation header">
+            <tbody>
+                <tr>
+                    <td colspan="3" align="center">Co1driver 的个人博客</td>
+                </tr>
+                <tr>
+                    <td width="90%" align="left">&nbsp;</td>
+                    <td width="5%" align="center">&nbsp;<a accesskey="h" href="https://github.com/chongg039">GITHUB</a></td>
+                    <td width="5%" align="right">&nbsp;<a accesskey="a" href="https://chongg039.cn//about">ABOUT</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h1>STL中的map与hash_map</h1>
+    <h4>Fri, Mar 6, 2020</h4>
+    <p>阅读STL源码有感，加上有个面试官问过这个问题没回答好，做下记录。</p>
+<h3 id="区别">区别</h3>
+<p>hash_map是基于哈希表的键值存储实现，STL中的map是基于红黑树实现的。对于set和hash_set是一样的，因此可以将其看作哈希表和红黑树的区别。</p>
+<p>SGI STL中不提供hash_map和hash_set的接口，但允许编译器厂商进行扩展，这就导致实现比较混乱。因此C++11提供了正式的关联式容器unordered_map和unordered_set。不过为了方便记忆，我们还是用hash_map来称呼，比较直观。</p>
+<h3 id="map">map</h3>
+<p>先说下map，底层实现是RB-Tree，一种不同于AVL树的平衡二叉（搜索）树的实现。我们先不看各种树的实现，先看红黑树的特点。</p>
+<p>既然红黑树也是一种二叉搜索树，说明内部是自动排序的，对于一个非叶子节点，左子节点总比它小，右子节点总比他大，那么在红黑树实现的map中查找元素也就是O(logN)级别，因为树的深度就是O(logN)。对于插入和删除，都需要调整红黑树使它继续满足平衡二叉搜索树的条件，因此时间复杂度也是O(logN)。</p>
+<p>对于内存空间占用，红黑树要小一点，因为只需要为存在的节点分配空间即可，也很显然具备更好地伸缩性。</p>
+<p>对于红黑树实现的map，树中的节点存放的是一个std::pair，第一个元素视作红黑树排序的依据（即map的key），第二个元素是map的value。</p>
+<h3 id="hash_map">hash_map</h3>
+<p>再看hash_map，由一个固定长度的连续空间（一般是数组）和一组hash算法组成。hash又名散列，把任意长度的输入转换为固定长度的输出，这个输出的长度一般远小于输入的空间长度，可以认为是一种压缩映射。</p>
+<p>很显然hash的查找速度是一种O(1)级别的查找，通过数组的下标直接定址到相应的空间取出value，当然这是一种很理想的情况，等下还要说到。插入和删除也是常数级别，单从时间复杂度上来讲，哈希表的速度是要优于红黑树的，查找速度也和数据量无关。不过也不尽然，因为hash函数的计算也需要时间，而且如果产生冲突又需要额外的耗时。当然，如果你的内存足够，数据也足够静态，不怎么需要动态扩增，hash是一种更好的选择。</p>
+<p>很显然hash_map是无序的，且需要事先分配足够的内存空间。</p>
+<h3 id="红黑树">红黑树</h3>
+<p>翻到一篇博客，图文并茂，非常详细，<a href="https://riteme.site/blog/2016-3-12/2-3-tree-and-red-black-tree.html">链接</a>。</p>
+<h3 id="哈希冲突解决">哈希冲突解决</h3>
+<ol>
+<li>开放定址法：从发生冲突的单元开始，按照一定的次序找到下一个空闲单元存入。这种方法表长一定要大于等于要存放的元素个数，缺点是删除的时候不能真正删除，只能给一个标识，等下次有元素插入该地址时再删除，否则会引起查找错误。方法有三种：线性探测再散列、二次探测再散列等；</li>
+<li>链地址法：对发生冲突的哈希值相同的元素，将他们构成一个单链表，并将链表的头指针存放在哈希表的对应单元中，对哈希表的查找、删除和添加主要发生在对应的链表中，适用于经常需要插入和删除的情况；</li>
+<li>再哈希法：就是构造多个不同的哈希函数，产生冲突时再使用下一个哈希函数计算要存放的地址，不容易产生冲突，但是增加了计算时间；</li>
+<li>建立公共溢出区：将哈希表分为公共表和溢出表，发生溢出时将所有溢出数据统一存放溢出区。</li>
+</ol>
+
+    
+    
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+  const gitalk = new Gitalk({
+    clientID: '36c8fa6e09d08297a270',
+    clientSecret: 'af0175944284956d288d14b389fbc89be8df7f1e',
+    repo: 'chongg039.github.io',
+    owner: 'chongg039',
+    admin: ['chongg039'],
+    id: location.pathname, 
+    distractionFreeMode: false 
+  });
+  (function() {
+    if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+      document.getElementById('gitalk-container').innerHTML = 'Gitalk comments not available by default when the website is previewed locally.';
+      return;
+    }
+    gitalk.render('gitalk-container');
+  })();
+</script>
+
+<div class="navfooter">
+    <table width="100%" summary="Navigation footer">
+        <tbody>
+            <tr>
+                <td width="40%" align="left">&nbsp;</td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right">&nbsp;</td>
+            </tr>
+            <tr>
+                <td width="40%" align="left" valign="top">
+                    <span class="copyright">
+                        Copyright 2014-2020
+                    </span>
+                    &nbsp;
+                </td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right" valign="top">&nbsp;<a href="https://chongg039.cn/">HOME</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: { 
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+            processEscapes: true
+        }
+    });
+    </script>
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-117991024-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+    <script type="text/javascript" src="https://chongg039.cn/js/function.js"></script>
+    <script type="text/javascript" src="https://chongg039.cn/js/prettify.js"></script>
+    
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+</html>
+

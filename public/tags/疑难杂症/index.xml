@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>疑难杂症 on Co1driver 的个人博客</title>
+    <link>https://chongg039.cn/tags/%E7%96%91%E9%9A%BE%E6%9D%82%E7%97%87/</link>
+    <description>Recent content in 疑难杂症 on Co1driver 的个人博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>Copyright 2014-{year}</copyright>
+    <lastBuildDate>Sun, 02 Oct 2016 15:43:36 -0700</lastBuildDate><atom:link href="https://chongg039.cn/tags/%E7%96%91%E9%9A%BE%E6%9D%82%E7%97%87/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>解决 ubuntu 下键盘错位问题</title>
+      <link>https://chongg039.cn/post/ubuntu-keyboard-error/</link>
+      <pubDate>Sun, 02 Oct 2016 15:43:36 -0700</pubDate>
+      
+      <guid>https://chongg039.cn/post/ubuntu-keyboard-error/</guid>
+      <description>&lt;p&gt;很悲催的键盘错位了，就这个系统有问题，以前也没遇到过。简而言之就是@和“互换，#打不出来等。问题不大，但是影响输入体验。
+工作室的小伙伴都说我这电脑只有我会用。。。&lt;/p&gt;
+&lt;p&gt;之前在网上搜到的解决办法是在终端输入：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;sudo dpkg-reconfigure keyboard-configuration
+//需要安装keyboard-configuration&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

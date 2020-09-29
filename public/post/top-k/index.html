@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>TopK问题以及在海量数据下的情况</title>
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/style.css" />
+    
+    <link rel="shortcut icon" href="https://chongg039.cn/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/sunburst.css" />
+</head>
+<body onload="PR.prettyPrint()">
+    <div class="navheader">
+        <table width="100%" summary="Navigation header">
+            <tbody>
+                <tr>
+                    <td colspan="3" align="center">Co1driver 的个人博客</td>
+                </tr>
+                <tr>
+                    <td width="90%" align="left">&nbsp;</td>
+                    <td width="5%" align="center">&nbsp;<a accesskey="h" href="https://github.com/chongg039">GITHUB</a></td>
+                    <td width="5%" align="right">&nbsp;<a accesskey="a" href="https://chongg039.cn//about">ABOUT</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h1>TopK问题以及在海量数据下的情况</h1>
+    <h4>Wed, Mar 11, 2020</h4>
+    <p>解释：简单来说就是在一堆数据里面找到前 K 大（当然也可以是前 K 小）的数。</p>
+<h3 id="一般做法">一般做法</h3>
+<ol>
+<li>
+<p>排序，快排，然后取对应下标一侧的数据。数据量大时排序慢，而且不一定需要排序所有的。</p>
+</li>
+<li>
+<p>改进版，冒泡，只需要冒前K个，将全局排序优化为局部排序，但是仍需要排序。</p>
+</li>
+<li>
+<p>快排的另一种转换思路：如果一次排序的中间值等于K（类似寻找统计学中位数的问题），一侧就是TopK的数据。如果不等于只需要在一侧递归寻找即可。缺点是需要将数据一次载入内存，并且需要修改数组内容。</p>
+</li>
+</ol>
+<pre><code>上面的方法也叫“随机选择”。注意，这种方法是经典的“减治法”，和分治法不同的是减治法只需要求解一个子问题便可解决大问题，分治法需要解决所有的小问题才可以解决大问题。因此减治法时间复杂度是O(logn)，分治法则是O(nlogn)；
+
+分治法，大问题分解为小问题，小问题都要递归各个分支，例如：快速排序
+减治法，大问题分解为小问题，小问题只要递归一个分支，例如：二分查找，随机选择
+</code></pre><ol start="4">
+<li>经典解法：若找TopK大，维护一个大小为K的小顶堆，依次将数据放入堆中，当堆的大小满了的时候，只需要将堆顶元素与下一个数比较：如果大于堆顶元素，则将当前的堆顶元素抛弃，并将该元素插入堆中，<strong>调整堆（这一步带来开销）</strong>。遍历完全部数据，Top K 的元素也自然都在堆里面了。这种方式同样适合海量数据，不需要将数据一次加载完毕，可以一次只取一部分，因为我们只需要将数据一个个拿来与堆顶比较。时间复杂度是：遍历全部数据是O(n)，每次和堆顶比较若<strong>产生调整</strong>则为O(logk)，共O(nlogk)。当k足够小，可视作O(n)。建堆时间复杂度为O(k)，可视作常数，注意建堆时间不是O(klogk)，因为是自底向上，具体可看<a href="https://blog.csdn.net/LeoSha/article/details/46116959">推导</a>。</li>
+</ol>
+<h3 id="海量数据处理">海量数据处理</h3>
+<ol>
+<li>
+<p>分布式思想：将数据分散在多台机器中，然后每台机器并行计算各自的 TopK 数据，最后汇总，再计算得到最终的 TopK 数据。</p>
+</li>
+<li>
+<p>40亿个数，查找某个数字是不是在里面。所需内存</p>
+</li>
+</ol>
+<pre><code>40 * 10 ^ 8 * 4B(int大小) = 16G
+</code></pre><p>方法一：bitmap，当然可以同时使用布隆过滤器；</p>
+<p>方法二：将这么多的数据分成许多块， 比如每一个块的大小是1000，那么第一块保存的就是0到999的数，第2块保存的就是1000 到1999的数……实际上我们并不保存这些数，而是给每一个块设置一个计数器。 这样每读入一个数，我们就在它所在的块对应的计数器加1。处理结束之后， 我们找到一个块，它的计数器值小于块大小(1000)， 说明了这一段里面一定有数字是文件中所不包含的。然后我们单独处理这个块即可。</p>
+<h3 id="topk终极思路">TopK终极思路</h3>
+<p>特定的统计方式+堆，统计方式主要是hashmap，对单词的话可以采用Trie树。然后再维护一个大小为K的小顶堆。</p>
+
+    
+    
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+  const gitalk = new Gitalk({
+    clientID: '36c8fa6e09d08297a270',
+    clientSecret: 'af0175944284956d288d14b389fbc89be8df7f1e',
+    repo: 'chongg039.github.io',
+    owner: 'chongg039',
+    admin: ['chongg039'],
+    id: location.pathname, 
+    distractionFreeMode: false 
+  });
+  (function() {
+    if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+      document.getElementById('gitalk-container').innerHTML = 'Gitalk comments not available by default when the website is previewed locally.';
+      return;
+    }
+    gitalk.render('gitalk-container');
+  })();
+</script>
+
+<div class="navfooter">
+    <table width="100%" summary="Navigation footer">
+        <tbody>
+            <tr>
+                <td width="40%" align="left">&nbsp;</td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right">&nbsp;</td>
+            </tr>
+            <tr>
+                <td width="40%" align="left" valign="top">
+                    <span class="copyright">
+                        Copyright 2014-2020
+                    </span>
+                    &nbsp;
+                </td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right" valign="top">&nbsp;<a href="https://chongg039.cn/">HOME</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: { 
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+            processEscapes: true
+        }
+    });
+    </script>
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-117991024-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+    <script type="text/javascript" src="https://chongg039.cn/js/function.js"></script>
+    <script type="text/javascript" src="https://chongg039.cn/js/prettify.js"></script>
+    
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+</html>
+

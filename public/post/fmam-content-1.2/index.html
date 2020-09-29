@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>FMAM - 1.2：PH 分布的定义和基本属性</title>
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/style.css" />
+    
+    <link rel="shortcut icon" href="https://chongg039.cn/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/sunburst.css" />
+</head>
+<body onload="PR.prettyPrint()">
+    <div class="navheader">
+        <table width="100%" summary="Navigation header">
+            <tbody>
+                <tr>
+                    <td colspan="3" align="center">Co1driver 的个人博客</td>
+                </tr>
+                <tr>
+                    <td width="90%" align="left">&nbsp;</td>
+                    <td width="5%" align="center">&nbsp;<a accesskey="h" href="https://github.com/chongg039">GITHUB</a></td>
+                    <td width="5%" align="right">&nbsp;<a accesskey="a" href="https://chongg039.cn//about">ABOUT</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h1>FMAM - 1.2：PH 分布的定义和基本属性</h1>
+    <h4>Thu, Jul 19, 2018</h4>
+    <p>PH 分布在 Neuts（1975）中被引入来概括指数分布。在本节中，我们给出了相位分布的一个代数定义和一个概率定义，并介绍一些基本的属性。</p>
+<h4 id="定义121">定义1.2.1：</h4>
+<p>如果非负随机变量 X 的分布函数由下式给出，则它具有相位类型分布（PH分布）：</p>
+<p>$$
+F(t)=P\{X \leq t\}=1-\pmb{\alpha} exp(Tt) \pmb{e} \equiv 1- \pmb{\alpha}(\sum _ {n=0}^\infty \frac{t^n}{n!}T^n) \pmb{e},t \geq 0 \tag{1.9}
+$$</p>
+<p>其中：</p>
+<ol>
+<li>$\pmb{e}$ 是全为 1 的列向量；</li>
+<li>$\pmb{\alpha}$ 是 m 阶的随机行向量（substochastic pmbtor 翻译不准确？），即 $\pmb{\alpha}$ 是行向量，$\pmb{\alpha}$ 中的所有元素都是非负的，$\pmb{\alpha} \pmb{e} \leq 1$ ，其中 m 是正整数；</li>
+<li>T 是 m 阶的子生成矩阵（subgenerator 翻译不准确？），即 T 是 $m \times m$ 矩阵，使得 (1) 对角线所有元素都是负的；(2) 所有非对角线元素都是非负的；(3) 一行所有元素之和均为非正数，且对所有行有效；(4) T 是可逆的。</li>
+</ol>
+<p>我们称 T 为 PH 发生器，2 元组 $(\pmb{\alpha}, T)$ 称为 m 阶相位分布的相位表示（PH表示）。</p>
+<h4 id="例子121">例子1.2.1：</h4>
+<p>下面是四个具有 PH 表示 的 PH 分布
+$$
+\pmb{\alpha _ {1}} = (0.2, 0.8), T _ {1} = \begin{pmatrix}-2 &amp; 1 \\ 0.5 &amp; -10\end{pmatrix}
+$$</p>
+<p>$$
+\pmb{\alpha _ {2}} = (0.1, 0, 0.9), T _ {2} = \begin{pmatrix}-15 &amp; 0 &amp; 10 \\ 0 &amp; -2 &amp; 0 \\ 0 &amp; 2 &amp; -2 \end{pmatrix}
+$$</p>
+<p>$$
+\pmb{\alpha _ {3}} = (0, 0.1, 0.8, 0.1), T _ {3} = \begin{pmatrix}-20 &amp; 0 &amp;  0 &amp; 15 \\ 20 &amp; -20 &amp; 0 &amp; 0 \\ 0 &amp; 0.5 &amp; -1 &amp; 0.5 \\ 0 &amp; 0 &amp; 0 &amp; -1 \end{pmatrix}
+$$</p>
+<p>$$
+\pmb{\alpha _ {4}} = (0, 0.2, 0, 0.8), T _ {1} = \begin{pmatrix} -15 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\ 15 &amp; -15 &amp; 0 &amp; 0 &amp; 0 \\ 0 &amp; 0 &amp; -4 &amp; 0 &amp; 0 \\ 0 &amp; 0 &amp; 2 &amp; -2 &amp; 0 \\ 0 &amp; 0 &amp; 0 &amp; 1 &amp; -1\end{pmatrix}
+$$</p>
+<h4 id="命题121">命题1.2.1：</h4>
+<p>对于定义 1.2.1 中给出的 PH 表示 $(\pmb{\alpha},T)$ ，在方程 1.9 中定义的函数 F(t) 是一种概率分布，且其密度函数如下给出：</p>
+<p>$$
+f(t)=\frac{dF(t)}{dt}=\pmb{\alpha}exp(Tt) T^0,t \geq 0 \tag{1.11}
+$$</p>
+<p>其中 $T^0=-T\pmb{e}$ ，证明略。</p>
+<h4 id="练习121">练习1.2.1：</h4>
+<p>重新绘制例子 1.2.1 中给出的 PH 分布的概率密度函数。</p>
+<p><img src="https://farm2.staticflickr.com/1775/43816701022_2bc48e9d6a_z.jpg#center" alt="Fig.1.4"></p>
+<p>如图 1.4 所示，四种密度函数完全不同。事实上，通过改变 PH 的参数为一个较小的阶（如 $m=2, 3, 4, 5$）， 我们可以生成不同特征的概率分布。例子 1.2.1 表明 PH 分布的集合可能大而广，这将会在下面的定理中得到确认。</p>
+<h4 id="定理121">定理1.2.1：</h4>
+<p>在非负半直线上的概率分布集合中，PH 分布的集合是密集的。</p>
+<p>众所周知，一组广义的 Erlang 分布（将在例子 1.2.3 中定义）在所有非负半直线上的概率分布集合中是密集的。由于广义 Erlang 分布集是 PH 分布的一个子集，定理 1.2.1 即所得。定理 1.2.1 的详细证明可以在例如 Asmussen（2000）中找到。</p>
+<p>定理 1.2.1 意味着 PH 分布在非负半直线上可以近似任何概率分布，这是他们得以在随机建模中被广泛使用主要原因之一。PH 分布中与 PH 表示相关的概率解释是另一个主要原因。为了解释，我们给出了 PH 分布的概率定义，这即是 Neuts（1975）给出的 PH 分布的第一个定义。。首先，我们使用下面的例子和小练习来复习用于定义 PH 分布的连续时间马尔可夫链。</p>
+<h4 id="例子122">例子1.2.2：</h4>
+<p>考虑一个有五个状态 $\{1, 2, 3, 4, 5\}$ 的连续时间的马尔可夫链 $\{I(t), t \geq 0\}$ 和一个无穷小的生成矩阵（例如 $Q-matrix$）
+$$
+Q = \begin{matrix}1 \\ 2 \\ 3 \\ 4 \\ 5\end{matrix}\begin{pmatrix}-20 &amp; 0 &amp; 0 &amp; 15 &amp; 5 \\ 20 &amp; -20 &amp; 0 &amp; 0 &amp; 0 \\ 0 &amp; 0.5 &amp; -1 &amp; 0.5 &amp; 0 \\ 0 &amp; 0 &amp; 0 &amp; -1 &amp; 1 \\ 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; \end{pmatrix}
+$$
+注意：无穷小生成矩阵是一个有限或无限矩阵，满足</p>
+<ol>
+<li>所有非对角元素是非负的</li>
+<li>所有对角元素都是负数或零</li>
+<li>每一行元素的和为零</li>
+</ol>
+<p>通过连续时间马尔可夫链的定义，$\{I(t), t \geq 0\}$ 在五个状态 $\{1, 2, 3, 4, 5\}$ 的逗留时间 (sojourn times ，翻译不准确？) 分别服从以参数为  20, 20, 1, 1, 0 的指数分布。状态 5 是特殊的，因为其逗留时间的参数是 0 ，这意味着一旦马尔可夫链进入状态 5 就不会有转移发生，因此，马尔可夫链将永远保持在状态 5 。我们称状态 5 为<strong>吸收状态 (absorption state)</strong> 。</p>
+<p>令 $p _ {i, j} (t)$ 为马尔可夫链在 $t$ 时刻处于状态 $j$ 的概率，给定 $I(0) = i$ ，对 $i, j = 1, 2, &hellip; , 5$ ，令一个 $5 * 5$ 矩阵 $P(t) = (p _ {i, j} (t))$ 。通过一般理论的马尔可夫链，我们有
+$$
+P(t) = exp(Qt) \quad t \geq 0
+$$
+若 $I(0)$ 服从概率分布 $\pmb{\gamma}$ ，那么 $T(t)$ 的分布由
+$$
+\pmb{\gamma} exp(Qt) \quad t \geq 0
+$$
+给出，注意必须有 $\pmb{\gamma e} = 1$ 。同样地
+$$
+\pmb{\gamma} exp(Qt) \pmb{e} = 1
+$$
+因为代数上 $Q \pmb{e} = 1$ ，概率上也满足马尔可夫链在 $t$ 必须处在五个状态之一（注意：在本书中，“0“ 同样也表示零向量或零矩阵）。</p>
+<h4 id="练习122">练习1.2.2：</h4>
+<p>绘制例 1.2.2 中定义的马尔可夫链的样本路径。给定 $I(0) = 2$ ，在时刻 $t = 0.5, 1, 15$ 时马尔可夫链处在状态 5 的概率是多少？</p>
+<p>在例子 1.2.2 中，状态 5 是吸收状态，即一旦马尔可夫链进入状态 5 就在这里不再变化了。因此，直到马尔可夫链进入状态 5 的这段时间便很容易定义了，我们称其为状态 5 的吸收时间 (absorption time) 。给定马尔可夫链最初处于状态 2 ，练习 1.2.2 实际上是问状态 5 的吸收时间的分布。</p>
+<p>通常，定义 $m + 1$ 个状态 $\{1, 2, &hellip;, m, m+1\}$ 的连续时间马尔可夫链 $\{T(t), t \geq 0\}$ ，和一个无穷小的生成矩阵
+$$
+Q = \begin{pmatrix}T &amp; \pmb{T ^ 0} \\ 0 &amp; 0\end{pmatrix}
+$$
+其中 $T$ 是一个 PH 生成矩阵（见定义 1.2.1）。有图无穷小生成矩阵的每一行元素总和为零，则必须有 $\pmb{T ^ 0} = -T \pmb{e}$ 。因为状态 $m+1$ 的总转换率 (total transition rate) 为零，状态 $m+1$ 是吸收状态。定义
+$$
+X = min\{t: I(t) = m+1, t \geq 0\}
+$$
+是状态 $m+1$ 的吸收时间。那么 $P\{X &lt; t\}$ 可以解释为马尔可夫链在时刻 $t$ 之前被吸收到状态 $m+1$ 的概率。</p>
+<p>例子 1.2.2 中定义的马尔可夫链，状态 5 是其吸收状态。状态 5 的吸收时间具有 $m = 4$ 的 PH 分布，且
+$$
+T = \begin{pmatrix}-20 &amp; 0 &amp; 0 &amp; 15 \\ 20 &amp; -20 &amp; 0 &amp; 0 \\ 0 &amp; 0.5 &amp; -1 &amp; 0.5 \\ 0 &amp; 0 &amp; 0 &amp; -1\end{pmatrix}
+, \quad
+\pmb{T ^ 0} = \begin{pmatrix}5 \\ 0 \\ 0 \\ 1\end{pmatrix}
+$$
+注意上式中的 $T$ 就是例子 1.2.1 中的 $T _ {3}$ 。图 1.5 显示了通过例子 1.2.1 中给出的初始概率向量 $\pmb{\alpha _ {3}}$ 生成的对应 $X$ 和 $\{I(t), t \geq 0\}$ 的两条样本路径。</p>
+<p><img src="https://farm2.staticflickr.com/1835/42960962745_18c737e445_z.jpg#center" alt="Fig.1.5"></p>
+<p>给马尔可夫链 $\{I(t), t \geq 0\}$ 一个初始分布 $(\pmb{\alpha}, 1-\pmb{\alpha e})$ ，$I(t)$ 的概率分布由 $(\pmb{\alpha}, 1-\pmb{\alpha e})P(t)$ 给出，即
+$$
+\begin{align}
+(\pmb{\alpha, 1-\pmb{\alpha e}})exp
+\bigg(
+\begin{pmatrix}T &amp; \pmb{T ^ 0} \\ 0 &amp; 0\end{pmatrix}
+t
+\bigg)
+&amp;= (\pmb{\alpha, 1-\pmb{\alpha e}}) \sum _ {n=0} ^ {\infty} \frac{t ^ n}{n!}
+\begin{pmatrix}T &amp; \pmb{T ^ 0} \\ 0 &amp; 0
+\end{pmatrix} ^ {n}<br>
+\\ &amp;= (\pmb{\alpha, 1-\pmb{\alpha e}})
+\begin{pmatrix}\sum _ {n=0} ^ {\infty} &amp; \sum _ {n=1} ^ {\infty} \frac{t ^ n}{n!}T ^ {n-1}\pmb{T ^ 0} \\ 0 &amp; 1 \end{pmatrix}
+\\ &amp;= (\pmb{\alpha, 1-\pmb{\alpha e}})
+\begin{pmatrix}exp(Tt) &amp; \pmb{e} - exp(Tt) \pmb{e} \\ 0 &amp; 1\end{pmatrix}
+\\ &amp;= (\pmb{\alpha} exp(Tt), 1-\pmb{\alpha} exp(Tt) \pmb{e})
+\end{align}
+$$
+上式最后一行的第二个给出了马尔可夫链在时刻 $t$ 时处在状态 $m+1$ 的概率，即概率 $P\{X \leq t\}$ 。因此有
+$$
+P\{X \leq t\} = P\{I(t) = m+1\} = 1-\pmb{\alpha} exp(Tt) \pmb{e}, \quad t \geq 0
+$$</p>
+<h4 id="练习123">练习1.2.3：</h4>
+<p>从概率上来解释矩阵中元素 $exp(Tt)$ 和向量 $\pmb{e} - exp(Tt) \pmb{e}$ 的含义。</p>
+<p>上面的方程 1.18 引出了以下 PH 分布的定义。</p>
+<h4 id="定义122">定义1.2.2：</h4>
+<p>假设方程 1.14 中定义的连续时间的马尔可夫链 $\{T(t),t \geq 0\}$ 将被概率为 1 吸收到状态 m+1（翻译不准确？）。一个相位型（PH型）随机变量 X 被定义为到状态 m+1 的连续时间马尔可夫链 $\{T(t),t \geq 0\}$$ 的吸收时间。马尔可夫链的初始分布为
+$$
+(\pmb{\alpha},1-\pmb{\alpha}\pmb{e})
+$$
+二元组 $(\pmb{\alpha},T)$ 是 X 的 PH 表示。</p>
+<p>定义 1.2.1 和定义 1.2.2 是等价的，因为 (1) 具有吸收状态的马尔可夫链 $\{T(t),t \geq 0\}$ 的矩阵 T 满足在定义 1.2.1 中给出的条件；(2) 在两个定义中向量 $\pmb{\alpha}$ 都是子随机向量（不准确？）；(3) 公式 1.9 和 1.18 是一致的。</p>
+<p>定义 1.2.2 在随机建模中很有用，因为它链接了相位类型随机变量和连续时间马尔可夫链，通常称为底层马尔可夫链。在吸收之前，底层马尔可夫链是由矩阵 T  中的转移概率支配。每个元素的瞬态状态到吸收状态的转移概率由 $T^0$ 给出（翻译不准确？）。 因此，通过保持跟踪底层马尔可夫链的状态 $I(t)$ ，我们可以找到分布的剩余吸收时间。事实上，剩余吸收时间也服从 PH 分布。 例如，如果 $I(t)= 1$ ，则剩余时间具有 PH 分布，其 PH 表示为 $((1, 0, &hellip;, 0), T)$  。PH 分布的这个属性称为基于底层马尔可夫链状态的部分无记忆属性。定义 1.2.2 中描述的 PH 分布的概率解释是随机建模中 PH 分布应用的关键。在后面的章节，每当使用 PH 分布时，状态变量 $I(t)$ 将是在随机的马尔可夫链的引入中用作辅助变量，在相关随机模型中使用。</p>
+<h4 id="练习124">练习1.2.4：</h4>
+<p>考虑例子 1.2.1 中的 PH 分布 $(\pmb{\alpha _ {3}}, T _ {3})$</p>
+<ol>
+<li>假设在时刻 $t = 1.5$ 时，底层马尔可夫链出在此状态 2 ，找到剩余时间的分布（即条件随机变量 $X - 1.5 | \{X &gt; 1.5, I(1.5) = 2\}$ 的分布），并画出它的概率密度函数；</li>
+<li>找出 $X - 10 | \{X &gt; 10, I(10) = 2\}$ 的分布；</li>
+<li>找出 $X - 10 | \{I(10) = 2\}$ 的分布。</li>
+</ol>
+<p>我们注意到，一般来说，一个底层马尔可夫链的一个状态被称为一个阶段 (phase) ，因此在本书的其他部分，我们可能将 &ldquo;state&rdquo; 和 &ldquo;phase&rdquo; 混用。</p>
+<p>例 1.2.3 给出了几个众所周知概率分布的 PH 表示作为 PH 分布的特殊情况。例子 1.2.3 中的 PH 表示可以通过定义 1.2.1计算来验证，或通过定义 1.2.2 中的概率解释。</p>
+<h4 id="例子123">例子1.2.3：</h4>
+<p>下面是一些著名的 PH 分布及其相应的 PH 表示。</p>
+<ol>
+<li>
+<p>指数分布：$F(t) = 1-exp(-\lambda t), t \geq 0 : \pmb{\alpha} = 1, T = -\lambda, m = 1$</p>
+</li>
+<li>
+<p>Erlang 分布：$F(t) = 1-\sum _ {j=0} ^ {m-1} e ^ {- \lambda t} (\lambda t) ^ {j} / j!, t \geq 0, for m \geq 0, \lambda \geq 0 $
+$$
+\begin{pmatrix}
+\pmb{\alpha} = (0, &hellip;, 0, 1), \quad
+T = E(m, \lambda) =
+\begin{pmatrix}-\lambda &amp; &amp; &amp; \\ \lambda &amp; -\lambda &amp; &amp; \\ &amp; \ddots &amp; \ddots &amp; \\ &amp; &amp; \lambda &amp; -\lambda
+\end{pmatrix} _ {m \times m}
+\end{pmatrix}
+$$</p>
+</li>
+<li>
+<p>广义 Erlang 分布：$F(t) = 1- \sum _ {k=1} ^ {m} \alpha _ {k} (\sum _ {j=0} ^ {k-1} e ^ {-\lambda t} (\lambda t) ^ {j} / j!), t \geq 0, \lambda &gt; 0$
+$$
+\begin{pmatrix}
+\pmb{\alpha} = (\alpha _ {1}, &hellip;, \alpha _ {m}), \quad
+T = E(m, \lambda) =
+\begin{pmatrix}-\lambda &amp; &amp; &amp; \\ \lambda &amp; -\lambda &amp; &amp; \\ &amp; \ddots &amp; \ddots &amp; \\ &amp; &amp; \lambda &amp; -\lambda
+\end{pmatrix} _ {m \times m}
+\end{pmatrix}
+$$
+其中 $\pmb{\alpha} $ 是一个随机向量。</p>
+</li>
+<li>
+<p>Coxian 分布：$F(t) = 1- \sum _ {k=1} ^ {m} \alpha _ {k} (\sum _ {j=1} ^ {k} e ^ {-\lambda _ {j} t} \prod _ {i=1;i \not = j} ^ {k}(\lambda _ {i} / (\lambda _ {i} - \lambda _ {j}))), t \geq 0$
+$$
+\begin{pmatrix}
+\pmb{\alpha} = (\alpha _ {1}, &hellip;, \alpha _ {m}), \quad
+T = E(m, \lambda) =
+\begin{pmatrix}-\lambda _ {1} &amp; &amp; &amp; \\ \lambda _ {2} &amp; -\lambda _ {2} &amp; &amp; \\ &amp; \ddots &amp; \ddots &amp; \\ &amp; &amp; \lambda _ {m} &amp; -\lambda _ {m}
+\end{pmatrix} _ {m \times m}
+\end{pmatrix}
+$$
+其中 $\pmb{\alpha} $ 是一个随机向量，且 $\lambda _ {j} &gt; 0, j=1, &hellip;, m$ ，注意 $\{\lambda _ {j}, j=1, &hellip;, m\}$ 在 $F(t)$ 的解析表达式中必须是不同的正实数。相应的 PH 表示不会对其参数施加约束，并对所有的正实数 $\lambda _ {j} &gt; 0, j=1, &hellip;, m$ 都有效，这是使用 PH 表示的关键优势。方程 1.21（即上式）中的 PH 表示被称为 Coxian 表示。</p>
+</li>
+</ol>
+<p>注意：矩阵 $T$ 中缺少的元素都是零。在整本书中，如果一处缺少元素或元素块，则它为零或零元素块。</p>
+<p>例子 1.2.3 中的部分 (1) ，指数分布可以看作是具有这两阶段的连续时间马尔可夫链的吸收时间：一个参数为 $\lambda $ 的剩余时间以指数分布的瞬态 (transient phase 翻译不准确？) ，和一个吸收阶段。对于部分 (2) ，在练习 1.1.9 的基础上，一个 Erlang 随机变量就是 m 个具有相同参数 $\lambda $ 独立指数随机变量的总和。然后我们引入式子 1.19  中说明的具有 m 个瞬态和一个吸收阶段的底层马尔可夫链。瞬态中的逗留时间 (sojourn times 翻译不准确？) 是独立的、具有相同参数 $\lambda $ 的指数随机变量。若一个底层的过程从阶段 m 开始，经过所有 m 个瞬态后它将进入吸收阶段。因此，吸收时间是 m 个具有相同参数的相互独立的指数随机变量总和。部分 (3) 和 (4) 可以类似得到。</p>
+<p>例子 1.2.3 表明 PH 分布是指数分布、Erlang 分布和 Coxian 分布的一个推广。</p>
+<h4 id="练习125">练习1.2.5：</h4>
+<p>分别证明例子 1.2.3 中给出的部分 (3) 和 (4) 的 PH 分布是 Erlang 分布和 Coxian 分布的一个推广（提示：广义 Erlang 随机变量和 Coxian 随机变量都可以被视为独立指数随机变量的混合和）。</p>
+<p>下面的命题给出了 PH 分布的两个基本属性。</p>
+<h4 id="命题122">命题1.2.2：</h4>
+<p>以下属性适用于 PH 表示 $(\pmb{\alpha},T)$ 的 PH 随机变量 X ：</p>
+<ol>
+<li>X 的 LST（Laplace-Stieltjes变换，练习1.1.8）是$$f^*(s)=1-\pmb{\alpha}\pmb{e}+\pmb{\alpha}(sI-T)^{-1} T^0,s \geq 0, I 为单位矩阵$$</li>
+<li>$$E[X^n]=(-1)^n n!\pmb{\alpha}T^{-n}\pmb{e},n=1,2,&hellip;$$</li>
+</ol>
+<p>我们注意到，在概率论中计算连续时刻的分布涉及到积分（如：$E[X^n]=\int _ {0}^{\infty}x^{n}dF(x)$）。使用 PH 分布将积分转换为矩阵计算是一种更加有效和高效的方法，这是在随机建模中使用 PH 分布的另一个优点。</p>
+<p>关于 PH 分布的一个基本问题是：什么样的概率分配是 PH 分布？以下定理就 LTS 给出了完整的答案，它在理论研究和计算中都很有用。</p>
+<h4 id="定理122-ocinneide-1990a">定理1.2.2 (O’Cinneide (1990a))：</h4>
+<p>非负半直线上的概率分布是 PH 分布，当且仅当它是点的质量为零（翻译不准确？）或 (a) 它在正实数上有一个严格正的连续密度，(b) 它有一个有理的Laplace-Stieltjes 变换，唯一的极点是最大实部。</p>
+<p>（证明原文中未包括）</p>
+<h4 id="commentary略">Commentary：略</h4>
+<h4 id="additional-exercises-and-extensions略">Additional Exercises and Extensions：略</h4>
+
+    
+    
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+  const gitalk = new Gitalk({
+    clientID: '36c8fa6e09d08297a270',
+    clientSecret: 'af0175944284956d288d14b389fbc89be8df7f1e',
+    repo: 'chongg039.github.io',
+    owner: 'chongg039',
+    admin: ['chongg039'],
+    id: location.pathname, 
+    distractionFreeMode: false 
+  });
+  (function() {
+    if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+      document.getElementById('gitalk-container').innerHTML = 'Gitalk comments not available by default when the website is previewed locally.';
+      return;
+    }
+    gitalk.render('gitalk-container');
+  })();
+</script>
+
+<div class="navfooter">
+    <table width="100%" summary="Navigation footer">
+        <tbody>
+            <tr>
+                <td width="40%" align="left">&nbsp;</td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right">&nbsp;</td>
+            </tr>
+            <tr>
+                <td width="40%" align="left" valign="top">
+                    <span class="copyright">
+                        Copyright 2014-2020
+                    </span>
+                    &nbsp;
+                </td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right" valign="top">&nbsp;<a href="https://chongg039.cn/">HOME</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: { 
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+            processEscapes: true
+        }
+    });
+    </script>
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-117991024-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+    <script type="text/javascript" src="https://chongg039.cn/js/function.js"></script>
+    <script type="text/javascript" src="https://chongg039.cn/js/prettify.js"></script>
+    
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+</html>
+

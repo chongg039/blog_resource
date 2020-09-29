@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>vultr on Co1driver 的个人博客</title>
+    <link>https://chongg039.cn/tags/vultr/</link>
+    <description>Recent content in vultr on Co1driver 的个人博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>Copyright 2014-{year}</copyright>
+    <lastBuildDate>Mon, 03 Oct 2016 20:32:20 -0700</lastBuildDate><atom:link href="https://chongg039.cn/tags/vultr/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>使用 vultr &#43; SS &#43; 锐速科学上网</title>
+      <link>https://chongg039.cn/post/vultr-ss-serverspeed/</link>
+      <pubDate>Mon, 03 Oct 2016 20:32:20 -0700</pubDate>
+      
+      <guid>https://chongg039.cn/post/vultr-ss-serverspeed/</guid>
+      <description>&lt;p&gt;接手工作室后，tesths 便把原来那个已经配置好的ss账号连同服务器一块给销了。平时ss又十分必要，就向他讨要了具体的方法，自己搭了一个。这里也是把方法贴出来。&lt;/p&gt;
+&lt;h3 id=&#34;配置vultr主机&#34;&gt;配置vultr主机&lt;/h3&gt;
+&lt;p&gt;V家的主机算得上是性价比较高的一款了，而且有日本和新加坡的线路，相对来说延迟比较稳定。截止我购买的时候是每个新用户有20刀的返利，还是比较划算的。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

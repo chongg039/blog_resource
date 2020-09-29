@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>使用传值和std::move代替传引用可能是更明智的做法</title>
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/style.css" />
+    
+    <link rel="shortcut icon" href="https://chongg039.cn/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/sunburst.css" />
+</head>
+<body onload="PR.prettyPrint()">
+    <div class="navheader">
+        <table width="100%" summary="Navigation header">
+            <tbody>
+                <tr>
+                    <td colspan="3" align="center">Co1driver 的个人博客</td>
+                </tr>
+                <tr>
+                    <td width="90%" align="left">&nbsp;</td>
+                    <td width="5%" align="center">&nbsp;<a accesskey="h" href="https://github.com/chongg039">GITHUB</a></td>
+                    <td width="5%" align="right">&nbsp;<a accesskey="a" href="https://chongg039.cn//about">ABOUT</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h1>使用传值和std::move代替传引用可能是更明智的做法</h1>
+    <h4>Thu, Feb 6, 2020</h4>
+    <p>这里承接上一篇，继续阐述本人对右值引用、移动构造、移动语义以及编译器优化的一些看法。</p>
+<h3 id="问题的出现">问题的出现</h3>
+<p>假设编写一个类的带参数的构造函数（注意，不是默认构造，也不是拷贝构造和移动构造）：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/8uwxWG.png#center" alt="8uwxWG"></p>
+<p>我有这种想法：因为我这个函数既要支持左值实参，也要支持右值实参，所以要对这个构造函数进行重载。但Clang-Tidy会给出这样一条建议：</p>
+<pre><code>Clang-Tidy: Pass by value and use std::move
+</code></pre><p>这让我很疑惑，一般不是会建议传引用减少拷贝对象产生的开销吗。当我点击了这条建议，第一个构造函数被替换成了：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">explicit</span> <span style="color:#a6e22e">Obj</span>(std<span style="color:#f92672">::</span>string s) <span style="color:#f92672">:</span> s_(std<span style="color:#f92672">::</span>move(s))
+{
+    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;copy&#34;</span> <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+};
+</code></pre></div><p>传入了一个值，为了防止引发拷贝，直接对这个值使用移动语义，首先这里的形参看起来是没有规定是左值还是右值的，但前面说过，移动语义是将一个左值引用转换为一个右值引用，从而引发<code>std::string</code>的移动构造，那这样看起来这个构造函数还是只能接受左值实参，因为对右值使用移动语义会引发什么，现在不得而知。</p>
+<p>所以这条建议也只是将第一个构造函数替换掉了，第二个还是保留。我现在构造一个临时对象理论上会调用第二个构造函数，但实际上不是这样：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/0uXIVv.png#center" alt="0uXIVv"></p>
+<p>编译器显示调用的构造函数有歧义，这是什么情况！也就是说我给构造函数传入了一个右值引用，第一个使用了移动语义的构造函数也能被调用。行吧，编译器蒙了，我也蒙了。</p>
+<p>那大不了我把第二个去掉好吧，去掉之后：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/W4QqsO.png#center" alt="W4QqsO"></p>
+<p>竟然一切正常！那这就证明了两点：</p>
+<ol>
+<li>值形参不区分左值引用和右值引用（从行为上来看）；</li>
+<li>使用“传值+移动语义”编写函数，可以减少函数重载。</li>
+</ol>
+<p>但这也至少有了一个问题，就是对一个右值引用使用移动语义会出现什么情况？换句话说，右值和左值的真正区别应该不止上篇博客说的那些。</p>
+<h3 id="右值引用是一个左值">右值引用是一个左值</h3>
+<p>这里在之前看吴咏炜老师的文中提到过，当时是保持一个怀疑态度的。写完上一篇文章后对这个基本赞同，毕竟右值引用可以取地址可以赋值，所有的行为和左值几乎一模一样，但还是没有一个直观的感受。</p>
+<p>而且上一篇文章中有个观点是有一些问题的（现已更正）：将亡值是一个纯右值，这是我理解有误。事实上从吴老师画的一张图可以看出：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/yJsgll.jpg#center" alt="yJsgll"></p>
+<p>首先对吴老师的这张图片表示感谢。从图上来看，一个将亡值（xvalue）即是一个右值（rvalue），也是一个广义左值（glvalue），而非是一个纯右值（prvalue）。那么纯右值和将亡值到底有什么区别呢？</p>
+<p>事实上，在C++11之前，一般只有右值这样一种说法。在C++11提出了移动函数、移动语义之后，可以将xvalue视作一种语法糖。纯右值一般是纯粹的字面量，或是一个不具名的临时对象。但为了C++适应语言层面更广的情况，便提出了右值引用这样一种新的类型，使用所谓的“资源管理权转移”的方式，来减少拷贝资源带来的开销。对于一个（临时）对象，一旦他完成了资源的转移，也就可以被析构掉了。换言之，当一个右值对象“将要”进行某些个初始化或者赋值操作，我们就可以认为他是“将亡”的，因为一旦这个动作进行完毕，他就会被析构掉。</p>
+<p>为了方便移动构造和移动赋值，C++11便对这类右值赋予了一个新的值类别“将亡值”，用以和纯粹的字面量做区分。事实上，我们有时候没必要区分的这么细。</p>
+<p>再回到这个小标题，右值引用是一个左值。事实上这句话应该是：具名的右值引用是左值。什么是具名呢，看几个例子：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#75715e">// 自增自减
+</span><span style="color:#75715e"></span><span style="color:#f92672">++</span>i; <span style="color:#75715e">// 左值，先加再返回，返回的是i，具名，所以是左值
+</span><span style="color:#75715e"></span>i<span style="color:#f92672">++</span>; <span style="color:#75715e">// 右值，先返回一个临时的副本在加，这份拷贝不具有名字
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// 解引用和取地址
+</span><span style="color:#75715e"></span><span style="color:#f92672">*</span>p; <span style="color:#75715e">// 左值，获取的是一个存在的实体，&amp;(*p)也成立
+</span><span style="color:#75715e"></span><span style="color:#f92672">&amp;</span>a; <span style="color:#75715e">// 右值，取地址得到的是一个纯粹的字面量
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// 其他一些操作符
+</span><span style="color:#75715e"></span>a<span style="color:#f92672">+</span>b; <span style="color:#75715e">// 右值
+</span><span style="color:#75715e"></span>a<span style="color:#f92672">==</span>b; <span style="color:#75715e">// 右值
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// 例外，字符串字面量是一个左值，可以取地址
+</span><span style="color:#75715e"></span><span style="color:#f92672">&amp;</span><span style="color:#e6db74">&#34;hello&#34;</span>; <span style="color:#75715e">// 成立，是左值
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">test</span>(Obj <span style="color:#f92672">&amp;&amp;</span>a)
+{
+    Obj b <span style="color:#f92672">=</span> a;
+    <span style="color:#75715e">// 继续访问a
+</span><span style="color:#75715e"></span>}
+<span style="color:#75715e">// 如果Obj声明了移动构造，那么这个赋值操作理应调用移动构造函数。但事实上，当一个右值引用传入函数对象内，其类型就将会变成左值（命名对象）。那么这个赋值操作就将会调用Obj的拷贝构造函数，之后继续访问a在堆上的资源也是合理的。
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// 事实上，若test声明的返回值是一个左值引用，然后返回一个a，也是对的。这也印证了右值引用传入参数后会变成一个左值，因为一个右值引用是不能绑定到一个左值引用上的。
+</span></code></pre></div><p>关于左值和右值暂时就说到这吧，感觉头有点晕……C++11本身是为了逻辑上方便和提高效率才搞出了移动构造、移动赋值和将亡值这些东西，但就是有点费脑子……</p>
+<h3 id="const的重要性">const的重要性</h3>
+<p>在Effective C++一开始的条款3中，就说明了能用const修饰就尽可能使用，并列句了一些方便之处，包括对返回值的修饰和类成员函数的修饰等。但是在这里，我还是想从左值、右值形参的角度谈一谈，有没有const修饰会有什么区别。</p>
+<p>首先看移动构造函数，因为要修改原来对象中的资源管理权，所以形参不能为const，且需要为右值引用：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Obj</span>
+{
+    Obj(Obj <span style="color:#f92672">&amp;&amp;</span>rhs) {
+        ...
+    }
+}
+</code></pre></div><p>移动构造想要被调用，只能传入一个右值。对一个左值想要调用移动构造怎么办？只能使用移动语义将左值变为右值。</p>
+<p>再看普通的拷贝构造函数：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Obj</span>
+{
+    Obj(<span style="color:#66d9ef">const</span> Obj <span style="color:#f92672">&amp;&amp;</span>rhs) {
+        ...
+    }
+}
+</code></pre></div><p>注意，拷贝构造函数一定是形参为const的（从传统意义上来说），因为就是这样定义的。去掉const修饰我不将其称为拷贝构造，仅仅是一个单参的构造函数（尽管功能上可能是相似甚至重复的）。</p>
+<p>为什么这样说？需要做一下分析看看：</p>
+<p>之前说过，若同时声明了移动构造和拷贝构造，对一个左值进行std::move后当做参数会理所当然调用移动构造。假设不声明移动构造，而保留使用std::move，看看Clang-Tidy会提示什么：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/0poXYM.png#center" alt="0poXYM"></p>
+<p>用通俗的意思说，将一个左值进行移动语义转换后，作为形参为const引用（左值引用）的实参进行传递，实际上并不会发生移动语义。编译器建议取消移动语义的使用。</p>
+<p>事实上，上述用法并不会产生编译错误。虽然不知道是不是编译器做了优化，但这样认为：使用传统的拷贝构造函数（带const修饰），接受一个右值引用（尽管不似乎没有确实发生），在语言层面上是没有问题的。</p>
+<p>Clang-Tidy提示这个似乎是const带来的特殊效果。为了严谨，我们把拷贝构造函数的const修饰去掉（尽管我认为此时他已经不是一个拷贝构造了），看看会出现什么：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/VyNuUE.png#center" alt="VyNuUE"></p>
+<p>这里我删除了其他所有的拷贝构造和移动构造，编译器会认为没有找到对应的构造函数，印证了上面我们的想法。这说明一个问题：在现代C++编译器面前，如果只声明一个拷贝构造函数（带const），仍然可以接受一个右值引用（尽管形参是左值引用）。</p>
+<p>这种好处可能是显而易见的：尽管我们没有声明移动构造函数，却仍有可能写出这样一个拷贝构造：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C++" data-lang="C++"><span style="color:#75715e">// generate_temp_obj的返回值是一个临时的Obj对象
+</span><span style="color:#75715e"></span>Obj <span style="color:#a6e22e">b</span>(generate_temp_obj());
+</code></pre></div><p>编译器仍然会接纳这种行为。虽然不知道这是语言层面的一些目前我不是很清楚的问题（就如上面所说，将亡值仍是一个广义左值，虽然我不对<code>generate_temp_obj()</code>产生的对象是一个“将亡”的这个观点十分赞同），还是编译器带来的优化，而且我也不建议平时这样书写，但是还是说明了使用const修饰形参带来的一些实实在在的好处。</p>
+<p><strong>20200328补充</strong>：Effective C++中提到了，临时对象是const类型的，所以上面的写法也是将一个const类型隐式转换到non-const的形参类型，这种行为是禁止的。我觉得也可以从这个角度解释。</p>
+<h3 id="现代编译器的优化行为">现代编译器的优化行为</h3>
+<p>针对上面这个例子，做一个抛砖引玉，谈谈现代编译器的某些优化行为带来的影响。</p>
+<h4 id="移动优化">移动优化</h4>
+<p>还是上面这个例子：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Obj</span>
+{
+<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+    Obj()
+    <span style="color:#f92672">=</span> <span style="color:#66d9ef">default</span>;
+
+    Obj(<span style="color:#66d9ef">const</span> Obj <span style="color:#f92672">&amp;</span>rhs)
+    {
+        std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;copy ctor&#34;</span> <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+    }
+    
+    Obj(Obj <span style="color:#f92672">&amp;&amp;</span>rhs) <span style="color:#66d9ef">noexcept</span>
+    {
+        std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;move ctor&#34;</span> <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+    }
+};
+
+Obj <span style="color:#a6e22e">out</span>()
+{
+    Obj inner;
+    <span style="color:#66d9ef">return</span> inner;
+}
+
+<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>()
+{
+    Obj a;
+    Obj b(a);
+    Obj c(out());
+	Obj d(std<span style="color:#f92672">::</span>move(a));
+    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+</code></pre></div><p>理想情况下对于b、c、d，会分别调用拷贝构造、移动构造和移动构造，而事实上只有b和d有了正确的调用，对于c，没有任何输出，看起来像是编译器根本没有调用我们自定义的移动构造，这是为什么？</p>
+<p>我们再把inner的地址和c的地址打印一下看看：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/DB0Pj1.png#center" alt="DB0Pj1"></p>
+<p>可以看出，inner和c压根就是栈上的同一个东西，说明编译器根本就没有调用我们自定义的移动构造函数。</p>
+<p>这其实是编译器对于移动临时对象做的一次优化。在编译时使用参数<code>-fno-elide-constructors</code>可以关掉编译器优化，在CMake中对应的则是：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">set(CMAKE_CXX_FLAGS <span style="color:#e6db74">&#34;-fno-elide-constructors ${CMAKE_CXX_FLAGS}&#34;</span>)
+</code></pre></div><p>关掉后再来看看结果：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/f9l8aY.png#center" alt="f9l8aY"></p>
+<p>可以看到，inner和c的地址变量已经不同了，而且也正确调用了移动构造函数，印证了我们上面的猜想。但为什么会调用两次呢？</p>
+<h4 id="返回值优化rvo">返回值优化RVO</h4>
+<p>Effective C++上提到，永远不要返回一个函数内部的对象的引用。因此有时候返回一个内部的对象是必要的。而C++在返回值的类型“太大”时，会使用栈上一块临时的内存区域作为中转。这就导致了函数返回一个值会产生以下行为：</p>
+<ol>
+<li>首先将内部的对象拷贝/移动到栈上的一个临时对象中，也就是在<code>out()</code>函数的<code>return</code>步骤时发生的事情；</li>
+<li>将栈上的临时对象拷贝/移动到外部存储返回值的对象中。</li>
+</ol>
+<p>这就是为什么上面会看到出现两次移动构造调用的情况。结合前文提到的，若不声明移动构造，一个标准的（带const）的拷贝构造也可用于接受一个右值引用的实参，那么<code>Obj c(out());</code>理应会出现调用两次拷贝构造的情况，我们来看一下：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/lEGmjA.png#center" alt="lEGmjA"></p>
+<p>成功了！看来前文的大部分猜想都可以得到印证。</p>
+<p>注意，上面的情况都是我们关闭编译器优化出现的结果。事实上如果开启编译器优化，同样会优化掉<code>out()</code>函数内的临时对象，将这两步合并，直接将外部对象构造在传出时使用的临时对象上，也就减少了一次拷贝/移动的过程。</p>
+<h4 id="注意点">注意点</h4>
+<p>现代编译器的这个特性，有的时候需要我们注意。因为你自定义的拷贝行为和移动行为可能会被编译器不加警告地“覆盖”掉。虽然编译器是出于好心，但稍不注意换来的可能就是通宵达旦的艰苦调试……</p>
+<h3 id="在一般的构造函数中使用传值和移动语义">在一般的构造函数中使用传值和移动语义</h3>
+<p>终于回到这个标题了，看到这里的朋友可能觉得这个题目有挂羊头卖狗肉的嫌疑哈哈。言归正传，为什么这么说呢，看例子。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">A</span>
+{
+<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+    A() <span style="color:#f92672">=</span> <span style="color:#66d9ef">default</span>;
+
+    A(<span style="color:#66d9ef">const</span> A <span style="color:#f92672">&amp;</span>rhs)
+    {
+        std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;A copy ctor&#34;</span> <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+    };
+
+    A(A <span style="color:#f92672">&amp;&amp;</span>rhs) <span style="color:#66d9ef">noexcept</span>
+    {
+        std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;A move ctor&#34;</span> <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+    };
+};
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">B</span>
+{
+<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+    B() <span style="color:#f92672">=</span> <span style="color:#66d9ef">default</span>;
+
+    <span style="color:#66d9ef">explicit</span> <span style="color:#a6e22e">B</span>(<span style="color:#66d9ef">const</span> A <span style="color:#f92672">&amp;</span>rhs) <span style="color:#f92672">:</span> a_(rhs)
+    {}
+
+<span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
+    A a_;
+};
+
+<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>()
+{
+    A a;
+    B b1(a);
+    B b2(std<span style="color:#f92672">::</span>move(a));
+
+    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+</code></pre></div><p>按照我的想法，对于b1，肯定是调用一次A的拷贝构造（假设有编译器优化）；对于b2，我这样的写法是希望调用A的移动构造函数，因为我将a使用std::move转换成了一个右值，在B的对应的单参构造函数的初始化列表中理应是调用的A的移动构造函数，所以b2应该调用A的移动构造。</p>
+<p>对吗，哈哈，肯定是不对的，b2也会调用一次拷贝构造，看看编译器的提示结果就能知道：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/1PO9Dn.png#center" alt="1PO9Dn"></p>
+<p>很显然，上面我说的这句话里面埋了一个坑：<strong>在B的对应的单参构造函数的初始化列表中理应是调用的A的移动构造函数</strong>。如果你觉得这句话没问题就想当然了（敲黑板），再看一看B的这个单参构造函数：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">explicit</span> <span style="color:#a6e22e">B</span>(<span style="color:#66d9ef">const</span> A <span style="color:#f92672">&amp;</span>rhs) <span style="color:#f92672">:</span> a_(rhs)
+{}
+</code></pre></div><p>看到没，这里的形参是一个const的左值引用！所以说任何事都不要想当然，要严格按照制度办事。至于为什么可以接受一个右值实参，可以参照上面对const形参带来的好处的一些观点。</p>
+<p>那么按照Clang-Tidy的提示，这种“一般的带参数的”构造函数，建议使用“传值+移动语义”的方式来构造，会有什么效果呢：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/xw3gRQ.png#center" alt="xw3gRQ"></p>
+<p>显而易见的是，这时候形参仍可以接受左值或右值的实参，但已经支持了移动，这时候b2输出的应该就是A的移动构造调用了。我们来分析下这个结果：</p>
+<ol>
+<li>对于b1，首先调用一次拷贝，再调用一次移动。这个不难理解，对于形参为值的函数，进入函数内一定会发生一次拷贝行为来产生一个副本（这是C++98告诉我的），这样对于初始化列表内相当于对这个副本进行了一次移动；</li>
+<li>对于b2，首先形参支持了传入右值，这个时候发生的不是拷贝而是移动。在A实现了移动构造后竟然发生了这样的行为（我试过，不是优化，而是现代编译器默认的行为）。事实上这种行为虽然与C++98中的内容不符合，但在支持了移动的C++11中却是符合人们直觉的。然后，在初始化列表中再进行了一次移动构造函数的调用</li>
+</ol>
+<p>记住，要想支持移动，一定要实现移动构造函数（而不是让其实际上发生拷贝行为）。</p>
+<p>有的朋友可能像我一样不是很理解现代C++编译器的这种行为，因为假如a中管理堆上的资源，产生b2之后原有的a也就无法继续拥有这份资源的管理权，后面再去调用a中对应的方法，岂不是有隐患存在吗？认真看下这四个输出，可能就能够明白一些：当我们使用std::move转移资源时，我们就是希望移交这份资源的管理权，就像b2那样，通过两次移动完成了权限的转移；有时我们可能不想转移这份资源，那就不会主动使用移动语义，就像b1一样，这时候“值传递”的特性就会忠实地帮我们拷贝一份堆上的资源，并将它移交给b1内部的a，外部的a仍可以访问自己在堆上的那一份资源。</p>
+<p>乍一看，使用“传值+移动”的方式和使用“const左值引用”的方式相比，b1和b2都会多一次移动构造函数的调用（插一句，后一种方式b2调用的是一次拷贝构造而非移动构造）。事实上这和在堆上进行资源拷贝消耗的时间相比，几乎是可以忽略不计的。</p>
+<p>类不但承担了封装的作用，其最重要的行为是RAII，帮助我们更好的管理堆上的资源，最大程度上避免资源的泄露。</p>
+<p>对于一般的带参构造函数（非拷贝和移动构造），如果你使用的是现代C++，不妨考虑一下使用“传值+移动”的方式代替“const左值引用”形参。不仅会到来一定程度上的效率提升，更重要的是符合人们的直觉。</p>
+<h3 id="后记">后记</h3>
+<p>哆哆嗦嗦写了这么多，也没感觉自己说的很明白，大部分是通过自己依据现有的知识不断尝试思考出来的，不具有学术价值，仅供交流使用。在这个特殊时期，愿朋友们保持学习的热情，拥有强健的体魄，共勉吧。</p>
+
+    
+    
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+  const gitalk = new Gitalk({
+    clientID: '36c8fa6e09d08297a270',
+    clientSecret: 'af0175944284956d288d14b389fbc89be8df7f1e',
+    repo: 'chongg039.github.io',
+    owner: 'chongg039',
+    admin: ['chongg039'],
+    id: location.pathname, 
+    distractionFreeMode: false 
+  });
+  (function() {
+    if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+      document.getElementById('gitalk-container').innerHTML = 'Gitalk comments not available by default when the website is previewed locally.';
+      return;
+    }
+    gitalk.render('gitalk-container');
+  })();
+</script>
+
+<div class="navfooter">
+    <table width="100%" summary="Navigation footer">
+        <tbody>
+            <tr>
+                <td width="40%" align="left">&nbsp;</td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right">&nbsp;</td>
+            </tr>
+            <tr>
+                <td width="40%" align="left" valign="top">
+                    <span class="copyright">
+                        Copyright 2014-2020
+                    </span>
+                    &nbsp;
+                </td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right" valign="top">&nbsp;<a href="https://chongg039.cn/">HOME</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: { 
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+            processEscapes: true
+        }
+    });
+    </script>
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-117991024-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+    <script type="text/javascript" src="https://chongg039.cn/js/function.js"></script>
+    <script type="text/javascript" src="https://chongg039.cn/js/prettify.js"></script>
+    
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+</html>
+

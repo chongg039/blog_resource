@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>蛋白质结构预测比赛知识储备</title>
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/style.css" />
+    
+    <link rel="shortcut icon" href="https://chongg039.cn/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/sunburst.css" />
+</head>
+<body onload="PR.prettyPrint()">
+    <div class="navheader">
+        <table width="100%" summary="Navigation header">
+            <tbody>
+                <tr>
+                    <td colspan="3" align="center">Co1driver 的个人博客</td>
+                </tr>
+                <tr>
+                    <td width="90%" align="left">&nbsp;</td>
+                    <td width="5%" align="center">&nbsp;<a accesskey="h" href="https://github.com/chongg039">GITHUB</a></td>
+                    <td width="5%" align="right">&nbsp;<a accesskey="a" href="https://chongg039.cn//about">ABOUT</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h1>蛋白质结构预测比赛知识储备</h1>
+    <h4>Thu, Jan 17, 2019</h4>
+    <h3 id="生物分子结构">生物分子结构</h3>
+<p>有关生物分子四级结构的信息请参照<a href="https://en.wikipedia.org/wiki/Biomolecular_structure">维基百科相关词条</a>。</p>
+<h3 id="蛋白质结构表征方式氨基酸残基">蛋白质结构表征方式（氨基酸残基）</h3>
+<ol>
+<li>接触图（contact maps），接触图使得不需要 3D 渲染软件，就能够快速形象化地探索结构特征。此外，接触图的基本  2D 矩阵（称为接触矩阵），能够天然地作为随后自动知识发现或机器学习任务的数值输入。</li>
+<li>距离图（distance maps）</li>
+<li>氢键图</li>
+</ol>
+<h3 id="氨基酸amino-acids">氨基酸（Amino acids）</h3>
+<h3 id="氨基酸残基amino-acid-residue">氨基酸残基（amino acid residue）</h3>
+<p>组成多肽的氨基酸在相互结合时，由于其部分基团参与了肽键的形成而失去一分子水，因此把<strong>多肽中的氨基酸单位称为氨基酸残基</strong>，即由肽键链接的氨基酸失水部分。</p>
+<p>它是一个分子的一部分，而不是一个分子。</p>
+<p>氨基酸的氨基上缺了一个氢，羧基上缺了一个羟基。</p>
+<p>简单的说，氨基酸残基就是指不完整的氨基酸。一个完整的氨基酸包括一个羧基（—COOH)，一个氨基(—NH2)，一个H，一个<a href="https://baike.baidu.com/item/R%E5%9F%BA/9636668">R基</a>。<strong>缺少任何一个部分都算是氨基酸残基</strong>，并没有包括肽键的。</p>
+<p>如<a href="https://baike.baidu.com/item/%E7%94%98%E6%B0%A8%E9%85%B8/9261997">甘氨酸</a><a href="https://baike.baidu.com/item/%E6%AE%8B%E5%9F%BA/6776014">残基</a>为：—NH—CH2—CO—。</p>
+<p><a href="https://baike.baidu.com/item/%E8%9B%8B%E7%99%BD%E8%B4%A8/309120">蛋白质</a>中氨基酸残基数目的估算：氨基酸残基的数目=蛋白质分子量/110</p>
+<h3 id="蛋白质结构">蛋白质结构</h3>
+<p>蛋白质结构是指蛋白质分子的空间结构。作为一类重要的生物大分子，蛋白质主要由 碳、氢、氧、氮、硫等化学元素组成。所有蛋白质都是由 20 种不同的 L 型 α 氨基酸连接形成的多聚体，<strong>在形成蛋白质后，这些氨基酸又被称为残基</strong>。蛋白质和多肽之间的界限并不是很清晰，有人基于发挥功能性作用的结构域所需的残基数认为，若残基数少于 40 ，就称之为多肽或肽。要发挥生物学功能，蛋白质需要正确折叠为一个特定构型，主要是通过大量的非共价相互作用（如氢键，离子键，范德华力和疏水作用）来实现；此外，在一些蛋白质（特别是分泌性蛋白质）折叠中，二硫键也起到关键作用。为了从分子水平上了解蛋白质的作用机制，常常需要测定蛋白质的三维结构。由研究蛋白质结构而发展起来了结构生物学，采用了包括X射线晶体学、核磁共振等技术来解析蛋白质结构。</p>
+<p>一定数量的残基对于发挥某一生物化学功能是必要的；40 - 50 个残基通常是一个功能性结构域大小的下限。蛋白质大小的范围可以从这样一个下限一直到数千个残基。目前估计的蛋白质的平均长度在不同的物种中有所区别，一般约为 200 - 380 个残基，而真核生物的蛋白质平均长度比原核生物长约 55% 。更大的蛋白质聚合体可以通过许多蛋白质亚基形成；如由数千个肌动蛋白分子聚合形成蛋白纤维。</p>
+<h4 id="不同层次的蛋白质结构">不同层次的蛋白质结构</h4>
+<p>蛋白质的分子结构可划分为四级，以描述其不同的方面：</p>
+<ol>
+<li><strong>蛋白质一级结构</strong>：组成蛋白质多肽链的线性氨基酸序列。</li>
+<li><strong>蛋白质二级结构</strong>：依靠不同氨基酸之间的 C=O 和 N-H 基团间的<a href="https://zh.wikipedia.org/wiki/%E6%B0%A2%E9%94%AE">氢键</a>形成的稳定结构，主要为 <a href="https://zh.wikipedia.org/wiki/%CE%91%E8%9E%BA%E6%97%8B">α螺旋</a> 和 <a href="https://zh.wikipedia.org/wiki/%CE%92%E6%8A%98%E5%8F%A0">β折叠</a> 。</li>
+<li><strong>蛋白质三级结构</strong>：通过多个二级结构元素在三维空间的排列所形成的一个蛋白质分子的三维结构。</li>
+<li><strong>蛋白质四级结构</strong>：用于描述由不同多肽链（<a href="https://zh.wikipedia.org/wiki/%E8%9B%8B%E7%99%BD%E8%B4%A8%E4%BA%9A%E5%9F%BA">亚基</a>）间相互作用形成具有功能的蛋白质复合物分子。</li>
+</ol>
+<p>除此之外还有<strong>侧链结构</strong>，根据侧链结构的不同可以分为 20 种常见氨基酸，各自在蛋白质中扮演着重要的角色。</p>
+<p>定义不同类型的<strong>二级结构</strong>有不同的方法，<strong>最常用的方法是通过主链原子之间的氢键的排列方式来判断的</strong>。而在蛋白质完全折叠的状态下，这些氢键可以得到稳定。</p>
+<p>更多详细内容参照<a href="https://zh.wikipedia.org/wiki/%E8%9B%8B%E7%99%BD%E8%B4%A8%E7%BB%93%E6%9E%84">维基百科蛋白质结构条目</a>。</p>
+<h3 id="蛋白质结构预测">蛋白质结构预测</h3>
+<p><strong>蛋白质结构预测</strong> (Protein structure prediction) 是指从蛋白质的氨基酸序列中预测蛋白质的三维结构。也就是说，从<a href="https://zh.wikipedia.org/wiki/%E8%9B%8B%E7%99%BD%E8%B3%AA%E4%B8%80%E7%B4%9A%E7%B5%90%E6%A7%8B">蛋白质的一级结构</a>预测它的<a href="https://zh.wikipedia.org/wiki/%E8%9B%8B%E7%99%BD%E8%B4%A8%E6%8A%98%E5%8F%A0">折叠</a>和<a href="https://zh.wikipedia.org/wiki/%E8%9B%8B%E7%99%BD%E8%B4%A8%E4%BA%8C%E7%BA%A7%E7%BB%93%E6%9E%84">二级</a>、<a href="https://zh.wikipedia.org/wiki/%E8%9B%8B%E7%99%BD%E8%B3%AA%E4%B8%89%E7%B4%9A%E7%B5%90%E6%A7%8B">三级</a>、<a href="https://zh.wikipedia.org/wiki/%E8%9B%8B%E7%99%BD%E8%B4%A8%E5%9B%9B%E7%BA%A7%E7%BB%93%E6%9E%84">四级</a>结构。当前蛋白质结构预测技术的性能在<a href="http://predictioncenter.org/">蛋白质结构预测技术的关键测试（CASP）</a>实验中被评测，蛋白质结构预测的网络服务器连续的评测是由社区项目 <a href="https://www.cameo3d.org/">CAMEO3D</a> 执行。</p>
+<p>更多细节参照<a href="https://zh.wikipedia.org/wiki/%E8%9B%8B%E7%99%BD%E8%B4%A8%E7%BB%93%E6%9E%84%E9%A2%84%E6%B5%8B">维基百科蛋白质结构预测条目</a>。</p>
+<h3 id="蛋白质接触图protein-contact-map">蛋白质接触图（Protein contact map）</h3>
+<p>蛋白质接触图用来表示在蛋白质结构中所有可能的氨基酸残基对之间的距离。使用一个二维的二进制矩阵，对于两个残基 i 和 j ，若它们之间的距离小于一个预定的阈值则将 ij 置为 1 ，否则为 0 。</p>
+<p>与 full 3D atomic coordinates 表示相比，接触图提供了更少的蛋白质结构表示。但优点是对于旋转和翻译是不变的，更容易被机器学习方法预测。接触图也可以重建蛋白质的 3D 坐标。</p>
+<p>接触图也用于蛋白质叠加并描述蛋白质结构之间的相似性。它们可以从蛋白质序列预测，也可以从给定的结构中计算出来。</p>
+<h3 id="de-novo-测序">De novo 测序</h3>
+<p>De novo 测序也叫<a href="https://baike.baidu.com/item/%E4%BB%8E%E5%A4%B4%E6%B5%8B%E5%BA%8F/12662798">从头测序</a>，不需要任何基因序列信息即可对某个物种进行测序。用生物信息学的分析方法对序列进行拼接、组装，从而获得该物种的基因组序列图谱。目前广泛应用于从头解析未知物种的基因组序列、基因组成、进化特点等。</p>
+<h3 id="de-novo-protein-structure-prediction">De novo protein structure prediction</h3>
+<p><strong>从头蛋白质结构预测</strong>是指通过其算法从其氨基酸<a href="https://en.wikipedia.org/wiki/Primary_sequence">一级结构</a>预测蛋白质<a href="https://en.wikipedia.org/wiki/Tertiary_structure">三级结构</a>的算法过程。从头方法往往需要大量的计算资源，因此仅针对相对较小的蛋白质进行。</p>
+<p>已经提出了几个证据支持主要蛋白质序列包含整体三维蛋白质结构所需的所有信息的概念，使得从头蛋白质预测的想法成为可能。第一，具有不同功能的蛋白质通常具有不同的氨基酸序列。第二，几种不同的人类疾病，例如杜氏肌营养不良症，可能与由一级序列中仅一个氨基酸的变化引起的蛋白质功能丧失有关。第三，在许多不同物种中具有相似功能的蛋白质通常具有相似的氨基酸序列。第四，通过思想实验，可以推断蛋白质折叠必须不是完全随机的过程，并且折叠所必需的信息必须在主要结构内编码。</p>
+<p>例如，如果我们假设小多肽中的100个氨基酸残基中的每一个平均可以占据10种不同的构象，则给予多肽10 ^ 100种不同的构象。如果每10 ^ -13秒测试一次可能的确认，则需要大约10 ^ 77年来采样所有可能的构象。然而，蛋白质在短时间内始终在体内正确折叠，这意味着该过程不能是随机的，因此可以建模。</p>
+<p>20世纪50年代由<a href="https://en.wikipedia.org/wiki/Christian_Anfinsen">Christian Anfinsen</a>证明了在一级序列中发现编码蛋白质三级结构所需的所有相关信息的假设的最强证据之一。在一项经典实验中，他表明核糖核酸酶A可以通过在还原剂存在下浸没在尿素溶液中（以破坏稳定的疏水键）来完全变性（以切割稳定的二硫键）。从该环境中除去蛋白质后，变性和无功能的核糖核酸酶蛋白自发地反弹并恢复功能，证明蛋白质三级结构在一级氨基酸序列中编码。如果蛋白质随机重组，可能会形成超过一百种不同的四种二硫键组合。然而，在大多数情况下，蛋白质将需要在细胞内存在分子伴侣以进行适当的折叠。蛋白质的整体形状可以用其氨基酸结构编码，但它的折叠可能取决于伴侣协助折叠。</p>
+<h3 id="开源工具">开源工具</h3>
+<ol>
+<li><a href="https://github.com/kianho/pconpy">PConPy</a></li>
+<li>待补充</li>
+</ol>
+
+    
+    
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+  const gitalk = new Gitalk({
+    clientID: '36c8fa6e09d08297a270',
+    clientSecret: 'af0175944284956d288d14b389fbc89be8df7f1e',
+    repo: 'chongg039.github.io',
+    owner: 'chongg039',
+    admin: ['chongg039'],
+    id: location.pathname, 
+    distractionFreeMode: false 
+  });
+  (function() {
+    if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+      document.getElementById('gitalk-container').innerHTML = 'Gitalk comments not available by default when the website is previewed locally.';
+      return;
+    }
+    gitalk.render('gitalk-container');
+  })();
+</script>
+
+<div class="navfooter">
+    <table width="100%" summary="Navigation footer">
+        <tbody>
+            <tr>
+                <td width="40%" align="left">&nbsp;</td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right">&nbsp;</td>
+            </tr>
+            <tr>
+                <td width="40%" align="left" valign="top">
+                    <span class="copyright">
+                        Copyright 2014-2020
+                    </span>
+                    &nbsp;
+                </td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right" valign="top">&nbsp;<a href="https://chongg039.cn/">HOME</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: { 
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+            processEscapes: true
+        }
+    });
+    </script>
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-117991024-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+    <script type="text/javascript" src="https://chongg039.cn/js/function.js"></script>
+    <script type="text/javascript" src="https://chongg039.cn/js/prettify.js"></script>
+    
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+</html>
+

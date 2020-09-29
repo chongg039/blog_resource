@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>[设计模式系列]享元模式、外观模式与代理模式</title>
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/style.css" />
+    
+    <link rel="shortcut icon" href="https://chongg039.cn/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/sunburst.css" />
+</head>
+<body onload="PR.prettyPrint()">
+    <div class="navheader">
+        <table width="100%" summary="Navigation header">
+            <tbody>
+                <tr>
+                    <td colspan="3" align="center">Co1driver 的个人博客</td>
+                </tr>
+                <tr>
+                    <td width="90%" align="left">&nbsp;</td>
+                    <td width="5%" align="center">&nbsp;<a accesskey="h" href="https://github.com/chongg039">GITHUB</a></td>
+                    <td width="5%" align="right">&nbsp;<a accesskey="a" href="https://chongg039.cn//about">ABOUT</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h1>[设计模式系列]享元模式、外观模式与代理模式</h1>
+    <h4>Sun, Feb 23, 2020</h4>
+    <p><img src="https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/5ZeooCGNw3s.jpg#center" alt="5ZeooCGNw3s"></p>
+<p>不多啰嗦直奔主题，来看下GOF中结构型模式的最后三部分。</p>
+<h3 id="享元模式flyweight-pattern">享元模式(Flyweight Pattern)</h3>
+<p>过多的对象创建会造成很大的存储开销，而这其中有相当一部分可能是重复且不必要的。因此对于一个特定的对象我们可以将其分为”内部状态“和”外部状态“两部分。内部状态指可以被共享的、一般不会变化的状态，存储在类的内部；对于可能产生变化的外部状态，我们选择将其作为参数传递给对象。</p>
+<p>享元模式类似工厂模式，有一个工厂对象，这个工厂用于接收用户的每一次申请对象的请求。工厂内部有一个维护了所有对象的”仓库“。每一次会先检查这个仓库中是否存在了这个对象。若存在便返回，若不存在，就创建一个新的对象返回，并将其添加进这个仓库中。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Flyweight</span>;
+
+<span style="color:#75715e">// 工厂对象
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">FlyweightFactory</span>
+{
+<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+    FlyweightFactory();
+
+    <span style="color:#f92672">~</span>FlyweightFactory();
+
+    Flyweight <span style="color:#f92672">*</span><span style="color:#a6e22e">GetFlyweight</span>(<span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>string <span style="color:#f92672">&amp;</span>key);
+
+<span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
+    std<span style="color:#f92672">::</span>map<span style="color:#f92672">&lt;</span>std<span style="color:#f92672">::</span>string, Flyweight <span style="color:#f92672">*&gt;</span> store_;
+};
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Flyweight</span>
+{
+<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+    <span style="color:#66d9ef">virtual</span> <span style="color:#f92672">~</span>Flyweight() <span style="color:#f92672">=</span> <span style="color:#66d9ef">default</span>;
+
+    <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">Operation</span>(<span style="color:#66d9ef">int</span> extrinsic_state) <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+};
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ConcreteFlyweight</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">public</span> Flyweight
+{
+<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+    <span style="color:#66d9ef">void</span> Operation(<span style="color:#66d9ef">int</span> extrinsic_state) <span style="color:#66d9ef">override</span>;
+};
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">UnShareConcreteFlyweight</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">public</span> Flyweight
+{
+<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+    <span style="color:#66d9ef">void</span> Operation(<span style="color:#66d9ef">int</span> extrinsic_state) <span style="color:#66d9ef">override</span>;
+};
+
+FlyweightFactory<span style="color:#f92672">::</span>FlyweightFactory()
+<span style="color:#f92672">=</span> <span style="color:#66d9ef">default</span>;
+
+FlyweightFactory<span style="color:#f92672">::~</span>FlyweightFactory()
+<span style="color:#f92672">=</span> <span style="color:#66d9ef">default</span>;
+
+Flyweight <span style="color:#f92672">*</span>FlyweightFactory<span style="color:#f92672">::</span>GetFlyweight(<span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>string <span style="color:#f92672">&amp;</span>key)
+{
+    <span style="color:#66d9ef">if</span> (store_.find(key) <span style="color:#f92672">==</span> store_.end()) {
+        store_[key] <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ConcreteFlyweight();
+    }
+    <span style="color:#66d9ef">return</span> store_[key];
+}
+
+<span style="color:#66d9ef">void</span> ConcreteFlyweight<span style="color:#f92672">::</span>Operation(<span style="color:#66d9ef">int</span> extrinsic_state)
+{
+    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;ConcreteFlyweight: &#34;</span> <span style="color:#f92672">&lt;&lt;</span> extrinsic_state <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+}
+
+<span style="color:#66d9ef">void</span> UnShareConcreteFlyweight<span style="color:#f92672">::</span>Operation(<span style="color:#66d9ef">int</span> extrinsic_state)
+{
+    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;UnShareConcreteFlyweight: &#34;</span> <span style="color:#f92672">&lt;&lt;</span> extrinsic_state <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+}
+</code></pre></div><p>测试状态输出：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>()
+{
+    <span style="color:#75715e">// 外部状态
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> extrinsic_state <span style="color:#f92672">=</span> <span style="color:#ae81ff">10</span>;
+
+    FlyweightFactory <span style="color:#f92672">*</span>ff <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> FlyweightFactory();
+
+    Flyweight <span style="color:#f92672">*</span>f1 <span style="color:#f92672">=</span> ff<span style="color:#f92672">-&gt;</span>GetFlyweight(<span style="color:#e6db74">&#34;test1&#34;</span>);
+    f1<span style="color:#f92672">-&gt;</span>Operation(<span style="color:#f92672">--</span>extrinsic_state);
+
+    Flyweight <span style="color:#f92672">*</span>f2 <span style="color:#f92672">=</span> ff<span style="color:#f92672">-&gt;</span>GetFlyweight(<span style="color:#e6db74">&#34;test2&#34;</span>);
+    f2<span style="color:#f92672">-&gt;</span>Operation(<span style="color:#f92672">--</span>extrinsic_state);
+
+    <span style="color:#75715e">// 理论上也可共享
+</span><span style="color:#75715e"></span>    UnShareConcreteFlyweight <span style="color:#f92672">*</span>f3 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> UnShareConcreteFlyweight();
+    f3<span style="color:#f92672">-&gt;</span>Operation(<span style="color:#f92672">--</span>extrinsic_state);
+
+    <span style="color:#66d9ef">delete</span> f3;
+    <span style="color:#66d9ef">delete</span> f2;
+    <span style="color:#66d9ef">delete</span> f1;
+    <span style="color:#66d9ef">delete</span> ff;
+
+    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+</code></pre></div><p><img src="https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/Gp7joC.png#center" alt="Gp7joC"></p>
+<h3 id="外观模式facade-pattern">外观模式(Facade Pattern)</h3>
+<p>外观模式就是提供一个Facade接口类，负责与客户端直接交互。外观类管理各个功能组件的对外接口，屏蔽内部各个组件的功能细节和相互联系。Facade模式实现了子系统和客户端之间的松耦合关系，而子系统的内部各个部件通常都是紧耦合的。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ClsA</span>
+{
+<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+    <span style="color:#66d9ef">void</span> Method();
+};
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ClsB</span>
+{
+<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+    <span style="color:#66d9ef">void</span> Method();
+};
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ClsC</span>
+{
+<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+    <span style="color:#66d9ef">void</span> Method();
+};
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Facade</span>
+{
+<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+    Facade();
+
+    <span style="color:#f92672">~</span>Facade();
+
+    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">FuncA</span>();
+
+    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">FuncB</span>();
+
+<span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
+    ClsA <span style="color:#f92672">*</span>cls_a_;
+    ClsB <span style="color:#f92672">*</span>cls_b_;
+    ClsC <span style="color:#f92672">*</span>cls_c_;
+};
+
+<span style="color:#66d9ef">void</span> ClsA<span style="color:#f92672">::</span>Method()
+{
+    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;this is class A&#39;s method, do something...&#34;</span> <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+}
+
+<span style="color:#66d9ef">void</span> ClsB<span style="color:#f92672">::</span>Method()
+{
+    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;this is class B&#39;s method, do something...&#34;</span> <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+}
+
+<span style="color:#66d9ef">void</span> ClsC<span style="color:#f92672">::</span>Method()
+{
+    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;this is class C&#39;s method, do something...&#34;</span> <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+}
+
+Facade<span style="color:#f92672">::</span>Facade()
+        <span style="color:#f92672">:</span> cls_a_(<span style="color:#66d9ef">new</span> ClsA()), cls_b_(<span style="color:#66d9ef">new</span> ClsB()), cls_c_(<span style="color:#66d9ef">new</span> ClsC())
+{}
+
+Facade<span style="color:#f92672">::~</span>Facade()
+{
+    <span style="color:#66d9ef">if</span> (cls_a_) {
+        <span style="color:#66d9ef">delete</span> cls_a_;
+        cls_a_ <span style="color:#f92672">=</span> <span style="color:#66d9ef">nullptr</span>;
+    }
+    <span style="color:#66d9ef">if</span> (cls_b_) {
+        <span style="color:#66d9ef">delete</span> cls_b_;
+        cls_b_ <span style="color:#f92672">=</span> <span style="color:#66d9ef">nullptr</span>;
+    }
+    <span style="color:#66d9ef">if</span> (cls_c_) {
+        <span style="color:#66d9ef">delete</span> cls_c_;
+        cls_c_ <span style="color:#f92672">=</span> <span style="color:#66d9ef">nullptr</span>;
+    }
+}
+
+<span style="color:#66d9ef">void</span> Facade<span style="color:#f92672">::</span>FuncA()
+{
+    cls_a_<span style="color:#f92672">-&gt;</span>Method();
+    cls_b_<span style="color:#f92672">-&gt;</span>Method();
+    cls_c_<span style="color:#f92672">-&gt;</span>Method();
+}
+
+<span style="color:#66d9ef">void</span> Facade<span style="color:#f92672">::</span>FuncB()
+{
+    cls_b_<span style="color:#f92672">-&gt;</span>Method();
+    cls_c_<span style="color:#f92672">-&gt;</span>Method();
+    cls_a_<span style="color:#f92672">-&gt;</span>Method();
+}
+</code></pre></div><p>对外接口FuncA和FuncB一般是不变的，内部逻辑则不需要客户端关心：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>()
+{
+    Facade facade;
+    facade.FuncA();
+    facade.FuncB();
+    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+</code></pre></div><h3 id="代理模式proxy-pattern">代理模式(Proxy Pattern)</h3>
+<p>先来看下Wikipedia中代理模式的UML图：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/oPcmCP.jpg#center" alt="oPcmCP"></p>
+<p>实际上代理模式的想法很简单，Proxy中存放了RealSubject的引用或指针来完成对其实例的访问。同时Proxy继承Subject，提供了一个相同的接口，这样就可以完整RealSubject接口提供的任务。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Subject</span>
+{
+<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+    <span style="color:#66d9ef">virtual</span> <span style="color:#f92672">~</span>Subject() <span style="color:#f92672">=</span> <span style="color:#66d9ef">default</span>;
+
+    <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">DoAction</span>() <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+};
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">RealSubject</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">public</span> Subject
+{
+<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+    <span style="color:#66d9ef">void</span> DoAction() <span style="color:#66d9ef">override</span>;
+};
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Proxy</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">public</span> Subject
+{
+<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+    Proxy();
+
+    <span style="color:#f92672">~</span>Proxy() <span style="color:#66d9ef">override</span>;
+
+    <span style="color:#66d9ef">explicit</span> <span style="color:#a6e22e">Proxy</span>(RealSubject <span style="color:#f92672">*</span>real);
+
+    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">DoAction</span>() <span style="color:#66d9ef">override</span>;
+
+<span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
+    RealSubject <span style="color:#f92672">*</span>real_;
+};
+
+<span style="color:#66d9ef">void</span> RealSubject<span style="color:#f92672">::</span>DoAction()
+{
+    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;real subject do some work...&#34;</span> <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+}
+
+Proxy<span style="color:#f92672">::</span>Proxy()
+        <span style="color:#f92672">:</span> real_(<span style="color:#66d9ef">new</span> RealSubject())
+{}
+
+Proxy<span style="color:#f92672">::~</span>Proxy()
+{
+    <span style="color:#66d9ef">if</span> (real_) {
+        <span style="color:#66d9ef">delete</span> real_;
+        real_ <span style="color:#f92672">=</span> <span style="color:#66d9ef">nullptr</span>;
+    }
+}
+
+Proxy<span style="color:#f92672">::</span>Proxy(RealSubject <span style="color:#f92672">*</span>real)
+        <span style="color:#f92672">:</span> real_(real)
+{}
+
+<span style="color:#66d9ef">void</span> Proxy<span style="color:#f92672">::</span>DoAction()
+{
+    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;proxy now works as real...&#34;</span> <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+    real_<span style="color:#f92672">-&gt;</span>DoAction();
+}
+</code></pre></div><p>这里用单参构造函数看一下：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>()
+{
+    RealSubject <span style="color:#f92672">*</span>real_subject <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> RealSubject();
+    real_subject<span style="color:#f92672">-&gt;</span>DoAction();
+
+    Proxy proxy(real_subject);
+    proxy.DoAction();
+
+    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+</code></pre></div><p><img src="https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/57sTdk.png#center" alt="57sTdk"></p>
+<p>一般来说以下情景可以用到Proxy模式：</p>
+<ol>
+<li>创建开销较大的对象的过程，交给Proxy去做，称为虚代理；</li>
+<li>为网络上的对象创建一个局部的本地代理，操作过程交给一个代理去做，称为远程代理；</li>
+<li>对对象进行（不同访问权限的）控制访问时，交给一个代理去完成，称为保护代理；</li>
+<li>智能指针当调用真实对象时，使用代理处理一些其他事务。</li>
+</ol>
+<h3 id="总结">总结</h3>
+<p>至此GOF中的7种结构性模式也就学习完毕了，总的来说我觉得比较实用的就是装饰器模式、适配器模式和代理模式，其他的多多少少都比较直观，编写代码的时候也基本能想得到。</p>
+
+    
+    
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+  const gitalk = new Gitalk({
+    clientID: '36c8fa6e09d08297a270',
+    clientSecret: 'af0175944284956d288d14b389fbc89be8df7f1e',
+    repo: 'chongg039.github.io',
+    owner: 'chongg039',
+    admin: ['chongg039'],
+    id: location.pathname, 
+    distractionFreeMode: false 
+  });
+  (function() {
+    if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+      document.getElementById('gitalk-container').innerHTML = 'Gitalk comments not available by default when the website is previewed locally.';
+      return;
+    }
+    gitalk.render('gitalk-container');
+  })();
+</script>
+
+<div class="navfooter">
+    <table width="100%" summary="Navigation footer">
+        <tbody>
+            <tr>
+                <td width="40%" align="left">&nbsp;</td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right">&nbsp;</td>
+            </tr>
+            <tr>
+                <td width="40%" align="left" valign="top">
+                    <span class="copyright">
+                        Copyright 2014-2020
+                    </span>
+                    &nbsp;
+                </td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right" valign="top">&nbsp;<a href="https://chongg039.cn/">HOME</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: { 
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+            processEscapes: true
+        }
+    });
+    </script>
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-117991024-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+    <script type="text/javascript" src="https://chongg039.cn/js/function.js"></script>
+    <script type="text/javascript" src="https://chongg039.cn/js/prettify.js"></script>
+    
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+</html>
+

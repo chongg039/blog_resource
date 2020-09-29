@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>高级计算机视觉知识点总结</title>
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/style.css" />
+    
+    <link rel="shortcut icon" href="https://chongg039.cn/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/sunburst.css" />
+</head>
+<body onload="PR.prettyPrint()">
+    <div class="navheader">
+        <table width="100%" summary="Navigation header">
+            <tbody>
+                <tr>
+                    <td colspan="3" align="center">Co1driver 的个人博客</td>
+                </tr>
+                <tr>
+                    <td width="90%" align="left">&nbsp;</td>
+                    <td width="5%" align="center">&nbsp;<a accesskey="h" href="https://github.com/chongg039">GITHUB</a></td>
+                    <td width="5%" align="right">&nbsp;<a accesskey="a" href="https://chongg039.cn//about">ABOUT</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h1>高级计算机视觉知识点总结</h1>
+    <h4>Sun, May 12, 2019</h4>
+    <p>我自己在做的方向是 NLP 相关，但这学期也选修了高级计算机视觉这门课程，其中很大一部分内容都是传统的视觉算法，和现在被人熟知的机器学习相关的 CV 领域还是有很大区别。由于这门课程也是学院第一次开课，所以也没有办法去做针对性的复习，故在此作以下学习记录，写下自己的理解，希望将来能温故而知新。</p>
+<h2 id="特征提取算法">特征提取算法</h2>
+<p>涉及到的特征提取算法主要有 Harris 角点检测算法、Canny 边缘检测算法和 SIFT 尺度不变特征变换算法。</p>
+<h3 id="harris-corner-detection">Harris Corner Detection</h3>
+<p>首先要理解角点和其具有的特征：</p>
+<ol>
+<li>角点是轮廓之间的交点</li>
+<li>针对同一场景，即使视角发生变化，角点通常仍具备稳定的特征</li>
+<li>角点附近的区域的像素点的梯度无论是方向还是幅值都会有较大的变化</li>
+</ol>
+<p>针对以上角点的特征，Harris 算法的基本思想是：使用一个固定大小的窗口在图向上进行<strong>任意方向</strong>上的滑动，比较滑动前后的窗口中像素灰度变化的程度。若沿任意方向的滑动<strong>都</strong>有较大的灰度变化，则认为该窗口中存在角点。</p>
+<p>现在要做的就是设计一个函数，来衡量滑动前后的灰度值变化，并设置一个阈值，当灰度变化超过这个阈值认为存在角点。</p>
+<p>这个函数可以作如下表示：</p>
+<p>$$
+E(u, v) = \sum_{x, y} w(x, y) [I(x+u, y+v) - I(x, y)]^2
+$$</p>
+<p>其中 $w(x, y)$ 是窗口函数（矩阵），常用的有 (0, 1) 函数和高斯函数，$I(x, y)$ 表示灰度强度值。下面要用到泰勒展开式处理这个函数。</p>
+<p>二维泰勒展开式为：</p>
+<p>$$
+f(x+u, y+v) = f(x, y) + uf_x(x, y) + vf_y(x, y) + &hellip;
+$$</p>
+<p>抛开 $w(x, y)$ ，先处理 $\sum[&hellip;]^2$ 这部分：</p>
+<p>$$
+\begin{align}
+\sum[I(x+u, y+v) - I(x, y)]^2 &amp; = \sum[I(x, y) + uI_x + vI_y - I(x, y)]^2
+\\ &amp; =\sum(u^2I_x^2 + 2uvI_xI_y + v^2I_y^2)
+\\ &amp; =\sum\bigg(
+\begin{bmatrix}
+u &amp; v
+\end{bmatrix}
+\begin{bmatrix}
+I_x^2 &amp; I_xI_y \\\<br>
+I_xI_y &amp; I_y^2
+\end{bmatrix}
+\begin{bmatrix}
+u\\\<br>
+v
+\end{bmatrix}
+\bigg)
+\\ &amp; =\begin{bmatrix}
+u &amp; v
+\end{bmatrix}
+\sum\begin{bmatrix}
+I_x^2 &amp; I_xI_y\\\<br>
+I_xI_y &amp; I_y^2
+\end{bmatrix}
+\begin{bmatrix}
+u\\\<br>
+v
+\end{bmatrix}
+\end{align}
+$$</p>
+<p>所以可以简化为：</p>
+<p>$$
+E(u, v) =
+\begin{bmatrix}
+u &amp; v
+\end{bmatrix}
+M\begin{bmatrix}
+u\\\<br>
+v
+\end{bmatrix} \quad
+其中 \quad M =\sum_{x, y}w(x, y)
+\begin{bmatrix}
+I_x^2 &amp; I_xI_y\\\<br>
+I_xI_y &amp; I_y^2
+\end{bmatrix}
+$$</p>
+<p>但是 Harris 不是直接使用 $E(u, v)$ 的值判断角点存在与否，而是使用了一个技巧，通过对窗口中每个像素 x 方向和 y 方向上的梯度进行统计分析，每个像素的梯度坐标可以表示为 $(I_x, I_y)$ 。下面先来看一张图：</p>
+<p><img src="https://live.staticflickr.com/65535/32893623777_8b57140cea_o.jpg" alt="图源：David G.Lowe"></p>
+<p>图中的 $\lambda_1, \lambda_2$ 是矩阵 M 的特征值，将 $\lambda_1$ 放在 x 轴方向，$\lambda_2$ 放在 y 轴方向，这个正方形区域中根据统计分为四个部分：</p>
+<ol>
+<li>左下方的 flat 区域：这个区域中 $\lambda_1$ 和 $\lambda_2$ 都非常小而且接近，落在此区域中的像素点在图像中多坐落在灰度变化不剧烈的平坦区域。</li>
+<li>右下方的 edge 区域：这个区域中 $\lambda_1$ 要远大于 $\lambda_2$ ，说明图像在 x 轴方向变化剧烈，y 轴方向变化不明显。说明图像中存在垂直方向的边缘。</li>
+<li>左上方的 edge 区域：这个区域中 $\lambda_2$ 要远大于 $\lambda_1$ ，说明图像在 y 轴方向变化剧烈，x 轴方向变化不明显。说明图像中存在水平方向的边缘。</li>
+<li>右上方的 Corner 区域：这个区域中 $\lambda_1$ 和 $\lambda_2$ 都非常大而且接近，说明落在该区域中的像素点在 x 轴方向和 y 轴方向变化都较为剧烈，在图像中即表示为角点。</li>
+</ol>
+<p>所以我们根据 $\lambda_1$ 和 $\lambda_2$ 就可以度量角点的存在性，而不需要通过直接计算 $E(u, v)$ 了。即通过定义一个响应函数 R 来度量角点的存在性：
+$$
+R = min(\lambda_1, \lambda_2)
+$$
+R 的含义是：若两个特征值中较小的值都很大，说明存在角点。</p>
+<p>但直接计算 M 的特征值比较耗时，对矩阵 M ，可以得到：
+$$
+\begin{align}
+det|M| &amp; = \lambda_1\lambda_2 \\<br>
+trace(M) &amp; = \lambda_1 + \lambda_2
+\end{align}
+$$
+这样 R 就可以重新定义为：
+$$
+R = det|M| - k * trace(M) = \lambda_1\lambda_2 - k(\lambda_1 + \lambda_2)^2 \quad 0.04 &lt; k &lt; 0.06
+$$
+根据矩阵 M ，R 也可以这样写：
+$$
+\begin{align}
+R &amp; = det|M| - k * trace(M)
+\\&amp; = g(I_x^2)g(I_y^2) - [g(I_xI_y)]^2 - k[g(I_x^2) + g(I_y^2)]^2
+\\&amp; 将\sum w(x, y) 简记为 g() ，可以认为 g 是一个高斯滤波器
+\end{align}
+$$</p>
+<p>下面要做的就是对 R 设置一个阈值判断角点的存在性，再使用非极大值抑制精确角点区域的范围就可以了。这就是 Harris 角点检测的基本思路，总结一下是：</p>
+<ol>
+<li>计算窗口在 x 和 y 方向的梯度 $I_x$ 和 $I_y$</li>
+<li>计算梯度间的乘积得到 $I_x^2, I_y^2, I_x I_y$</li>
+<li>使用高斯滤波器 g 计算得到 $g(I_x^2), g(I_y^2), g(I_x I_y)$</li>
+<li>计算 R 的值</li>
+<li>设置阈值判断角点的存在性</li>
+<li>使用非极大值抑制精确区域</li>
+</ol>
+<p>这个算法可以适应图片的旋转，但对缩放不能很好的解决，因为缩小图片会使角点变成一个点，放大会使角点变成平滑的边缘。Harris 方法稍加改动也可以判断边缘的存在性。</p>
+<h3 id="canny-edge-detection">Canny Edge Detection</h3>
+<p>使用 Canny 算子进行边缘检测的步骤如下：</p>
+<ol>
+<li>
+<p>首先使用高斯滤波平滑和降噪：使用一个 $g_\sigma(m, n)$ 去平滑图片区域 $f(m, n)$ ，即用一个高斯矩阵乘以每个像素点及其邻域，取其带权重的平均值作为最后的灰度值。</p>
+</li>
+<li>
+<p>使用一阶有限差分计算梯度的幅值和方向：梯度表示灰度值变化的程度和方向，方法是通过点乘一个 Sobel 算子得到不同方向的梯度值
+$$
+\begin{align}
+x, y 方向的梯度 &amp;： g_x(m, n), g_y(m, n)
+\\梯度的值 &amp;： G(m, n) = \sqrt{g_x^2 + g_y^2}
+\\梯度方向 &amp;： \theta = arctan \frac{g_y}{g_x}
+\end{align}
+$$</p>
+</li>
+<li>
+<p>非极大值抑制：高斯滤波有可能放大了边缘，通过过滤非最大值来使边缘宽度尽可能为1像素。看下面这张图：</p>
+<p><img src="https://live.staticflickr.com/65535/33960532348_ee4332fba0_n.jpg" alt="图源：Justin Liang"></p>
+<p>从像素 q 的地图方向查找，若 q 的梯度值同时大于 p 和 r 的梯度值，则认为 q 是极大值，将其作为边缘上的像素点。反之不是极大值，将 q 的灰度值置为 0 。</p>
+</li>
+<li>
+<p>使用双阈值检测算法检测和连接边缘：设置高低两个阈值 th1 和 th2 ，通常采用：
+$$
+the = 0.4th1
+$$</p>
+<ol>
+<li>当像素梯度值大于 th1 时，认为该像素在一条强边缘上；</li>
+<li>当像素梯度值小于 th2 时，认为该像素是噪声，将灰度值置 0 ；</li>
+<li>当像素梯度值大于 th2 且小于 th1 时，认为该像素在一条弱边缘上，准备下一步的连接；</li>
+<li>连接：从一条强边缘开始，若能找到一条与之相连的弱边缘，则将该弱边缘也视作边缘，否则将灰度值置为 0 。</li>
+</ol>
+<p>重复以上步骤，完成边缘的检测与连接。</p>
+</li>
+</ol>
+<h3 id="scale-invariant-feature-transform">Scale-invariant Feature Transform</h3>
+<p>这个我当时理解起来也比较费劲，先总结一下步骤有一个大体的思路：</p>
+<ol>
+<li>生成 DOG 金字塔用来构建（近似）尺度空间；</li>
+<li>空间极值点检测，初步探查关键点；</li>
+<li>稳定关键点的精确定位；</li>
+<li>稳定关键点的方向信息分配；</li>
+<li>关键点描述；</li>
+<li>特征点匹配。</li>
+</ol>
+<p>下面来一一说明。</p>
+<h4 id="构建尺度空间">构建尺度空间</h4>
+<p>首先理解什么是图像金字塔，基本就是一个图像不断下采样降低分辨率和尺寸的过程，从小到大生成一个类似金字塔的结构，这里就不再详细说明。</p>
+<p>关于高斯金字塔和拉普拉斯金字塔 LoG 这里也不作详细说明，因为不是我们关注的重点（虽然理解很重要），补充内容请看 <a href="https://zhuanlan.zhihu.com/p/32815143">高斯金字塔与拉普拉斯金字塔</a> 。</p>
+<p>这里的一个重点是 LoG 被证明了有真正的尺度不变性，SIFT 的作者 Lowe 在构建尺度空间时使用了高斯差分金字塔 DoG 来近似 LoG 算子，用于在尺度空间检测关键点。看下面这张图：</p>
+<p><img src="https://live.staticflickr.com/65535/32894172277_07a195ac9b_z.jpg" alt="图源：https://sensblogs.wordpress.com"></p>
+<p>构建 DoG 的过程：</p>
+<ol>
+<li>对图像作不同程度的高斯模糊；</li>
+<li>对图像降采样。</li>
+<li>高斯金字塔中同一组图片作差分得到 DoG ；</li>
+</ol>
+<p>即每一层的多个图片尺寸一样，平滑系数不同，同一尺度下一组图片的模糊程度逐渐变大。</p>
+<h4 id="初步探查关键点">初步探查关键点</h4>
+<p>寻找 DoG 金字塔中的极值点，要和每个像素点周围所有相邻的点做比较，如图：</p>
+<p><img src="https://live.staticflickr.com/65535/47838189761_01afdab438_o.jpg" alt="图源：Opencv"></p>
+<ol>
+<li>同一图片内该像素和周围 3x3 邻域内的 8 个像素点比较；</li>
+<li>在同一组图片内，该点和上下相邻两层图像的 2x9 个像素点比较。</li>
+</ol>
+<p>这两步可以保证关键点在尺度空间和二维图像空间都是局部极值点（2x9+8=26）。</p>
+<h4 id="精确匹配稳定的关键点">精确匹配稳定的关键点</h4>
+<p>上面的到的极值点是离散空间的极值点，为了提高关键点的稳定性，需要对 DoG 函数进行曲线拟合，去除不稳定的极值点和错误检测出的极值点。这步的目的是增强匹配的稳定性，提高抗噪声的能力。</p>
+<p>稳定的极值点是在不同尺度下提取的，保证了关键点的尺度不变性，即缩放不影响关键点。</p>
+<h4 id="稳定关键点的方向信息分配">稳定关键点的方向信息分配</h4>
+<p>为关键点分配方向信息，是要保证对图像角度变化和旋转的不变性。</p>
+<p>方向的分配通过求每个极值点的梯度实现。
+$$
+\begin{align}
+梯度幅值&amp;：m(x, y) = \sqrt{[L(x+1, y) - L(x-1, y)]^2 + [L(x, y+1) - L(x, y-1)]^2}
+\\ 梯度方向&amp;：\theta(x, y) = arctan \frac{L(x, y+1) - L(x, y-1)}{L(x+1, y) - L(x-1, y)}
+\end{align}
+$$
+但是，分配给关键点的方向并不直接使用关键点的梯度方向，而是计算以关键点为中心的邻域内所有点的梯度方向，并归一化到 36 个方向内（每个方向 10 度），统计落在每个方向内的点的个数，生成一个梯度直方图，并进行以下步骤：</p>
+<ol>
+<li>直方图内纵坐标最大的方向作为关键点的主方向；</li>
+<li>相当于主峰值的 80% 的峰值的方向作为关键点的辅方向。</li>
+</ol>
+<p>这样便为每个关键点分配了方向信息。</p>
+<h4 id="关键点描述">关键点描述</h4>
+<p>描述是实现下一步关键点匹配的关键步骤，对关键点的描述不仅应包含关键点的信息，而且也应包含关键点周围对其有贡献的邻域点。思路和上一步有些像，看下面这张图：</p>
+<p><img src="https://live.staticflickr.com/65535/33961228178_76292310b2_z.jpg" alt="图源：Zeynep Akata"></p>
+<p>这张图片可以这样理解：对关键点周围的像素区域分块，计算块内的梯度方向直方图，这个直方图从 36 个方向归一化到了 8 个方向，从而生成了一个独特的向量来描述该区域的图像信息。图片中将关键点周围信息分成了 2x2 的块来描述该区域信息，每个块内是 4x4 的像素区域，方向归一化到了 8 个。</p>
+<p>Lowe 的实验表明，当采用 4x4 的块，8 个方向信息描述关键点时效果最佳，此时向量长度为 4x4x8=128 。</p>
+<h4 id="关键点匹配">关键点匹配</h4>
+<p>最后就是匹配两张图片内的关键点。匹配通过计算两组关键点的特征描述符（128维向量）欧氏距离来实现。距离越小，相似度越高。为其设置一个阈值，当距离小于这个阈值时认为两个关键点匹配成功。</p>
+<p>上面便是我个人总结的传统计算机视觉领域的三大特征提取算法的基本步骤，由于本人水平非常有限，说的也比较简洁直白，不足之处请多包涵。</p>
+
+    
+    
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+  const gitalk = new Gitalk({
+    clientID: '36c8fa6e09d08297a270',
+    clientSecret: 'af0175944284956d288d14b389fbc89be8df7f1e',
+    repo: 'chongg039.github.io',
+    owner: 'chongg039',
+    admin: ['chongg039'],
+    id: location.pathname, 
+    distractionFreeMode: false 
+  });
+  (function() {
+    if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+      document.getElementById('gitalk-container').innerHTML = 'Gitalk comments not available by default when the website is previewed locally.';
+      return;
+    }
+    gitalk.render('gitalk-container');
+  })();
+</script>
+
+<div class="navfooter">
+    <table width="100%" summary="Navigation footer">
+        <tbody>
+            <tr>
+                <td width="40%" align="left">&nbsp;</td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right">&nbsp;</td>
+            </tr>
+            <tr>
+                <td width="40%" align="left" valign="top">
+                    <span class="copyright">
+                        Copyright 2014-2020
+                    </span>
+                    &nbsp;
+                </td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right" valign="top">&nbsp;<a href="https://chongg039.cn/">HOME</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: { 
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+            processEscapes: true
+        }
+    });
+    </script>
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-117991024-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+    <script type="text/javascript" src="https://chongg039.cn/js/function.js"></script>
+    <script type="text/javascript" src="https://chongg039.cn/js/prettify.js"></script>
+    
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+</html>
+

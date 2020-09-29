@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>[设计模式系列]备忘录模式与中介者模式</title>
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/style.css" />
+    
+    <link rel="shortcut icon" href="https://chongg039.cn/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/sunburst.css" />
+</head>
+<body onload="PR.prettyPrint()">
+    <div class="navheader">
+        <table width="100%" summary="Navigation header">
+            <tbody>
+                <tr>
+                    <td colspan="3" align="center">Co1driver 的个人博客</td>
+                </tr>
+                <tr>
+                    <td width="90%" align="left">&nbsp;</td>
+                    <td width="5%" align="center">&nbsp;<a accesskey="h" href="https://github.com/chongg039">GITHUB</a></td>
+                    <td width="5%" align="right">&nbsp;<a accesskey="a" href="https://chongg039.cn//about">ABOUT</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h1>[设计模式系列]备忘录模式与中介者模式</h1>
+    <h4>Wed, Feb 26, 2020</h4>
+    <p><img src="https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/5XjNhm3hz7U.jpg#center" alt="5XjNhm3hz7U"></p>
+<p>闲话少说直接进入正题。</p>
+<h3 id="备忘录模式memento-pattern">备忘录模式(Memento Pattern)</h3>
+<p>备忘录模式就是可以维护一个对象的内部状态，并在对象的外部保存这个状态。这样就可以随时将对象恢复成保存的那个状态，就像吃后悔药一样，属于一个&quot;undo&quot;操作。</p>
+<p>看下UML图，<a href="https://stackoverflow.com/questions/45867006/how-to-implement-memento-pattern-in-kotlin">来源</a>：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/BHSqCR.jpg#center" alt="BHSqCR"></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Memento</span>
+{
+<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+    <span style="color:#66d9ef">explicit</span> Memento(std<span style="color:#f92672">::</span>string state);
+
+    <span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>string <span style="color:#f92672">&amp;</span>get_state() <span style="color:#66d9ef">const</span>;
+
+    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">set_state</span>(<span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>string <span style="color:#f92672">&amp;</span>state);
+<span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
+    std<span style="color:#f92672">::</span>string state_;
+};
+
+<span style="color:#75715e">// 管理者
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Caretaker</span>
+{
+<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+    <span style="color:#f92672">~</span>Caretaker();
+
+<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+    Memento <span style="color:#f92672">*</span>get_memento() <span style="color:#66d9ef">const</span>;
+
+    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">set_memento</span>(Memento <span style="color:#f92672">*</span>memento);
+
+<span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
+    Memento <span style="color:#f92672">*</span>memento_;
+};
+
+<span style="color:#75715e">// 发起人
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Originator</span>
+{
+<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+    <span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>string <span style="color:#f92672">&amp;</span>get_state() <span style="color:#66d9ef">const</span>;
+
+    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">set_state</span>(<span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>string <span style="color:#f92672">&amp;</span>state);
+
+    Memento <span style="color:#f92672">*</span><span style="color:#a6e22e">CreateMemento</span>();
+
+    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">SetMemento</span>(Memento <span style="color:#f92672">*</span>memento);
+
+    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">Show</span>();
+
+<span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
+    std<span style="color:#f92672">::</span>string state_;
+};
+
+Memento<span style="color:#f92672">::</span>Memento(std<span style="color:#f92672">::</span>string state)
+        <span style="color:#f92672">:</span> state_(std<span style="color:#f92672">::</span>move(state))
+{}
+
+<span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>string <span style="color:#f92672">&amp;</span>Memento<span style="color:#f92672">::</span>get_state() <span style="color:#66d9ef">const</span>
+{
+    <span style="color:#66d9ef">return</span> state_;
+}
+
+<span style="color:#66d9ef">void</span> Memento<span style="color:#f92672">::</span>set_state(<span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>string <span style="color:#f92672">&amp;</span>state)
+{
+    state_ <span style="color:#f92672">=</span> state;
+}
+
+Caretaker<span style="color:#f92672">::~</span>Caretaker()
+{
+    <span style="color:#66d9ef">if</span> (memento_) {
+        <span style="color:#66d9ef">delete</span> memento_;
+        memento_ <span style="color:#f92672">=</span> <span style="color:#66d9ef">nullptr</span>;
+    }
+}
+
+Memento <span style="color:#f92672">*</span>Caretaker<span style="color:#f92672">::</span>get_memento() <span style="color:#66d9ef">const</span>
+{
+    <span style="color:#66d9ef">return</span> memento_;
+}
+
+<span style="color:#66d9ef">void</span> Caretaker<span style="color:#f92672">::</span>set_memento(Memento <span style="color:#f92672">*</span>memento)
+{
+    memento_ <span style="color:#f92672">=</span> memento;
+}
+
+<span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>string <span style="color:#f92672">&amp;</span>Originator<span style="color:#f92672">::</span>get_state() <span style="color:#66d9ef">const</span>
+{
+    <span style="color:#66d9ef">return</span> state_;
+}
+
+<span style="color:#66d9ef">void</span> Originator<span style="color:#f92672">::</span>set_state(<span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>string <span style="color:#f92672">&amp;</span>state)
+{
+    state_ <span style="color:#f92672">=</span> state;
+}
+
+Memento <span style="color:#f92672">*</span>Originator<span style="color:#f92672">::</span>CreateMemento()
+{
+    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Memento</span>(state_);
+}
+
+<span style="color:#66d9ef">void</span> Originator<span style="color:#f92672">::</span>SetMemento(Memento <span style="color:#f92672">*</span>memento)
+{
+    state_ <span style="color:#f92672">=</span> memento<span style="color:#f92672">-&gt;</span>get_state();
+}
+
+<span style="color:#66d9ef">void</span> Originator<span style="color:#f92672">::</span>Show()
+{
+    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;state is: &#34;</span> <span style="color:#f92672">&lt;&lt;</span> state_ <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+}
+</code></pre></div><p>看下效果：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>()
+{
+    Originator <span style="color:#f92672">*</span>ori <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Originator();
+    ori<span style="color:#f92672">-&gt;</span>set_state(<span style="color:#e6db74">&#34;On&#34;</span>);
+    ori<span style="color:#f92672">-&gt;</span>Show();
+
+    <span style="color:#75715e">// 保存状态
+</span><span style="color:#75715e"></span>    Caretaker <span style="color:#f92672">*</span>care <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Caretaker();
+    care<span style="color:#f92672">-&gt;</span>set_memento(ori<span style="color:#f92672">-&gt;</span>CreateMemento());
+
+    ori<span style="color:#f92672">-&gt;</span>set_state(<span style="color:#e6db74">&#34;Off&#34;</span>);
+    ori<span style="color:#f92672">-&gt;</span>Show();
+
+    <span style="color:#75715e">// 恢复状态
+</span><span style="color:#75715e"></span>    ori<span style="color:#f92672">-&gt;</span>SetMemento(care<span style="color:#f92672">-&gt;</span>get_memento());
+    ori<span style="color:#f92672">-&gt;</span>Show();
+
+    <span style="color:#66d9ef">delete</span> care;
+    <span style="color:#66d9ef">delete</span> ori;
+    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+</code></pre></div><p><img src="https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/xsBo2e.png#center" alt="xsBo2e"></p>
+<p>理论上，将Originator声明为Memento的友元类，是一种更明智的方式，即备忘录只能Originator访问，其他类不能访问。</p>
+<h3 id="中介者模式mediator-pattern">中介者模式(Mediator Pattern)</h3>
+<p>对象间如何通信始终是系统设计中令人头痛的问题，互相通信的类需要调用另外一个对象的具体方法。当系统规模小是可行的，一旦这种相互通信变多，就容易像一团麻线那样剪不断理还乱。为了处理这种情况，我们自然希望有一个类充当中间人的角色，每个具体的对象只需要和这个中介者通信，具体的方法交由中介者处理，系统也由此解耦。</p>
+<p>直接看UML：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/9yzHNZ.jpg#center" alt="9yzHNZ"></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Colleague</span>;
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ConcreteColleagueA</span>;
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ConcreteColleagueB</span>;
+
+<span style="color:#75715e">// 抽象中介者
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Mediator</span>
+{
+<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+    <span style="color:#66d9ef">virtual</span> <span style="color:#f92672">~</span>Mediator() <span style="color:#f92672">=</span> <span style="color:#66d9ef">default</span>;
+
+    <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">SendMsg</span>(<span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>string <span style="color:#f92672">&amp;</span>msg, Colleague <span style="color:#f92672">*</span>colleague) <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+};
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ConcreteMediator</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">public</span> Mediator
+{
+<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+    <span style="color:#66d9ef">void</span> set_colleague(ConcreteColleagueA <span style="color:#f92672">*</span>colleague_a);
+
+    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">set_colleague</span>(ConcreteColleagueB <span style="color:#f92672">*</span>colleague_b);
+
+    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">SendMsg</span>(<span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>string <span style="color:#f92672">&amp;</span>msg, Colleague <span style="color:#f92672">*</span>colleague) <span style="color:#66d9ef">override</span>;
+
+<span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
+    ConcreteColleagueA <span style="color:#f92672">*</span>colleague_a_;
+    ConcreteColleagueB <span style="color:#f92672">*</span>colleague_b_;
+};
+
+<span style="color:#75715e">// 抽象同事
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Colleague</span>
+{
+<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+    <span style="color:#66d9ef">explicit</span> Colleague(Mediator <span style="color:#f92672">*</span>mediator) <span style="color:#f92672">:</span> mediator_(mediator)
+    {};
+
+    <span style="color:#66d9ef">virtual</span> <span style="color:#f92672">~</span>Colleague() <span style="color:#f92672">=</span> <span style="color:#66d9ef">default</span>;
+
+<span style="color:#66d9ef">protected</span><span style="color:#f92672">:</span>
+    Mediator <span style="color:#f92672">*</span>mediator_;
+};
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ConcreteColleagueA</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">public</span> Colleague
+{
+<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+    <span style="color:#66d9ef">explicit</span> ConcreteColleagueA(Mediator <span style="color:#f92672">*</span>mediator);
+
+    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">Send</span>(<span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>string <span style="color:#f92672">&amp;</span>msg);
+
+    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">Notify</span>(<span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>string<span style="color:#f92672">&amp;</span> msg);
+};
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ConcreteColleagueB</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">public</span> Colleague
+{
+<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+    <span style="color:#66d9ef">explicit</span> ConcreteColleagueB(Mediator <span style="color:#f92672">*</span>mediator);
+
+    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">Send</span>(<span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>string <span style="color:#f92672">&amp;</span>msg);
+
+    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">Notify</span>(<span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>string<span style="color:#f92672">&amp;</span> msg);
+};
+
+<span style="color:#66d9ef">void</span> ConcreteMediator<span style="color:#f92672">::</span>set_colleague(ConcreteColleagueA <span style="color:#f92672">*</span>colleague_a)
+{
+    colleague_a_ <span style="color:#f92672">=</span> colleague_a;
+}
+
+<span style="color:#66d9ef">void</span> ConcreteMediator<span style="color:#f92672">::</span>set_colleague(ConcreteColleagueB <span style="color:#f92672">*</span>colleague_b)
+{
+    colleague_b_ <span style="color:#f92672">=</span> colleague_b;
+}
+
+<span style="color:#66d9ef">void</span> ConcreteMediator<span style="color:#f92672">::</span>SendMsg(<span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>string <span style="color:#f92672">&amp;</span>msg, Colleague <span style="color:#f92672">*</span>colleague)
+{
+    <span style="color:#66d9ef">if</span> (colleague <span style="color:#f92672">==</span> colleague_a_) {
+        colleague_b_<span style="color:#f92672">-&gt;</span>Notify(msg);
+    } <span style="color:#66d9ef">else</span> {
+        colleague_a_<span style="color:#f92672">-&gt;</span>Notify(msg);
+    }
+}
+
+ConcreteColleagueA<span style="color:#f92672">::</span>ConcreteColleagueA(Mediator <span style="color:#f92672">*</span>mediator)
+        <span style="color:#f92672">:</span> Colleague(mediator)
+{}
+
+<span style="color:#66d9ef">void</span> ConcreteColleagueA<span style="color:#f92672">::</span>Send(<span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>string <span style="color:#f92672">&amp;</span>msg)
+{
+    mediator_<span style="color:#f92672">-&gt;</span>SendMsg(msg, <span style="color:#66d9ef">this</span>);
+}
+
+<span style="color:#66d9ef">void</span> ConcreteColleagueA<span style="color:#f92672">::</span>Notify(<span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>string <span style="color:#f92672">&amp;</span>msg)
+{
+    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;colleague A received: &#34;</span> <span style="color:#f92672">&lt;&lt;</span> msg <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+}
+
+ConcreteColleagueB<span style="color:#f92672">::</span>ConcreteColleagueB(Mediator <span style="color:#f92672">*</span>mediator)
+        <span style="color:#f92672">:</span> Colleague(mediator)
+{}
+
+<span style="color:#66d9ef">void</span> ConcreteColleagueB<span style="color:#f92672">::</span>Send(<span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>string <span style="color:#f92672">&amp;</span>msg)
+{
+    mediator_<span style="color:#f92672">-&gt;</span>SendMsg(msg, <span style="color:#66d9ef">this</span>);
+}
+
+<span style="color:#66d9ef">void</span> ConcreteColleagueB<span style="color:#f92672">::</span>Notify(<span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>string <span style="color:#f92672">&amp;</span>msg)
+{
+    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;colleague B received: &#34;</span> <span style="color:#f92672">&lt;&lt;</span> msg <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+}
+</code></pre></div><p>这里我们构造两种类型的Colleague让他们互相通信看看：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>()
+{
+    ConcreteMediator <span style="color:#f92672">*</span>mediator <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ConcreteMediator();
+    ConcreteColleagueA <span style="color:#f92672">*</span>a <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ConcreteColleagueA(mediator);
+    ConcreteColleagueB <span style="color:#f92672">*</span>b <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ConcreteColleagueB(mediator);
+
+    mediator<span style="color:#f92672">-&gt;</span>set_colleague(a);
+    mediator<span style="color:#f92672">-&gt;</span>set_colleague(b);
+
+    a<span style="color:#f92672">-&gt;</span>Send(<span style="color:#e6db74">&#34;im a&#34;</span>);
+    b<span style="color:#f92672">-&gt;</span>Send(<span style="color:#e6db74">&#34;im b&#34;</span>);
+
+    <span style="color:#66d9ef">delete</span> a;
+    <span style="color:#66d9ef">delete</span> b;
+    <span style="color:#66d9ef">delete</span> mediator;
+
+    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+</code></pre></div><p><img src="https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/jQQKg8.png#center" alt="jQQKg8"></p>
+<p>Mediator模式将多对多通信转化为了多对一通信，各对象之间不必维护自己的通信协议，降低了系统的复杂性。同时将控制集中起来管理，符合单一职责与集中控制原则。</p>
+
+    
+    
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+  const gitalk = new Gitalk({
+    clientID: '36c8fa6e09d08297a270',
+    clientSecret: 'af0175944284956d288d14b389fbc89be8df7f1e',
+    repo: 'chongg039.github.io',
+    owner: 'chongg039',
+    admin: ['chongg039'],
+    id: location.pathname, 
+    distractionFreeMode: false 
+  });
+  (function() {
+    if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+      document.getElementById('gitalk-container').innerHTML = 'Gitalk comments not available by default when the website is previewed locally.';
+      return;
+    }
+    gitalk.render('gitalk-container');
+  })();
+</script>
+
+<div class="navfooter">
+    <table width="100%" summary="Navigation footer">
+        <tbody>
+            <tr>
+                <td width="40%" align="left">&nbsp;</td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right">&nbsp;</td>
+            </tr>
+            <tr>
+                <td width="40%" align="left" valign="top">
+                    <span class="copyright">
+                        Copyright 2014-2020
+                    </span>
+                    &nbsp;
+                </td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right" valign="top">&nbsp;<a href="https://chongg039.cn/">HOME</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: { 
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+            processEscapes: true
+        }
+    });
+    </script>
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-117991024-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+    <script type="text/javascript" src="https://chongg039.cn/js/function.js"></script>
+    <script type="text/javascript" src="https://chongg039.cn/js/prettify.js"></script>
+    
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+</html>
+

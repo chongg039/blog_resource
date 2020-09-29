@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>FMAM - 1.6：PH 分布的参数估计</title>
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/style.css" />
+    
+    <link rel="shortcut icon" href="https://chongg039.cn/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/sunburst.css" />
+</head>
+<body onload="PR.prettyPrint()">
+    <div class="navheader">
+        <table width="100%" summary="Navigation header">
+            <tbody>
+                <tr>
+                    <td colspan="3" align="center">Co1driver 的个人博客</td>
+                </tr>
+                <tr>
+                    <td width="90%" align="left">&nbsp;</td>
+                    <td width="5%" align="center">&nbsp;<a accesskey="h" href="https://github.com/chongg039">GITHUB</a></td>
+                    <td width="5%" align="right">&nbsp;<a accesskey="a" href="https://chongg039.cn//about">ABOUT</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h1>FMAM - 1.6：PH 分布的参数估计</h1>
+    <h4>Thu, Aug 2, 2018</h4>
+    <p>在概率论、随机建模和统计学中，概率分布的参数估计是一个基本问题。有关参数估计的参考资料的数量是巨大的。在本节中，我们主要讨论 PH 分布的参数估计。</p>
+<p>PH分布的参数估计是指为一个来自样本 ${y _ {1}, y _ {2}, &hellip;, y _ {n}}$ 的 PH 随机变量 Y 找到一个 m 阶的 PH 表示 $(\alpha, T)$。样本中，$y _ {k}$ 被称为样本点，n 被称作样本大小。我们假定样本点是独立收集的，那么我们定义 ${Y _ {1}, Y _ {2}, &hellip;, Y _ {n}}$ 是独立同分布的随机变量 (i.i.d.r.v.s) ，它们具有和 Y 一样的分布。样本点 $y _ {k}$ 是 $Y _ {k}$ 的一个实现（可能翻译不准确？）。同样的，我们定义 $\{I(t), t \geq 0 \}$ 作为与 Y 相关的底层马尔可夫链 (the underlying Markov chain) 。</p>
+<h4 id="例子161略">例子1.6.1：略</h4>
+<h4 id="命题161-asmussen-et-al-1996-">命题1.6.1 (Asmussen et al. (1996)) ：</h4>
+<p>对于 $y &gt; 0$ ，我们有
+$$
+E _ {(\pmb{\alpha}, T)}[B _ i | Y=y] = \frac{\alpha _ {i}b _ {i}(y | T)}{\pmb{\alpha}\pmb{b}(y | T)}, i=1, 2, &hellip;, m
+$$</p>
+<p>$$
+E _ {(\pmb{\alpha}, T)}[Z _ i | Y=y] = \frac{c _ {i}(y, i | \pmb{\alpha}, T)}{\pmb{\alpha}\pmb{b}(y | T)}, i=1, 2, &hellip;, m
+$$</p>
+<p>$$
+E _ {(\pmb{\alpha}, T)}[N _ {i, j} | Y=y] = \frac{t _ {i, j}c _ {i}(y, i | \pmb{\alpha}, T)}{\pmb{\alpha}\pmb{b}(y | T)}, i \not= j, i, j=1, 2, &hellip;, m
+$$</p>
+<p>$$
+E _ {(\pmb{\alpha}, T)}[N _ {i, m+1} | Y=y] = \frac{{t _ {i}}^0 a _ {i}(y | \pmb{\alpha}, T)}{\pmb{\alpha}\pmb{b}(y | T)}, i=1, 2, &hellip;, m
+$$</p>
+<p>证明略。</p>
+<h4 id="练习161略">练习1.6.1：略</h4>
+<h4 id="练习162略">练习1.6.2：略</h4>
+<h4 id="练习163略">练习1.6.3：略</h4>
+<h4 id="命题162">命题1.6.2：</h4>
+<p>给定 $W=w$ ，$\{I _ {0}, I _ {1}, I _ {2}, &hellip;, I _ {W-1}, S _ {0}, S _ {1}, S _ {2}, &hellip;, S _ {W-1}\}$ 的联合概率密度 ( the joint density function) 由下式给出，其中样本点 $\pmb{x}=\{i _ {0}, i _ {1}, i _ {2}, &hellip;, i _ {w-1}, s _ {0}, s _ {1}, s _ {2}, &hellip;, s _ {w-1}\}$ ：
+$$
+f(\pmb{x}; \pmb{\alpha, T})=\alpha _ {i _ {0}}
+\biggl(
+\prod ^ {m} _ {i=1}exp(t _ {i, i}z _ {i})
+\biggl)
+\biggl(
+\prod ^ {m} _ {i=1}
+\biggl(
+\prod ^ {m+1} _ {j=1:j \not= i}(t _ {i, j})^{n _ {i, j}}
+\biggl)
+\biggl)
+$$</p>
+<p>其中 $z _ {i}$ 是到状态 $i$ 时花费的总时间，$i=1, 2, &hellip;, m$ ，$n _ {i, j}$ 是从 $i$ 到 $j$ 转换的次数，$i \not= j, i = 1, 2, &hellip;, m, j = 1, 2, &hellip;, m, m+1$ 。这是针对样本点 $x$ 而言。Recall (不知道怎么翻译)  $t _ {i, m+1}={t _ {i}}^0, i=1, 2, &hellip;, m$ 。证明略。</p>
+<p>现在，我们准备提出 EM 算法。EM 算法是迭代法的一种，基于众所周知的最大似然法。最大似然法的思想是选择参数使其给定样本的相似度最大化。但是，对于 PH 分布而言，给定样本和似然函数之间的关系因为底层马尔可夫链中信息的缺失而变得过于复杂。为了解决这个问题，最大似然法被分解为两个步骤：一个 Expectation 步骤和一个 Maximization 步骤。这个方法使用一些和分布相关的措施来构造似然函数。Expectation 步骤根据期望来估计这些措施（measures 翻译不准确？），然后我们用他们的expectations 取代似然函数中的 measures 。在该步骤中使用了给定的样本。一旦似然函数确定，然后选择一组参数使似然函数最大化。一般来说 EM 算法可以被如下描述：</p>
+<p><strong>Step 0 :</strong> 选择初始PH表示 $(\pmb{\alpha}, T)$</p>
+<p><strong>E-step :</strong> 使用当前的 $(\pmb{\alpha}, T)$ 和给定样本 $\{y _ {1}, y _ {2}, &hellip;, y _ {n}\}$ 来估计 $B _ {i}$ ，$Z _ {i}$ 和  $N _ {i, j}$ （将在方程（1.134）中再次定义）</p>
+<p><strong>M-step :</strong> 使用在E步骤中获得的 $B _ {i}$ ，$Z _ {i}$ 和  $N _ {i, j}$ 的估计来生成一个新的 PH 分布（即 $\pmb{\alpha}, T$）的参数集来使似然函数最大化（将在方程（1.135）中定义）</p>
+<p>进一步来说，给定样本 $\{y _ {1}, y _ {2}, &hellip;, y _ {n}\}$ 和当前的 $(\pmb{\alpha}^{(k)}, T^{(k)})$ ，对每个样本点我们都可以找到 $B _ {i}$ ，$Z _ {i}$ 和  $N _ {i, j}$ 有条件的期望值。在 E-step 中， 对于 $i \not= j, i, j=1, 2, &hellip;, m$ 有
+$$
+B _ {i} ^ {(k+1)} = \sum _ {v=1} ^ {n} E _ {(\pmb{\alpha}, T) ^ {(k)}}[B _ {i} ^ {[v]} | Y=y _ {v}] = \sum _ {v=1} ^ {n} \frac{\alpha _ {i} ^ {(k)}b _ {i}(y _ {v} | T ^ {(k)})}{\pmb{\alpha ^ {(k)}} \pmb{b} (y _ {v} | T ^ {(k)})}
+$$</p>
+<p>$$
+Z _ {i} ^ {(k+1)} = \sum _ {v=1} ^ {n} E _ {(\pmb{\alpha}, T) ^ {(k)}}[Z _ {i} ^ {[v]} | Y=y _ {v}] = \sum _ {v=1} ^ {n} \frac{c _ {i} (y _ {v}, i | \pmb{\alpha ^ {(k)}}, T ^ {(k)})}{\pmb{\alpha ^ {(k)}} \pmb{b} (y _ {v} | T ^ {(k)})}
+$$</p>
+<p>$$
+N _ {i, j} ^ {(k+1)} = \sum _ {v=1} ^ {n} E _ {(\pmb{\alpha}, T) ^ {(k)}}[N _ {i, j} ^ {[v]} | Y=y _ {v}] = \sum _ {v=1} ^ {n} \frac{t _ {i, j} ^ {(k)}c _ {j}(y _ {v}, i | \pmb{\alpha ^ {(k)}}, T ^ {(k)})}{\pmb{\alpha ^ {(k)}} \pmb{b} (y _ {v} | T ^ {(k)})}
+$$</p>
+<p>$$
+N _ {i, m+1} ^ {(k+1)} = \sum _ {v=1} ^ {n} E _ {(\pmb{\alpha}, T) ^ {(k)}}[N _ {i, m+1} ^ {[v]} | Y=y _ {v}] = \sum _ {v=1} ^ {n} \frac{t _ {i} ^ {0(k)}a _ {i}(y _ {v} | \pmb{\alpha ^ {(k)}}, T ^ {(k)})}{\pmb{\alpha ^ {(k)}} \pmb{b} (y _ {v} | T ^ {(k)})}
+$$</p>
+<p>注意，我们使用 &ldquo;(k)&rdquo; 作为第 k 次迭代的参数和度量的上标，使用 &ldquo;[v]&rdquo; 作为样本点 $y _ {v}， v=1, 2, &hellip;, n$ 的相关参数和度量的上标。</p>
+<p>按照命题1.6.1所说，对于给定样本，$B _ {i} ^ {(k+1)}$ 是底层马尔可夫链在阶段 i 中复制总的 n 次所预期的总数（total number of times 翻译不准确？）；$Z _ {i} ^ {(k+1)}$ 是阶段 i 中预期的总时间；$N _ {i, j} ^ {(k+1)}$ 是从阶段 i 到阶段 j 预期的转换的次数。</p>
+<h4 id="练习164略">练习1.6.4：略</h4>
+<h4 id="例子162略">例子1.6.2：略</h4>
+<h4 id="练习165略">练习1.6.5：略</h4>
+<h4 id="练习166略">练习1.6.6：略</h4>
+<h4 id="练习167略">练习1.6.7：略</h4>
+<h4 id="例子163略">例子1.6.3：略</h4>
+<h4 id="commentary略">Commentary：略</h4>
+<h4 id="additional-exercises-and-extensions略">Additional Exercises and Extensions：略</h4>
+
+    
+    
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+  const gitalk = new Gitalk({
+    clientID: '36c8fa6e09d08297a270',
+    clientSecret: 'af0175944284956d288d14b389fbc89be8df7f1e',
+    repo: 'chongg039.github.io',
+    owner: 'chongg039',
+    admin: ['chongg039'],
+    id: location.pathname, 
+    distractionFreeMode: false 
+  });
+  (function() {
+    if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+      document.getElementById('gitalk-container').innerHTML = 'Gitalk comments not available by default when the website is previewed locally.';
+      return;
+    }
+    gitalk.render('gitalk-container');
+  })();
+</script>
+
+<div class="navfooter">
+    <table width="100%" summary="Navigation footer">
+        <tbody>
+            <tr>
+                <td width="40%" align="left">&nbsp;</td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right">&nbsp;</td>
+            </tr>
+            <tr>
+                <td width="40%" align="left" valign="top">
+                    <span class="copyright">
+                        Copyright 2014-2020
+                    </span>
+                    &nbsp;
+                </td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right" valign="top">&nbsp;<a href="https://chongg039.cn/">HOME</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: { 
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+            processEscapes: true
+        }
+    });
+    </script>
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-117991024-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+    <script type="text/javascript" src="https://chongg039.cn/js/function.js"></script>
+    <script type="text/javascript" src="https://chongg039.cn/js/prettify.js"></script>
+    
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+</html>
+

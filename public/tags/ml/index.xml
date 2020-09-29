@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ML on Co1driver 的个人博客</title>
+    <link>https://chongg039.cn/tags/ml/</link>
+    <description>Recent content in ML on Co1driver 的个人博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>Copyright 2014-{year}</copyright>
+    <lastBuildDate>Tue, 22 Oct 2019 19:46:49 +0800</lastBuildDate><atom:link href="https://chongg039.cn/tags/ml/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>天池全球数据智能大赛（赛场二）第7名解决方案</title>
+      <link>https://chongg039.cn/post/yield-prediction-competition/</link>
+      <pubDate>Tue, 22 Oct 2019 19:46:49 +0800</pubDate>
+      
+      <guid>https://chongg039.cn/post/yield-prediction-competition/</guid>
+      <description>第一次正儿八经组队参加的比赛，虽然没能拿到奖金但也取得了一个比较满意的成绩（初赛23复赛7），这里记录一下当时的解决思路。
+首先这是一个农作物产量预测的比赛，属于比较传统的回归分析，这种类型的比赛只要做好 EDA ，一般都能取得不错的成绩，而不是说设计了一个多么精妙的网络结构。事实上官方提供的数据集最大的问题就是少，而且样本分布严重不均，这也成为了赛后受大家诟病的一个主要方面。
+探索性数据分析（EDA） EDA of train data 取以下数值型天气特征并分析之间的相关性：
+{ &amp;#34;日照时数（单位：h)&amp;#34;: &amp;#34;day_sun_hour&amp;#34;, &amp;#34;日平均风速(单位：m/s)&amp;#34;: &amp;#34;day_mean_wind&amp;#34;, &amp;#34;日降水量（mm）&amp;#34;: &amp;#34;day_rain&amp;#34;, &amp;#34;日平均温度（单位：℃）&amp;#34;: &amp;#34;day_mean_temperature&amp;#34;, &amp;#34;日相对湿度（单位：%）&amp;#34;: &amp;#34;day_relative_humidity&amp;#34;, &amp;#34;日平均气压（单位：hPa）&amp;#34;: &amp;#34;day_mean_pressure&amp;#34;, &amp;#34;日最高温度（单位：℃）&amp;#34;: &amp;#34;day_high_temp&amp;#34;, &amp;#34;日最低温度（单位：℃）&amp;#34;: &amp;#34;day_low_temp&amp;#34; } 以2017年区县id为16的地区为例：
+可以得出：
+ 一个地区一年的日平均温度、日最高温度和日最低温度呈正相关； 以平均温度为例，日平均气压与日平均温度呈负相关。  取以下类别型天气特征并处理：
+{ &amp;#34;02时风向&amp;#34;: &amp;#34;day_02_wind&amp;#34;, &amp;#34;08时风向&amp;#34;: &amp;#34;day_08_wind&amp;#34;, &amp;#34;14时风向&amp;#34;: &amp;#34;day_14_wind&amp;#34;, &amp;#34;20时风向&amp;#34;: &amp;#34;day_20_wind&amp;#34; } 做连续特征的话，依据下面的映射表映射到数值特征上：
+{ &amp;#34;N&amp;#34;: 0, &amp;#34;NNE&amp;#34;: 22.5, &amp;#34;NE&amp;#34;: 45, &amp;#34;ENE&amp;#34;: 67.5, &amp;#34;E&amp;#34;: 90, &amp;#34;ESE&amp;#34;: 112.5, &amp;#34;SE&amp;#34;: 135, &amp;#34;SSE&amp;#34;: 157.5, &amp;#34;S&amp;#34;: 180, &amp;#34;SSW&amp;#34;: 202.5, &amp;#34;SW&amp;#34;: 225, &amp;#34;WSW&amp;#34;: 247.</description>
+    </item>
+    
+  </channel>
+</rss>

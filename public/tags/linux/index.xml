@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>linux on Co1driver 的个人博客</title>
+    <link>https://chongg039.cn/tags/linux/</link>
+    <description>Recent content in linux on Co1driver 的个人博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>Copyright 2014-{year}</copyright>
+    <lastBuildDate>Sat, 12 Nov 2016 15:15:27 -0700</lastBuildDate><atom:link href="https://chongg039.cn/tags/linux/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Linux 服务器配置静态 IP 并 802.1x 拨号</title>
+      <link>https://chongg039.cn/post/linux-server-staticip-8021x/</link>
+      <pubDate>Sat, 12 Nov 2016 15:15:27 -0700</pubDate>
+      
+      <guid>https://chongg039.cn/post/linux-server-staticip-8021x/</guid>
+      <description>&lt;p&gt;终于布好工作室的服务器了。&lt;/p&gt;
+&lt;p&gt;我写了个脚本一键部署静态ip和802.1x拨号：&lt;a href=&#34;https://gist.github.com/chongg039/3310467e329e00de3b6b04aaae646f3c&#34;&gt;ubuntu-server.sh&lt;/a&gt;，不想看我啰嗦的可以直接拿过来改改就能用。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>
