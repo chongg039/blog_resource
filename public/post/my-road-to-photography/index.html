@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta name="generator" content="Hugo 0.78.2" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Co1driver 的个人博客</title>
+    <title>My Road to Photography</title>
     <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/style.css" />
     
     <link rel="shortcut icon" href="https://chongg039.cn/img/favicon.ico">
@@ -25,78 +24,52 @@
         </table>
     </div>
 
-    <br />
-    <h3>文章</h3>
-    
-    
-        <ul class="dotLeaders">
-            <li>
-                <span><a href="https://chongg039.cn/post/ubuntu-keyboard-error/">解决 ubuntu 下键盘错位问题</a></span>
-                <span>Sun, Oct 2, 2016</span>
-            </li>
-        </ul>
-    
-        <ul class="dotLeaders">
-            <li>
-                <span><a href="https://chongg039.cn/post/ngrok/">使用ngrok实现内网穿透</a></span>
-                <span>Sun, Sep 18, 2016</span>
-            </li>
-        </ul>
-    
-        <ul class="dotLeaders">
-            <li>
-                <span><a href="https://chongg039.cn/post/chrome-extensions/">自用 Chrome 插件分享</a></span>
-                <span>Sat, May 21, 2016</span>
-            </li>
-        </ul>
-    
-        <ul class="dotLeaders">
-            <li>
-                <span><a href="https://chongg039.cn/post/build-ubuntu-environment/">搭建 Linux 开发环境</a></span>
-                <span>Thu, May 12, 2016</span>
-            </li>
-        </ul>
-    
-        <ul class="dotLeaders">
-            <li>
-                <span><a href="https://chongg039.cn/post/talk-about-closure/">说说es5中的闭包</a></span>
-                <span>Mon, Apr 18, 2016</span>
-            </li>
-        </ul>
-    
-        <ul class="dotLeaders">
-            <li>
-                <span><a href="https://chongg039.cn/post/hello-world/">写在前面</a></span>
-                <span>Sun, Apr 17, 2016</span>
-            </li>
-        </ul>
-    
-    <br />
-    
-  
-  <table width="100%">
-      <tbody>
-        <tr class="pagination">
-            <td width="30%" align="left" class="previous ">
-              <a href="/page/5/" aria-label="Previous">
-                <span aria-hidden="true">Newer Posts</span>
-              </a>
-            </td>
-            <td width="40%" align="center" class="active">
-              <a href="/page/6/">6</a>
-            </td>
-            <td width="30%" align="right "class="next disabled" aria-label="Next">
-              <a href="">
-                <span aria-hidden="true">Older Posts</span>
-              </a>
-            </td>
-        </tr>
-      </tbody>
-  </table>
-  
+    <h1>My Road to Photography</h1>
+    <h4>Thu, Oct 15, 2020</h4>
+    <h3 id="书籍">书籍</h3>
+<p>《美国摄影教程》</p>
+<h3 id="参数">参数</h3>
+<p>凝固移动物体采用的快门速度：</p>
+<p>快速行走的人（5mph）：125（距离25英尺7.625米）、60（50英尺）、30（100英尺）
+奔跑的小孩（10mph） ：250、125、60
+滑冰的人（20mph）   ：500、250、125
+飞驰的汽车（50mph） ：1000、500、250</p>
+<p>光圈和进光量的倍数关系：
+2.8、4、5.6、8、11、16、22（差距都在一倍）</p>
+<p>等量曝光：</p>
+<pre><code>f/16 + 1/8
+f/11 + 1/15
+f/8  + 1/30
+f/5.6+ 1/60
+f/4  + 1/125
+f/2.8+ 1/250
+f/2  + 1/500
+</code></pre><p>进入相机的光线总量相等，但是它们组合产生的景深和运动效果存在差异。</p>
+<p>小光圈+低速快门、中光圈+中速快门、大光圈+高速快门</p>
 
-
-    <br />
+    
+    
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+  const gitalk = new Gitalk({
+    clientID: '36c8fa6e09d08297a270',
+    clientSecret: 'af0175944284956d288d14b389fbc89be8df7f1e',
+    repo: 'chongg039.github.io',
+    owner: 'chongg039',
+    admin: ['chongg039'],
+    id: location.pathname, 
+    distractionFreeMode: false 
+  });
+  (function() {
+    if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+      document.getElementById('gitalk-container').innerHTML = 'Gitalk comments not available by default when the website is previewed locally.';
+      return;
+    }
+    gitalk.render('gitalk-container');
+  })();
+</script>
 
 <div class="navfooter">
     <table width="100%" summary="Navigation footer">

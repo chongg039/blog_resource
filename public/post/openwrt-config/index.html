@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>极贰刷Openwrt及配置记录</title>
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/style.css" />
+    
+    <link rel="shortcut icon" href="https://chongg039.cn/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="https://chongg039.cn/css/sunburst.css" />
+</head>
+<body onload="PR.prettyPrint()">
+    <div class="navheader">
+        <table width="100%" summary="Navigation header">
+            <tbody>
+                <tr>
+                    <td colspan="3" align="center">Co1driver 的个人博客</td>
+                </tr>
+                <tr>
+                    <td width="90%" align="left">&nbsp;</td>
+                    <td width="5%" align="center">&nbsp;<a accesskey="h" href="https://github.com/chongg039">GITHUB</a></td>
+                    <td width="5%" align="right">&nbsp;<a accesskey="a" href="https://chongg039.cn//about">ABOUT</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h1>极贰刷Openwrt及配置记录</h1>
+    <h4>Tue, Dec 22, 2020</h4>
+    <p>极路由-极贰(HC5761)刷openwrt19.07，以及各种配置小记。</p>
+<h3 id="0-刷u-boot">0. 刷u-boot</h3>
+<p>极路由申请开发者权限，刷入不死u-boot是必要的先行步骤，这里不再赘述。
+有疑问的请自行google。</p>
+<p>注意第一次进入u-boot时最好将之前的配置备份一下。</p>
+<h3 id="1-选择并烧录对应的openwrt版本">1. 选择并烧录对应的openwrt版本</h3>
+<p>进入openwrt官网的Download页面，在<code>Stable Release Builds</code>目录下找到自己合适的版本的固件。
+这里的极贰对应的固件目录选择<code>/19.07.5/targets/ramips/mt7620/hc5761-squashfs-sysupgrade.bin</code></p>
+<p><img src="https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/514g9Y.png#center" alt="514g9Y"></p>
+<p>然后将路由器断电断wan，lan口和电脑网口直连，按住reset后上电5s左右至灯快速闪烁，松开reset。</p>
+<p>待电脑分配到ip后（如果不能需要手动指定一下192.168.1.x），进入192.168.1.1烧录刚才下载好的固件，
+等待重启。</p>
+<pre><code>注：本文我采用了撰写本文时最新的19.07.05，目前没有发现问题。但在此两周前的最新版本19.07.04中
+经常出现断流，我的这台极贰高发于凌晨零点刚过那一刻。
+
+后来查阅内核日志google了一下，发现同样的问题被发现于19.07.04中：
+https://bugs.openwrt.org/index.php?do=details&amp;task_id=3344
+
+该文章的解决方案中说明了降级到19.07.03便没有再出现过此类问题。我在动笔撰写该文章的前几天，openwrt官方
+释出了19.07.05版本，便采用了该版本的固件且暂时没有重现上述问题。特此记录。
+</code></pre><h3 id="2-换肤">2. 换肤</h3>
+<p>openwrt默认的界面比较丑，容易影响到接下来的工作心情，所以上来先换个皮。</p>
+<p>我们先更换一下opkg的源为清华的镜像源：<a href="https://mirrors.tuna.tsinghua.edu.cn/help/openwrt/">链接</a></p>
+<p>然后执行一下<code>opkg update</code>，当重启或者找不到包时都需要执行一遍该命令。</p>
+<p>皮肤我采用了luci-theme-argon：<a href="https://github.com/jerrykuku/luci-theme-argon">链接</a></p>
+<p>安装前为了访问https的链路，需要</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">opkg install libustream-openssl
+或
+opkg install ca-certificates
+</code></pre></div><p>为了支持中文界面，再安装一个中文语言包：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">opkg install luci-i18n-base-zh-cn<span style="color:#e6db74">```</span>
+
+!<span style="color:#f92672">[</span>a1SIyy<span style="color:#f92672">](</span>https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/a1SIyy.png#center<span style="color:#f92672">)</span>
+
+<span style="color:#75715e">### 3. extroot扩容</span>
+
+板载的存储空间一般比较小，能够安装ipk的空间一般也就剩余几M到十几M，但是大多数都支持sd卡或插入U盘来扩容。
+
+为了为下一步的安装v2ray-core这种比较大的文件做准备，这里我插入了一张8G的SD卡来扩展根分区的空间。
+
+openwrt支持<span style="color:#e6db74">`</span>pivot-overlay<span style="color:#e6db74">`</span>或者<span style="color:#e6db74">`</span>pivot-root<span style="color:#e6db74">`</span>两种方式扩充，具体原理不是很明白，但大意是第一种扩充<span style="color:#e6db74">`</span>overlay<span style="color:#e6db74">`</span>分区，
+opkg会将软件包安装在这个目录下，第二种则是干脆利落扩充根分区。这两种方式都尝试了一下，但是采用<span style="color:#e6db74">`</span>pivot-overlay<span style="color:#e6db74">`</span>
+的方式扩充之后又一次导致无法开机只能重新烧rom，所以在这里还是比较推荐扩充根分区的第二种方式。
+
+具体的步骤推荐看这篇文章：https://www.solarck.com/openwrt-extroot.html
+
+这里也再贴一下做个记录：
+
+1. 安装必要的包：
+<span style="color:#e6db74">```</span>shell
+opkg update
+opkg install e2fsprogs kmod-usb-core kmod-usb2 kmod-usb-storage usbutils kmod-fs-ext4 block-mount
+</code></pre></div><p>如果是SD卡需要额外</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">opkg install fdisk
+</code></pre></div><ol start="2">
+<li>查看是否正确识别设备：</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">lsusb 或 fdisk -l
+</code></pre></div><ol start="3">
+<li>格式化设备：</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">mkfs.ext4 /dev/你的设备名
+</code></pre></div><ol start="4">
+<li>挂载到当前系统：</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">mount /dev/你的设备名 /mnt
+</code></pre></div><ol start="5">
+<li>创建一个128M的swap文件：</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">dd <span style="color:#66d9ef">if</span><span style="color:#f92672">=</span>/dev/zero of<span style="color:#f92672">=</span>/mnt/swap bs<span style="color:#f92672">=</span><span style="color:#ae81ff">2048</span> count<span style="color:#f92672">=</span><span style="color:#ae81ff">65536</span>
+mkswap /mnt/swap
+swapon /mnt/swap
+</code></pre></div><ol start="6">
+<li>把<code>\</code>目录下的文件迁移到U盘，pivot-root方式，适用于Barrier Breaker（trunk）版本：</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">mkdir -p /tmp/cproot
+mount --bind / /tmp/cproot
+tar -C /tmp/cproot -cvf - . | tar -C /mnt/ -xf -
+umount /tmp/cproot
+</code></pre></div><ol start="7">
+<li>编辑<code>/etc/config/fstab</code>文件，若没有则要生成一个：</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">config <span style="color:#e6db74">&#39;mount&#39;</span>
+        option target        <span style="color:#e6db74">&#39;/&#39;</span>
+        option device        <span style="color:#e6db74">&#39;/dev/你的设备名&#39;</span>
+        option fstype        <span style="color:#e6db74">&#39;ext4&#39;</span>
+        option options       <span style="color:#e6db74">&#39;rw,sync&#39;</span>
+        option enabled       <span style="color:#e6db74">&#39;1&#39;</span>
+        option enabled_fsck  <span style="color:#e6db74">&#39;0&#39;</span>
+</code></pre></div><ol start="8">
+<li>重启查看是否生效：
+<img src="https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/nHaul5.png#center" alt="nHaul5"></li>
+</ol>
+<p>现在安装软件的空间也已经足够大了。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/chongg039/blog-pic-repo@master/uPic/rdx0yl.png#center" alt="rdx0yl"></p>
+<h3 id="4-配置v2ray">4. 配置v2ray</h3>
+<h3 id="5-中继配置">5. 中继配置</h3>
+
+    
+    
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+  const gitalk = new Gitalk({
+    clientID: '36c8fa6e09d08297a270',
+    clientSecret: 'af0175944284956d288d14b389fbc89be8df7f1e',
+    repo: 'chongg039.github.io',
+    owner: 'chongg039',
+    admin: ['chongg039'],
+    id: location.pathname, 
+    distractionFreeMode: false 
+  });
+  (function() {
+    if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+      document.getElementById('gitalk-container').innerHTML = 'Gitalk comments not available by default when the website is previewed locally.';
+      return;
+    }
+    gitalk.render('gitalk-container');
+  })();
+</script>
+
+<div class="navfooter">
+    <table width="100%" summary="Navigation footer">
+        <tbody>
+            <tr>
+                <td width="40%" align="left">&nbsp;</td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right">&nbsp;</td>
+            </tr>
+            <tr>
+                <td width="40%" align="left" valign="top">
+                    <span class="copyright">
+                        Copyright 2014-2020
+                    </span>
+                    &nbsp;
+                </td>
+                <td width="20%" align="center">&nbsp;</td>
+                <td width="40%" align="right" valign="top">&nbsp;<a href="https://chongg039.cn/">HOME</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: { 
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+            processEscapes: true
+        }
+    });
+    </script>
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-117991024-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+    <script type="text/javascript" src="https://chongg039.cn/js/function.js"></script>
+    <script type="text/javascript" src="https://chongg039.cn/js/prettify.js"></script>
+    
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+</html>
+
