@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Photos on Co1driver 的个人博客</title>
+    <link>https://chongg039.cn/photo/</link>
+    <description>Recent content in Photos on Co1driver 的个人博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>Copyright 2014-{year}</copyright>
+    <lastBuildDate>Thu, 24 Dec 2020 00:31:33 +0800</lastBuildDate><atom:link href="https://chongg039.cn/photo/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>我的工具集合</title>
+      <link>https://chongg039.cn/photo/my-photo-equipment/</link>
+      <pubDate>Thu, 24 Dec 2020 00:31:33 +0800</pubDate>
+      
+      <guid>https://chongg039.cn/photo/my-photo-equipment/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>就是随便拍拍</title>
+      <link>https://chongg039.cn/photo/just-take-photos/</link>
+      <pubDate>Thu, 24 Dec 2020 00:31:18 +0800</pubDate>
+      
+      <guid>https://chongg039.cn/photo/just-take-photos/</guid>
+      <description>2020 校园银杏马拉松 </description>
+    </item>
+    
+    <item>
+      <title>我的摄影学习笔记</title>
+      <link>https://chongg039.cn/photo/my-road-to-photography/</link>
+      <pubDate>Thu, 15 Oct 2020 15:52:08 +0800</pubDate>
+      
+      <guid>https://chongg039.cn/photo/my-road-to-photography/</guid>
+      <description>书籍 《美国摄影教程》
+参数 凝固移动物体采用的快门速度：
+快速行走的人（5mph）：125（距离25英尺7.625米）、60（50英尺）、30（100英尺） 奔跑的小孩（10mph） ：250、125、60 滑冰的人（20mph） ：500、250、125 飞驰的汽车（50mph） ：1000、500、250
+光圈和进光量的倍数关系： 2.8、4、5.6、8、11、16、22（差距都在一倍）
+等量曝光：
+f/16 + 1/8 f/11 + 1/15 f/8 + 1/30 f/5.6+ 1/60 f/4 + 1/125 f/2.8+ 1/250 f/2 + 1/500 进入相机的光线总量相等，但是它们组合产生的景深和运动效果存在差异。
+小光圈+低速快门、中光圈+中速快门、大光圈+高速快门</description>
+    </item>
+    
+  </channel>
+</rss>

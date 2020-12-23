@@ -7,7 +7,25 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>Copyright 2014-{year}</copyright>
-    <lastBuildDate>Tue, 22 Dec 2020 15:28:15 +0800</lastBuildDate><atom:link href="https://chongg039.cn/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 24 Dec 2020 00:31:33 +0800</lastBuildDate><atom:link href="https://chongg039.cn/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>我的工具集合</title>
+      <link>https://chongg039.cn/photo/my-photo-equipment/</link>
+      <pubDate>Thu, 24 Dec 2020 00:31:33 +0800</pubDate>
+      
+      <guid>https://chongg039.cn/photo/my-photo-equipment/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>就是随便拍拍</title>
+      <link>https://chongg039.cn/photo/just-take-photos/</link>
+      <pubDate>Thu, 24 Dec 2020 00:31:18 +0800</pubDate>
+      
+      <guid>https://chongg039.cn/photo/just-take-photos/</guid>
+      <description>2020 校园银杏马拉松 </description>
+    </item>
+    
     <item>
       <title>极贰刷Openwrt及配置记录</title>
       <link>https://chongg039.cn/post/openwrt-config/</link>
@@ -31,11 +49,11 @@ opkg install fdisk 查看是否正确识别设备：  lsusb 或 fdisk -l 格式�
     </item>
     
     <item>
-      <title>My Road to Photography</title>
-      <link>https://chongg039.cn/post/my-road-to-photography/</link>
+      <title>我的摄影学习笔记</title>
+      <link>https://chongg039.cn/photo/my-road-to-photography/</link>
       <pubDate>Thu, 15 Oct 2020 15:52:08 +0800</pubDate>
       
-      <guid>https://chongg039.cn/post/my-road-to-photography/</guid>
+      <guid>https://chongg039.cn/photo/my-road-to-photography/</guid>
       <description>书籍 《美国摄影教程》
 参数 凝固移动物体采用的快门速度：
 快速行走的人（5mph）：125（距离25英尺7.625米）、60（50英尺）、30（100英尺） 奔跑的小孩（10mph） ：250、125、60 滑冰的人（20mph） ：500、250、125 飞驰的汽车（50mph） ：1000、500、250
