@@ -1,5 +1,5 @@
 ---
-title: "My Road to Photography"
+title: "我的摄影学习笔记"
 date: 2020-10-15T15:52:08+08:00
 Description: ""
 Tags: []
