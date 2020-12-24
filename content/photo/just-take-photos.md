@@ -10,3 +10,5 @@ Categories: []
 ### 2020 校园银杏马拉松
 
 ![](https://raw.githubusercontent.com/chongg039/blog-pic-repo/master/picgo/AAA_2178.jpg)
+
+![](https://raw.githubusercontent.com/chongg039/blog-pic-repo/master/picgo/AAA_2392.jpg)
