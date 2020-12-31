@@ -95,7 +95,7 @@
 <p>再看普通的拷贝构造函数：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Obj</span>
 {
-    Obj(<span style="color:#66d9ef">const</span> Obj <span style="color:#f92672">&amp;&amp;</span>rhs) {
+    Obj(<span style="color:#66d9ef">const</span> Obj <span style="color:#f92672">&amp;</span>rhs) {
         ...
     }
 }
@@ -264,7 +264,7 @@ Obj <span style="color:#a6e22e">out</span>()
             <tr>
                 <td width="40%" align="left" valign="top">
                     <span class="copyright">
-                        Copyright 2014-2020
+                        Copyright 2014-2021
                     </span>
                     &nbsp;
                 </td>

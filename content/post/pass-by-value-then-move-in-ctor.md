@@ -115,7 +115,7 @@ class Obj
 ```c++
 class Obj
 {
-    Obj(const Obj &&rhs) {
+    Obj(const Obj &rhs) {
         ...
     }
 }
