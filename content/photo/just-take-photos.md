@@ -75,3 +75,24 @@ Categories: []
     class=""
 >}}
 
+{{< figure
+    src="https://raw.githubusercontent.com/chongg039/blog-pic-repo/master/picgo/AAA_2654.jpg#center"
+    title="Bang!"
+    caption="光圈f/5.6，快门1/30s，焦距50mm，iso800"
+    class=""
+>}}
+
+{{< figure
+    src="https://raw.githubusercontent.com/chongg039/blog-pic-repo/master/picgo/AAA_2630.jpg#center"
+    title="冲压机的退休生活"
+    caption="光圈f/5.6，快门1/6s，焦距50mm，iso800"
+    class=""
+>}}
+
+{{< figure
+    src="https://raw.githubusercontent.com/chongg039/blog-pic-repo/master/picgo/AAA_2651.jpg#center"
+    title="关于1号楼我知道的不多"
+    caption="光圈f/5.6，快门1/125s，焦距50mm，iso800"
+    class=""
+>}}
+
